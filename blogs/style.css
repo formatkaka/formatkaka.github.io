@@ -55,6 +55,10 @@ body {
   font-size: 22px;
 }
 
+img {
+  max-width: 100%;
+}
+
 /* Footnotes */
 
 .footnote {
