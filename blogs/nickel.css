@@ -1,0 +1,10 @@
+.review__section-title {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.glide__slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
