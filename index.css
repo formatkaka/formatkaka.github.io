@@ -1,0 +1,19 @@
+.body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  background-color: var(--bg-primary);
+  color: var(--text-color-primary);
+
+  width: 100vw;
+  height: 100vh;
+
+  margin: 0px;
+  padding: 0px;
+}
+
+.main-page__link {
+  margin-top: 10px;
+}
