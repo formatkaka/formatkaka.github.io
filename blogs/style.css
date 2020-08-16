@@ -1,8 +1,13 @@
 :root {
-  --bg-primary: #c2e8ce;
+  /* --bg-primary: #c2e8ce;
   --bg-second: #f2eee5;
   --text-color-primary: rgb(59, 57, 52);
-  --text-color-links: #f6ad7b;
+  --text-color-links: #f6ad7b; */
+
+  /* --bg-primary: #7fdbda;
+  --bg-second: #ade498;
+  --text-color-primary: rgb(59, 57, 52);
+  --text-color-links: #f6ad7b; */
 }
 
 html {
@@ -75,6 +80,10 @@ img {
   text-decoration: underline;
 }
 
+.footnote__text {
+  margin: 0px;
+}
+
 .footnote li {
   margin-top: 10px;
 
@@ -113,5 +122,43 @@ a {
 @media (max-width: 800px) {
   .review p {
     font-size: 18px;
+  }
+
+  body {
+    width: 90%;
+  }
+
+  .footnote li a {
+    max-width: 90%;
+  }
+
+  .footnote__text {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    margin: 0px;
+    max-width: 100%;
+
+    position: relative;
+  }
+
+  .footnote__text::after {
+    content: '';
+    width: 100%;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    height: 5px;
+    background-color: var(--text-color-links);
+    z-index: -1;
+    transition: all 0.2s;
+  }
+
+  .footnote__text:hover.footnote__text::after {
+    height: 100%;
+  }
+
+  .link::after {
+    width: 0%;
   }
 }
