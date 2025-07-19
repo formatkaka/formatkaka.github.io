@@ -1,0 +1,184 @@
+---
+type Props = {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Siddhant Loya - Prose, Poetry and Tech" } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <link
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+    
+    <style is:global>
+      :root {
+        --bg-primary: #a6dcef;
+        --bg-second: #f2eee5;
+        --text-color-primary: #1b2021;
+        --text-color-links: #f6ad7b;
+      }
+
+      html {
+        font-family: 'Source Sans Pro';
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--bg-primary);
+        color: var(--text-color-primary);
+      }
+
+      body {
+        width: 80%;
+        max-width: 700px;
+        margin-top: 100px;
+      }
+
+      .title {
+        font-size: 40px;
+        text-decoration: underline;
+        margin-bottom: 10px;
+      }
+
+      .date {
+        margin: 0px;
+      }
+
+      .intro span:first-child {
+        font-weight: bold;
+      }
+
+      .intro p:first-child span:not(:first-child) {
+        background-color: var(--bg-second);
+        padding: 0px 5px;
+        border-radius: 1px;
+      }
+
+      .quote p {
+        margin: 0px;
+        margin-top: 5px;
+        margin-left: 5px;
+      }
+
+      .quote {
+        border-left: 5px solid var(--bg-second);
+      }
+
+      .review p {
+        font-size: 22px;
+      }
+
+      figure {
+        margin: 40px 0px;
+      }
+
+      img {
+        max-width: 100%;
+      }
+
+      /* Footnotes */
+      .footnote {
+        background-color: var(--bg-second);
+        padding: 30px;
+      }
+
+      .footnote__title {
+        font-size: 20px;
+        text-decoration: underline;
+      }
+
+      .footnote__text {
+        margin: 0px;
+      }
+
+      .footnote li {
+        margin-top: 10px;
+        display: flex;
+        align-items: flex-end;
+      }
+
+      .footnote li a {
+        margin: 0px 5px;
+      }
+
+      a {
+        text-decoration: none;
+        color: var(--text-color-primary);
+        position: relative;
+        z-index: 2;
+      }
+
+      .link::after, a::after {
+        content: '';
+        width: 100%;
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        height: 5px;
+        background-color: var(--text-color-links);
+        z-index: -1;
+        transition: all 0.2s;
+      }
+
+      .link:hover.link::after, a:hover::after {
+        height: 100%;
+      }
+
+      @media (max-width: 800px) {
+        .review p {
+          font-size: 18px;
+        }
+
+        body {
+          width: 90%;
+        }
+
+        .footnote li a {
+          max-width: 90%;
+        }
+
+        .footnote__text {
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          margin: 0px;
+          max-width: 100%;
+          position: relative;
+        }
+
+        .footnote__text::after {
+          content: '';
+          width: 100%;
+          position: absolute;
+          bottom: 0px;
+          left: 0px;
+          height: 5px;
+          background-color: var(--text-color-links);
+          z-index: -1;
+          transition: all 0.2s;
+        }
+
+        .footnote__text:hover.footnote__text::after {
+          height: 100%;
+        }
+
+        .link::after {
+          width: 0%;
+        }
+      }
+    </style>
+  </body>
+</html>
