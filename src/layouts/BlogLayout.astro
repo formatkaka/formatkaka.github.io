@@ -23,6 +23,15 @@ const { title, description = "Siddhant Loya - Prose, Poetry and Tech" } = Astro.
   </head>
   <body>
     <slot />
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.spoiler').forEach(spoiler => {
+          spoiler.addEventListener('click', () => {
+            spoiler.classList.toggle('revealed');
+          });
+        });
+      });
+    </script>
     
     <style is:global>
       :root {
@@ -178,6 +187,31 @@ const { title, description = "Siddhant Loya - Prose, Poetry and Tech" } = Astro.
         .link::after {
           width: 0%;
         }
+      }
+
+      .spoiler {
+        background: #333;
+        color: #333;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        padding: 2px 4px;
+        border-radius: 4px;
+        user-select: none;
+      }
+      
+      .spoiler * {
+        color: #333 !important;
+        background: transparent;
+      }
+      
+      
+      .spoiler.revealed {
+        background: transparent;
+        color: inherit;
+      }
+      
+      .spoiler.revealed * {
+        color: inherit !important;
       }
     </style>
   </body>
