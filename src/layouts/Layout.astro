@@ -21,15 +21,24 @@ const { title, description = "Siddhant Loya - Prose, Poetry and Tech" } = Astro.
     />
     <title>{title}</title>
     <style>
-      :root {
+      @import "tailwindcss";
+      
+      :root,
+      @theme {
         --bg-primary: #a6dcef;
         --bg-second: #f2eee5;
         --text-color-primary: #1b2021;
         --text-color-links: #f6ad7b;
       }
+
+      @source inline("grid-cols-{1..30}");
+      @source inline("grid-rows-{1..30}");
+      @source inline("text-base");
+      @source inline("cursor-pointer");
+
     </style>
   </head>
-  <body class="min-h-screen bg-[#a6dcef] text-[#1b2021] font-['Source_Sans_Pro',_sans-serif]">
+  <body class="min-h-screen bg-[#a6dcef] text-[#1b2021] font-['Source_Sans_Pro',_sans-serif] m-0 p-0">
     <slot />
   </body>
 </html>
