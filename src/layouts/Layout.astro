@@ -1,0 +1,54 @@
+---
+type Props = {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Siddhant Loya - Prose, Poetry and Tech" } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <link
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+    <style>
+      @import "tailwindcss";
+      
+      :root,
+      @theme {
+        --bg-primary: #a6dcef;
+        --bg-second: #f2eee5;
+        --text-color-primary: #1b2021;
+        --text-color-links: #f6ad7b;
+      }
+
+      @source inline("grid-cols-{1..30}");
+      @source inline("grid-rows-{1..30}");
+      @source inline("text-base");
+      @source inline("cursor-pointer");
+
+
+    </style>
+  </head>
+  <body class="min-h-screen bg-[#a6dcef] text-[#1b2021] font-['Source_Sans_Pro',_sans-serif] m-0 p-0">
+    <slot />
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.spoiler').forEach(spoiler => {
+          spoiler.addEventListener('click', () => {
+            spoiler.classList.toggle('revealed');
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

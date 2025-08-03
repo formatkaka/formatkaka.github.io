@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TypewriterText from '../components/TypewriterText.astro';
+---
+
+<Layout title="Siddhant Loya">
+  <div class="flex justify-center items-center flex-col w-screen h-screen m-0 p-0">
+    <h1 class="text-4xl font-bold mb-4">Siddhant Loya</h1>
+    
+    <TypewriterText texts={[
+      "Welcome to my blog",
+      "Prose, Poetry and Tech", 
+      "Being a skeptic"
+    ]} />
+    
+    <a class="mt-2.5 text-[#f6ad7b] hover:underline" href="/blogs">Blogs</a>
+    <a class="mt-2.5 text-[#f6ad7b] hover:underline" href="/poetry">Poetry</a>
+    <a class="mt-2.5 text-[#f6ad7b] hover:underline" href="/tech">Tech</a>
+  </div>
+</Layout>
