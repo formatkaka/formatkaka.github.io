@@ -89,6 +89,10 @@ class Minesweeper {
       this.userPlacedFlags.push({ x, y });
     }
 
+    if(this.userPlacedFlags.length === this.mines) {
+      this.checkIfUserWon();
+    }
+
     this.flag.innerHTML = `${this.mines - this.userPlacedFlags.length}`;
   }
 
@@ -195,6 +199,24 @@ class Minesweeper {
       this.interval = null;
     }
     this.renderAllMines();
+  }
+
+  checkIfUserWon() {
+
+    // Check if the user has flagged all mines correctly
+      const flaggedMines = this.userPlacedFlags.filter(flag => this.isCellAMine(flag.x, flag.y));
+      const userWon = flaggedMines.length === this.mines;
+
+      if(userWon) {
+        alert('Congratulations! You won the game!');
+        if(this.interval) {
+          clearInterval(this.interval);
+          this.interval = null;
+        }
+        return;
+      }
+
+      return false;
   }
 }
 
