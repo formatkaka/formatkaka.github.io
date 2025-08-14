@@ -11,7 +11,7 @@ posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
     <h1 class="title">Blogs</h1>
     <ul>
       {posts.map((post) => (
-        <li>
+        <li class="mb-2">
           <p class="date">
             {post.data.pubDate.toLocaleDateString('en-us', {
               day: '2-digit',

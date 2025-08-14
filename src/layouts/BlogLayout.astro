@@ -20,6 +20,19 @@ const { title, description = "Siddhant Loya - Prose, Poetry and Tech" } = Astro.
       rel="stylesheet"
     />
     <title>{title}</title>
+    <style>
+      @import "tailwindcss";
+      
+      :root,
+      @theme {
+        --bg-primary: #a6dcef;
+        --bg-second: #f2eee5;
+        --text-color-primary: #1b2021;
+        --text-color-links: #f6ad7b;
+      }
+
+
+    </style>
   </head>
   <body>
     <slot />
@@ -34,6 +47,7 @@ const { title, description = "Siddhant Loya - Prose, Poetry and Tech" } = Astro.
     </script>
     
     <style is:global>
+
       :root {
         --bg-primary: #a6dcef;
         --bg-second: #f2eee5;
@@ -114,7 +128,7 @@ const { title, description = "Siddhant Loya - Prose, Poetry and Tech" } = Astro.
       }
 
       .footnote li {
-        margin-top: 10px;
+        margin-top: 15px;
         display: flex;
         align-items: flex-end;
       }
