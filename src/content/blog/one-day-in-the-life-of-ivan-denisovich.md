@@ -2,6 +2,7 @@
 title: "Book Review: One Day In The Life Of Ivan Denisovich"
 description: "A review of Solzhenitsyn's powerful novel about life in a Soviet labor camp"
 pubDate: 2020-03-01
+category: "books"
 ---
 
 <div class="intro">

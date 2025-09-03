@@ -2,6 +2,7 @@
 title: "Book Review: The Gulag Archipelago - part 1"
 description: "A review of Solzhenitsyn's monumental work on Soviet labor camps"
 pubDate: 2021-11-14
+category: "books"
 ---
 
 **Author:** Alexander Solzhenitsyn  

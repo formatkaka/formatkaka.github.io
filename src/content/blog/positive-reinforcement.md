@@ -2,6 +2,7 @@
 title: "Essay - Positive Reinforcement"
 description: "An essay exploring the concept of positive reinforcement"
 pubDate: 2020-08-09
+category: "books"
 ---
 
 The way a human being develops is a result of many different factors

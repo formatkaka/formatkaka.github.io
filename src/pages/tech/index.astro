@@ -1,15 +1,37 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import BlogLayout from '../../layouts/BlogLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('blog', ({ data }) => {
+  return data.category === 'tech';
+});
+posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
-<Layout title="Tech">
-  <div class="flex justify-center items-center h-screen gap-4 flex-col">
-    <h1 class="text-3xl font-bold">Tech Projects</h1>
-
-    <div class="flex">
-      <a href="/tech/minesweeper" class="mt-4 inline-block bg-blue-500 text-white py-2 px-4 rounded">
+<BlogLayout title="Tech Blogs">
+  <div>
+    <h1 class="title">Tech Blogs</h1>
+    <ul>
+      {posts.map((post) => (
+        <li class="mb-2">
+          <p class="date">
+            {post.data.pubDate.toLocaleDateString('en-us', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+            })}
+          </p>
+          <a href={`/blogs/${post.slug}`} class="link">
+            {post.data.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+    <div class="mt-8">
+      <h2 class="text-xl font-bold mb-4">Tech Projects</h2>
+      <a href="/tech/minesweeper" class="inline-block bg-blue-500 text-white py-2 px-4 rounded">
         Play Minesweeper
       </a>
     </div>
   </div>
-</Layout>
+</BlogLayout>

@@ -1,0 +1,191 @@
+---
+title: "Part 1 : Building a Google-Style Search Component in React"
+description: "Learn how to build an autocomplete search component with keyboard navigation, debounced API calls, and proper focus management"
+pubDate: 2025-09-02
+category: "tech"
+---
+
+import { Search } from '../../tech/react-projects/search/index.tsx';
+
+Building a search component that behaves like Google or Facebook might seem straightforward at first, but there are several UX nuances that make it challenging. In this blog, I'll walk through creating a React search component with proper keyboard navigation and focus management.
+
+## Try It Out
+
+<Search client:load />
+
+*Try typing "mission" and navigate with arrow keys*
+
+## The Challenge
+
+When building search autocomplete, you need to handle:
+
+- **Debounced API calls** to avoid excessive requests
+- **Keyboard navigation** (↑/↓ arrows, Enter, Escape)
+- **Focus management** that doesn't break user experience
+- **Click outside** behavior to close the dropdown
+
+## Initial Approach: Using Radix Popover
+
+My first instinct was to use Radix UI's Popover component:
+
+```tsx
+<Popover open={open} onOpenChange={setOpen}>
+  <PopoverAnchor>
+    <Input />
+  </PopoverAnchor>
+  <PopoverContent>
+    {/* Search results */}
+  </PopoverContent>
+</Popover>
+```
+
+**The Problem**: Radix Popover automatically manages focus, moving it away from the input when opened. This breaks the search experience because users expect to keep typing while seeing results.
+
+## The Key Insight: Google vs Facebook Behavior
+
+There are actually two different UX patterns:
+
+### Google's Approach
+- When navigating with arrow keys, the **input value changes** to show the selected suggestion
+- Users can press **Escape** to return to their original search term
+- Focus **always stays** on the input field
+
+### Facebook's Approach  
+- Arrow key navigation only **highlights** suggestions visually
+- The input value **doesn't change** during navigation
+- Focus still stays on the input
+
+I chose Google's approach for better discoverability.
+
+## The Solution: Custom Dropdown
+
+After struggling with Radix's focus management, I switched to a simple absolutely positioned div:
+
+```tsx
+return (
+  <div ref={containerRef} className='w-[40vw] relative'>
+    <Input 
+      value={inputValue} 
+      onChange={onSearchInputChange} 
+      onKeyDown={handleKeyDown} 
+    />
+    {open && data?.results.length && (
+      <div className='absolute top-full left-0 right-0 z-50 mt-2 bg-white border shadow-lg'>
+        {data.results.map((result, index) => (
+          <p className={`p-2 cursor-pointer ${
+            selectedIndex === index ? 'bg-blue-100' : 'hover:bg-gray-100'
+          }`}>
+            {result.title}
+          </p>
+        ))}
+      </div>
+    )}
+  </div>
+);
+```
+
+## State Management
+
+The component uses several pieces of state:
+
+```tsx
+const [selectedIndex, setSelectedIndex] = useState(-1); // Which item is highlighted
+const [inputValue, setInputValue] = useState('');       // What's shown in input
+const [open, setOpen] = useState(false);               // Is dropdown visible
+```
+
+## Keyboard Navigation Logic
+
+The tricky part is handling different key behaviors:
+
+```tsx
+const handleKeyDown = (e) => {
+  if (!open || !data?.results.length) return;
+  
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    // At last item? Go back to original search
+    if (selectedIndex === data.results.length - 1) {
+      setSelectedIndex(-1);
+      setInputValue(search); // Original search term
+      return;
+    }
+    // Otherwise move down
+    const newIndex = selectedIndex + 1;
+    setSelectedIndex(newIndex);
+    setInputValue(data.results[newIndex].title);
+  }
+  
+  // Similar logic for ArrowUp...
+  
+  if (e.key === 'Escape') {
+    setOpen(false);
+    setInputValue(search); // Reset to original
+  }
+};
+```
+
+## The Focus Management Secret
+
+The crucial insight: **Never change focus from the input**. The visual highlighting is achieved purely through CSS and state, not actual DOM focus:
+
+```tsx
+className={`p-2 cursor-pointer ${
+  selectedIndex === index ? 'bg-blue-100' : 'hover:bg-gray-100'
+}`}
+```
+
+No `tabIndex`, no `.focus()` calls on the results. The input maintains focus throughout the entire interaction.
+
+## Debounced API Calls
+
+Using `useDebounce` from `@uidotdev/usehooks` to prevent API spam:
+
+```tsx
+const debouncedSearchTerm = useDebounce(search, 300);
+const { data } = useSWR(
+  debouncedSearchTerm ? `api/search?q=${debouncedSearchTerm}` : null,
+  fetcher
+);
+```
+
+## Click Outside Support
+
+Using `useClickAway` hook for clean closing behavior:
+
+```tsx
+const containerRef = useClickAway(() => {
+  setOpen(false);
+  setSelectedIndex(-1);
+});
+```
+
+## Final Implementation
+
+The complete component handles:
+
+- ✅ Debounced search with SWR caching
+- ✅ Google-style keyboard navigation  
+- ✅ Proper focus management (always on input)
+- ✅ Click outside to close
+- ✅ Escape key support
+- ✅ TypeScript types for API responses
+
+## Key Takeaways
+
+1. **Don't fight the framework**: When Radix Popover's focus management didn't fit, I switched to a simpler solution
+2. **Focus is everything**: Keep focus on the input and use visual styling for "selection"
+3. **Study the UX**: Google and Facebook have different patterns - choose what fits your use case
+4. **Debounce is essential**: Don't hammer your API with every keystroke
+
+The final result feels natural and responsive, just like the search experiences users are familiar with.
+
+## Code
+
+You can find the complete implementation in the demo above. The key files are:
+
+- `useMovieSearch.tsx` - Custom hook with SWR and debouncing
+- `index.tsx` - Main search component with keyboard navigation
+- TypeScript types for the TMDB API response
+
+Try typing "mission" in the search above and use your arrow keys to see it in action!

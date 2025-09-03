@@ -2,6 +2,7 @@
 title: "Book Review: The girl with the dragon tattoo"
 description: "A review of Stieg Larsson's thrilling novel about a journalist and a hacker"
 pubDate: 2025-07-27
+category: "books"
 ---
 <div class="intro">
 

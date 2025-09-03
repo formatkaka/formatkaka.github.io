@@ -2,6 +2,7 @@
 title: "Book Review: The Nickel Boys"
 description: "A review of Colson Whitehead's powerful novel about a reform school"
 pubDate: 2020-03-22
+category: "books"
 ---
 
 **Themes:** Historical Fiction, Historical, America  
