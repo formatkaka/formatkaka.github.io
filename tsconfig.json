@@ -8,6 +8,8 @@
     "dist"
   ],
   "compilerOptions": {
+    // "typeRoots": ["./node_modules/phaser/types"],
+    // "types": ["Phaser"],
     "jsx": "react-jsx",
     "jsxImportSource": "react",
     "baseUrl": ".",

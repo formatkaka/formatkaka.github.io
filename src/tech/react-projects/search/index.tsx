@@ -5,7 +5,7 @@ import { useClickAway } from '@uidotdev/usehooks';
 
 
 export const Search = () => {
-  const { search, setSearch, data, error, isLoading } = useMovieSearch();
+  const { search, setSearch, data } = useMovieSearch();
   const [open, setOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [inputValue, setInputValue] = useState('');
@@ -64,7 +64,7 @@ export const Search = () => {
   }
 
   const tryToOpenPopover = () => {
-    if(!!data) {
+    if(data) {
       setOpen(true);
       setSelectedIndex(-1);
     }
