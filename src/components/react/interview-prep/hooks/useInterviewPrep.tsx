@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import type { Problem, TabType } from './types';
-import { sampleProblems } from './sampleData';
+import type { Problem, TabType, Concept } from '../types/types';
+import { sampleProblems, sampleConcepts } from '../data/sampleData';
 
 const STORAGE_KEY = 'leetcodeProblems';
+const CONCEPTS_STORAGE_KEY = 'interviewPrepConcepts';
 
 export const useInterviewPrep = () => {
   const [problems, setProblems] = useState<Problem[]>([]);
+  const [concepts, setConcepts] = useState<Concept[]>([]);
   const [currentTab, setCurrentTab] = useState<TabType>('all');
   const [currentTopicFilter, setCurrentTopicFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -29,6 +31,26 @@ export const useInterviewPrep = () => {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(problems));
     }
   }, [problems]);
+
+  // Load concepts from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem(CONCEPTS_STORAGE_KEY);
+    const loadedConcepts = stored ? JSON.parse(stored) : [];
+
+    if (loadedConcepts.length === 0) {
+      setConcepts(sampleConcepts);
+      localStorage.setItem(CONCEPTS_STORAGE_KEY, JSON.stringify(sampleConcepts));
+    } else {
+      setConcepts(loadedConcepts);
+    }
+  }, []);
+
+  // Save to localStorage whenever concepts change
+  useEffect(() => {
+    if (concepts.length > 0) {
+      localStorage.setItem(CONCEPTS_STORAGE_KEY, JSON.stringify(concepts));
+    }
+  }, [concepts]);
 
   const getTodayNormalized = (): Date => {
     const today = new Date();
@@ -237,20 +259,98 @@ Click Cancel to keep existing data and cancel import`;
     reader.readAsText(file);
   };
 
+  const addConcept = (
+    newConcept: Omit<Concept, 'id' | 'created' | 'confidence' | 'relatedQuestions' | 'lastReviewed' | 'nextReview'>
+  ) => {
+    const concept: Concept = {
+      ...newConcept,
+      id: Date.now(),
+      confidence: 0,
+      relatedQuestions: [],
+      created: new Date().toISOString(),
+      lastReviewed: null,
+      nextReview: null,
+    };
+    setConcepts((prev) => [...prev, concept]);
+  };
+
+  const updateConceptConfidence = (id: number, confidence: number) => {
+    setConcepts((prev) =>
+      prev.map((c) =>
+        c.id === id
+          ? {
+              ...c,
+              confidence,
+              lastReviewed: new Date().toISOString(),
+              nextReview: confidence >= 1 ? calculateNextReview(confidence) : null,
+            }
+          : c
+      )
+    );
+  };
+
+  const updateConceptStatus = (id: number, status: Concept['status']) => {
+    setConcepts((prev) =>
+      prev.map((c) =>
+        c.id === id
+          ? {
+              ...c,
+              status,
+              lastReviewed: new Date().toISOString(),
+              nextReview: c.confidence >= 1 ? calculateNextReview(c.confidence) : null,
+            }
+          : c
+      )
+    );
+  };
+
+  const updateConcept = (
+    id: number,
+    updatedData: Omit<Concept, 'id' | 'created' | 'confidence' | 'relatedQuestions' | 'lastReviewed' | 'nextReview'>
+  ) => {
+    setConcepts((prev) =>
+      prev.map((c) =>
+        c.id === id
+          ? { ...c, ...updatedData, lastReviewed: new Date().toISOString() }
+          : c
+      )
+    );
+  };
+
+  const deleteConcept = (id: number) => {
+    setConcepts((prev) => prev.filter((c) => c.id !== id));
+    setProblems((prev) =>
+      prev.map((p) => ({
+        ...p,
+        concepts: p.concepts?.filter((cId) => cId !== id),
+      }))
+    );
+  };
+
+  const getUniqueCategories = (): string[] => {
+    const categories = concepts.map((c) => c.category).filter(Boolean);
+    return Array.from(new Set(categories)).sort();
+  };
+
   const stats = {
     total: problems.length,
     completed: problems.filter(p => p.status === 'completed' || p.status === 'mastered').length,
     dueToday: problems.filter(isDueToday).length,
     mastered: problems.filter(p => p.status === 'mastered').length,
+    conceptsLearning: concepts.filter((c) => c.status === 'learning').length,
+    conceptsPracticing: concepts.filter((c) => c.status === 'practicing').length,
+    conceptsMastered: concepts.filter((c) => c.status === 'mastered').length,
   };
 
   return {
     problems: getFilteredProblems(),
     allProblems: problems,
+    concepts,
     currentTab,
     currentTopicFilter,
     searchQuery,
     topics: getUniqueTopics(),
+    categories: getUniqueCategories(),
     stats,
     isOverdue,
     setCurrentTab,
@@ -264,5 +364,10 @@ Click Cancel to keep existing data and cancel import`;
     deleteProblem,
     exportToJSON,
     importFromJSON,
+    addConcept,
+    updateConcept,
+    updateConceptConfidence,
+    updateConceptStatus,
+    deleteConcept,
   };
 };

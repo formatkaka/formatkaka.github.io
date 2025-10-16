@@ -5,13 +5,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../ui/table';
+} from '@/components/react/ui/table';
 import { Pencil, Trash2 } from 'lucide-react';
-import type { Problem, TabType } from './types';
+import type { Problem, TabType, Concept } from '../types/types';
 import { ConfidenceStars } from './ConfidenceStars';
 
 type InterviewPrepTableProps = {
   problems: Problem[];
+  concepts?: Concept[];
   currentTab: TabType;
   isOverdue: (problem: Problem) => boolean;
   onUpdateStatus: (id: number, status: string) => void;
@@ -56,6 +57,7 @@ const getDifficultyBadgeClass = (difficulty: string): string => {
 
 export const InterviewPrepTable = ({
   problems,
+  concepts = [],
   currentTab,
   isOverdue,
   onUpdateStatus,
@@ -64,6 +66,13 @@ export const InterviewPrepTable = ({
   onEdit,
   onDelete,
 }: InterviewPrepTableProps) => {
+  const getConceptNames = (conceptIds?: number[]) => {
+    if (!conceptIds || conceptIds.length === 0) return [];
+    return conceptIds
+      .map((id) => concepts.find((c) => c.id === id))
+      .filter((c): c is Concept => c !== undefined);
+  };
+
   const handleSetReviewDate = (id: number, currentDate: string | null) => {
     const dateValue = currentDate
       ? new Date(currentDate).toISOString().split('T')[0]
@@ -93,6 +102,7 @@ export const InterviewPrepTable = ({
             <TableHead className="py-2">Difficulty</TableHead>
             <TableHead className="py-2">Topic</TableHead>
             <TableHead className="py-2">Company</TableHead>
+            <TableHead className="py-2">Concepts</TableHead>
             <TableHead className="py-2">Confidence</TableHead>
             <TableHead className="py-2">Status</TableHead>
             <TableHead className="py-2">Last Reviewed</TableHead>
@@ -133,6 +143,24 @@ export const InterviewPrepTable = ({
               </TableCell>
               <TableCell className="py-2 text-sm">{problem.topic}</TableCell>
               <TableCell className="py-2 text-sm">{problem.company}</TableCell>
+              <TableCell className="py-2">
+                <div className="flex flex-wrap gap-1">
+                  {getConceptNames(problem.concepts).length > 0 ? (
+                    getConceptNames(problem.concepts).map((concept) => (
+                      <span
+                        key={concept.id}
+                        className="px-2 py-0.5 bg-purple-100 text-purple-700
+                          rounded text-xs font-medium"
+                        title={concept.description}
+                      >
+                        {concept.name}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-gray-400 text-xs">-</span>
+                  )}
+                </div>
+              </TableCell>
               <TableCell className="py-2">
                 <ConfidenceStars
                   confidence={problem.confidence}

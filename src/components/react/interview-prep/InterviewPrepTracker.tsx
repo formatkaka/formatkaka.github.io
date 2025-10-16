@@ -1,17 +1,22 @@
 import { useState } from 'react';
-import { useInterviewPrep } from './useInterviewPrep';
-import { InterviewPrepTable } from './InterviewPrepTable';
-import { AddProblemForm } from './AddProblemForm';
-import { StatsCards } from './StatsCards';
-import type { Problem } from './types';
+import { useInterviewPrep } from './hooks/useInterviewPrep';
+import { InterviewPrepTable } from './components/InterviewPrepTable';
+import { AddProblemForm } from './components/AddProblemForm';
+import { StatsCards } from './components/StatsCards';
+import { ConceptsList } from './components/ConceptsList';
+import { AddConceptForm } from './components/AddConceptForm';
+import type { Problem, Concept } from './types/types';
 
 export const InterviewPrepTracker = () => {
   const {
     problems,
+    allProblems,
+    concepts,
     currentTab,
     currentTopicFilter,
     searchQuery,
     topics,
+    categories,
     stats,
     isOverdue,
     setCurrentTab,
@@ -25,9 +30,16 @@ export const InterviewPrepTracker = () => {
     deleteProblem,
     exportToJSON,
     importFromJSON,
+    addConcept,
+    updateConcept,
+    updateConceptConfidence,
+    updateConceptStatus,
+    deleteConcept,
   } = useInterviewPrep();
 
   const [editingProblem, setEditingProblem] = useState<Problem | null>(null);
+  const [editingConcept, setEditingConcept] = useState<Concept | null>(null);
+  const [showAddConcept, setShowAddConcept] = useState(false);
 
   const handleEdit = (problem: Problem) => {
     setEditingProblem(problem);
@@ -35,6 +47,16 @@ export const InterviewPrepTracker = () => {
 
   const handleCancelEdit = () => {
     setEditingProblem(null);
+  };
+
+  const handleEditConcept = (concept: Concept) => {
+    setEditingConcept(concept);
+    setShowAddConcept(true);
+  };
+
+  const handleCloseConcept = () => {
+    setShowAddConcept(false);
+    setEditingConcept(null);
   };
 
   return (
@@ -86,6 +108,16 @@ export const InterviewPrepTracker = () => {
             >
               Due Today
             </button>
+            <button
+              className={`px-5 py-2 font-semibold text-sm rounded-lg transition-all cursor-pointer ${
+                currentTab === 'concepts'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+              onClick={() => setCurrentTab('concepts')}
+            >
+              Concepts
+            </button>
           </div>
 
           <div className="flex items-center gap-3">
@@ -112,16 +144,44 @@ export const InterviewPrepTracker = () => {
           </div>
         </div>
 
-        {/* Table */}
-        <InterviewPrepTable
-          problems={problems}
-          currentTab={currentTab}
-          isOverdue={isOverdue}
-          onUpdateStatus={updateProblemStatus}
-          onUpdateConfidence={updateConfidence}
-          onSetReviewDate={setManualReviewDate}
-          onEdit={handleEdit}
-          onDelete={deleteProblem}
+        {/* Content - Table or Concepts List */}
+        {currentTab === 'concepts' ? (
+          <div className="p-8">
+            <ConceptsList
+              concepts={concepts}
+              problems={allProblems}
+              onUpdateConfidence={updateConceptConfidence}
+              onUpdateStatus={updateConceptStatus}
+              onEdit={handleEditConcept}
+              onDelete={deleteConcept}
+              onAddConcept={() => setShowAddConcept(true)}
+            />
+          </div>
+        ) : (
+          <InterviewPrepTable
+            problems={problems}
+            concepts={concepts}
+            currentTab={currentTab}
+            isOverdue={isOverdue}
+            onUpdateStatus={updateProblemStatus}
+            onUpdateConfidence={updateConfidence}
+            onSetReviewDate={setManualReviewDate}
+            onEdit={handleEdit}
+            onDelete={deleteProblem}
+          />
+        )}
+
+        {/* Add Concept Dialog */}
+        <AddConceptForm
+          open={showAddConcept}
+          onClose={handleCloseConcept}
+          editingConcept={editingConcept}
+          onSave={addConcept}
+          onUpdate={(id, data) => {
+            updateConcept(id, data);
+            handleCloseConcept();
+          }}
+          categories={categories}
         />
 
         {/* Export/Import */}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { Problem } from './types';
+import type { Problem } from '../types/types';
 
 type AddProblemFormProps = {
   topics: string[];
@@ -90,7 +90,8 @@ export const AddProblemForm = ({
 
   return (
     <div className="px-8 py-4 bg-gray-50 border-b border-gray-200">
-      <div className="grid grid-cols-12 gap-3">
+      <div className="space-y-3">
+        <div className="grid grid-cols-12 gap-3">
         <input
           type="text"
           value={name}
@@ -161,6 +162,7 @@ export const AddProblemForm = ({
               Cancel
             </button>
           )}
+        </div>
         </div>
       </div>
     </div>
