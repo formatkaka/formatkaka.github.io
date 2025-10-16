@@ -17,7 +17,7 @@ export const FilterBar = ({ topics, currentFilter, onFilterChange }: FilterBarPr
           className="border-none bg-transparent text-sm font-semibold text-gray-800 focus:outline-none cursor-pointer min-w-[150px]"
         >
           <option value="all">All Topics</option>
-          {topics.map(topic => (
+          {topics.map((topic) => (
             <option key={topic} value={topic}>
               {topic}
             </option>

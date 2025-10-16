@@ -1,12 +1,7 @@
 {
   "extends": "astro/tsconfigs/strict",
-  "include": [
-    ".astro/types.d.ts",
-    "**/*"
-  ],
-  "exclude": [
-    "dist"
-  ],
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist"],
   "compilerOptions": {
     // "typeRoots": ["./node_modules/phaser/types"],
     // "types": ["Phaser"],
@@ -14,9 +9,9 @@
     "jsxImportSource": "react",
     "baseUrl": ".",
     "paths": {
-      "@/react/*" : ["src/components/react/ui/*"],
+      "@/react/*": ["src/components/react/ui/*"],
       "@/utils/*": ["src/utils/*"],
-      "@/*" : ["src/*"],
+      "@/*": ["src/*"]
     }
   }
 }

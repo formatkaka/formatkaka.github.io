@@ -1,8 +1,8 @@
 ---
-title: "Book Review: गोदान (Godan)"
+title: 'Book Review: गोदान (Godan)'
 description: "A review of Munshi Premchand's classic Hindi novel"
 pubDate: 2020-08-16
-category: "books"
+category: 'books'
 ---
 
 **विषय (Themes):** मनोविज्ञान, सामाजिक समस्याएं, पारिवारिक समस्याएं, गरीबी और अमीरी, अंधविश्वास, पति-पत्नी, समय के साथ बदलती नैतिक दिशा

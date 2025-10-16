@@ -23,7 +23,8 @@ type ConceptsListProps = {
 };
 
 export const ConceptsList = (props: ConceptsListProps) => {
-  const { concepts, problems, onUpdateConfidence, onUpdateStatus, onEdit, onDelete, onAddConcept } = props;
+  const { concepts, problems, onUpdateConfidence, onUpdateStatus, onEdit, onDelete, onAddConcept } =
+    props;
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -36,8 +37,7 @@ export const ConceptsList = (props: ConceptsListProps) => {
       concept.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       concept.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    const matchesCategory =
-      categoryFilter === 'all' || concept.category === categoryFilter;
+    const matchesCategory = categoryFilter === 'all' || concept.category === categoryFilter;
 
     const matchesStatus = statusFilter === 'all' || concept.status === statusFilter;
 
@@ -51,44 +51,43 @@ export const ConceptsList = (props: ConceptsListProps) => {
   return (
     <div className="space-y-6">
       <div className="flex gap-4 w-full">
+        <Input
+          placeholder="Search concepts, tags, or descriptions..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="pl-9 h-8 border-gray-300 relative z-0"
+        />
 
-          <Input
-            placeholder="Search concepts, tags, or descriptions..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-9 h-8 border-gray-300 relative z-0"
-          />
+        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+          <SelectTrigger className="w-full sm:w-[180px]">
+            <SelectValue placeholder="Category" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Categories</SelectItem>
+            {categories.map((category) => (
+              <SelectItem key={category} value={category}>
+                {category}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger className="w-full sm:w-[180px]">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              {categories.map((category) => (
-                <SelectItem key={category} value={category}>
-                  {category}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-full sm:w-[180px]">
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="learning">Learning</SelectItem>
+            <SelectItem value="practicing">Practicing</SelectItem>
+            <SelectItem value="mastered">Mastered</SelectItem>
+          </SelectContent>
+        </Select>
 
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full sm:w-[180px]">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="learning">Learning</SelectItem>
-              <SelectItem value="practicing">Practicing</SelectItem>
-              <SelectItem value="mastered">Mastered</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Button onClick={onAddConcept} className="gap-2">
-            <Plus className="w-4 h-4" />
-            Add Concept
-          </Button>
+        <Button onClick={onAddConcept} className="gap-2">
+          <Plus className="w-4 h-4" />
+          Add Concept
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

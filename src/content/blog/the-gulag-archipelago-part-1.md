@@ -1,22 +1,22 @@
 ---
-title: "Book Review: The Gulag Archipelago - part 1"
+title: 'Book Review: The Gulag Archipelago - part 1'
 description: "A review of Solzhenitsyn's monumental work on Soviet labor camps"
 pubDate: 2021-11-14
-category: "books"
+category: 'books'
 ---
 
 **Author:** Alexander Solzhenitsyn  
 **Themes:** Non-Fiction, Historical, Russia, Classics
 
-> *A district Party conference was under way in Moscow Province. It was presided over by a new secretary of the District Party Committee, replacing one recently arrested. At the conclusion of the conference, a tribute to Comrade Stalin was called for. Of course, everyone stood up (just as everyone had leaped to his feet during the conference at every mention of his name). The small hall echoed with "stormy applause, rising to an ovation." For three minutes, four minutes, five minutes, the "stormy applause, rising to an ovation," continued.*
+> _A district Party conference was under way in Moscow Province. It was presided over by a new secretary of the District Party Committee, replacing one recently arrested. At the conclusion of the conference, a tribute to Comrade Stalin was called for. Of course, everyone stood up (just as everyone had leaped to his feet during the conference at every mention of his name). The small hall echoed with "stormy applause, rising to an ovation." For three minutes, four minutes, five minutes, the "stormy applause, rising to an ovation," continued._
 >
-> *It was becoming insufferably silly even to those who really adored Stalin. However, who would dare be the first to stop? The director of the local paper factory, an independent and strong-minded man, stood with the presidium. Aware of all the falsity and all the impossibility of the situation, he still kept on applauding! Nine minutes! Ten!*
+> _It was becoming insufferably silly even to those who really adored Stalin. However, who would dare be the first to stop? The director of the local paper factory, an independent and strong-minded man, stood with the presidium. Aware of all the falsity and all the impossibility of the situation, he still kept on applauding! Nine minutes! Ten!_
 >
-> *Then, after eleven minutes, the director of the paper factory assumed a businesslike expression and sat down in his seat.*
+> _Then, after eleven minutes, the director of the paper factory assumed a businesslike expression and sat down in his seat._
 >
-> *That, however, was how they discovered who the independent people were. And that was how they went about eliminating them. That same night the factory director was arrested. They easily pasted ten years on him on the pretext of something quite different. But after he had signed Form 206, the final document of the interrogation, his interrogator reminded him:*
+> _That, however, was how they discovered who the independent people were. And that was how they went about eliminating them. That same night the factory director was arrested. They easily pasted ten years on him on the pretext of something quite different. But after he had signed Form 206, the final document of the interrogation, his interrogator reminded him:_
 >
-> ***"Don't ever be the first to stop applauding!"***
+> **_"Don't ever be the first to stop applauding!"_**
 
 ## INTRODUCTION
 
@@ -36,13 +36,13 @@ Lenin and Stalin were leading a communist group, revolting against the present g
 
 After the Bolshevik revolution Stalin and Lenin came to power they overthrew the previous oppressive government to establish a communist government. They took advantage of the anger of the Russian people after a difficult world war 1 and the Tsar rule.
 
-Quoting the newspaper Red Terror from 1918 *"We are not fighting against single individuals. We are exterminating the bourgeoisie as a class. It is not necessary during the interrogation to look for evidence proving that the accused opposed the Soviets by word or action. The first question you should ask him is what class does he belong to, what is his origin, his education and his profession. These are the questions that will determine the fate of the accused. Such is the sense and essence of red terror."*
+Quoting the newspaper Red Terror from 1918 _"We are not fighting against single individuals. We are exterminating the bourgeoisie as a class. It is not necessary during the interrogation to look for evidence proving that the accused opposed the Soviets by word or action. The first question you should ask him is what class does he belong to, what is his origin, his education and his profession. These are the questions that will determine the fate of the accused. Such is the sense and essence of red terror."_
 
 Instead of killing the culprits by setting up legal authority, they planned to kill all the members belong to this class. They ended up killing the children, just because they belonged to a specific class. Punishing the culprits is important but categorising the complete class as culprits and killing them without any due process is insanity. It started with the religious believers, kulaks (the rich peasants at that time) and soon followed by anyone who oppose the Soviet state or its supreme leader Stalin. [Animal farm must read].
 
 ## ARRESTS
 
-### *Golden Rule - The reason for arrest was not important.*
+### _Golden Rule - The reason for arrest was not important._
 
 Arrest could be made on smallest of the suspicion, false information. Once the arrest was made, the camp administrator were the judge, jury and executioner. To get the confession prison officials would go to any extent. Prison torture was normal.
 

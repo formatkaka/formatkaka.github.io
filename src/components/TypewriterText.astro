@@ -1,20 +1,22 @@
 ---
 type Props = {
   texts: string[];
-}
+};
 
 const { texts } = Astro.props;
 ---
 
 <div class="subtitles relative my-5">
-  {texts.map((text, index) => (
-    <span 
-      class={`subtitles__text subtitles__text--${index + 1} inline-block min-w-0 min-h-[10px] m-0 whitespace-nowrap text-center left-0 top-0 overflow-hidden max-h-[30px] text-xl`}
-      id={index === 0 ? "subtitles__text" : undefined}
-    >
-      {text}
-    </span>
-  ))}
+  {
+    texts.map((text, index) => (
+      <span
+        class={`subtitles__text subtitles__text--${index + 1} inline-block min-w-0 min-h-[10px] m-0 whitespace-nowrap text-center left-0 top-0 overflow-hidden max-h-[30px] text-xl`}
+        id={index === 0 ? 'subtitles__text' : undefined}
+      >
+        {text}
+      </span>
+    ))
+  }
 </div>
 
 <style>
@@ -53,31 +55,73 @@ const { texts } = Astro.props;
   }
 
   @keyframes typewriter-text1 {
-    0% { width: 0px; }
-    40% { width: 172px; }
-    50% { width: 172px; }
-    99% { border-right: 2px solid black; }
-    100% { width: 0px; border-right: 0px solid black; }
+    0% {
+      width: 0px;
+    }
+    40% {
+      width: 172px;
+    }
+    50% {
+      width: 172px;
+    }
+    99% {
+      border-right: 2px solid black;
+    }
+    100% {
+      width: 0px;
+      border-right: 0px solid black;
+    }
   }
 
   @keyframes typewriter-text2 {
-    0% { width: 0px; opacity: 1; }
-    1% { border-right: 2px solid black; }
-    40% { width: 190px; opacity: 1; }
-    50% { width: 190px; opacity: 1; }
-    99% { border-right: 2px solid black; }
-    100% { width: 0px; opacity: 1; border-right: 0px solid black; }
+    0% {
+      width: 0px;
+      opacity: 1;
+    }
+    1% {
+      border-right: 2px solid black;
+    }
+    40% {
+      width: 190px;
+      opacity: 1;
+    }
+    50% {
+      width: 190px;
+      opacity: 1;
+    }
+    99% {
+      border-right: 2px solid black;
+    }
+    100% {
+      width: 0px;
+      opacity: 1;
+      border-right: 0px solid black;
+    }
   }
 
   @keyframes typewriter-text3 {
-    0% { width: 0px; opacity: 1; }
-    1% { border-right: 2px solid black; }
-    100% { width: 145px; opacity: 1; }
+    0% {
+      width: 0px;
+      opacity: 1;
+    }
+    1% {
+      border-right: 2px solid black;
+    }
+    100% {
+      width: 145px;
+      opacity: 1;
+    }
   }
 
   @keyframes cursor-blink {
-    0% { border-color: black; }
-    50% { border-color: transparent; }
-    100% { border-color: black; }
+    0% {
+      border-color: black;
+    }
+    50% {
+      border-color: transparent;
+    }
+    100% {
+      border-color: black;
+    }
   }
 </style>

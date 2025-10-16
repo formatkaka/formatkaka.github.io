@@ -1,9 +1,8 @@
 ---
-
 // import * from './index.ts';
 
 // const size = 7;
-// 
+//
 // const minesweeper = new Minesweeper(size);
 // window.minesweeper = minesweeper;
 ---
@@ -18,7 +17,7 @@
   }
 </style>
 <div class="h-screen w-screen overflow-hidden bg-primary p-0 m-0">
-  <div class="flex flex-col items-center justify-center h-full gap-8 ">
+  <div class="flex flex-col items-center justify-center h-full gap-8">
     <div class="text-center">
       <h1 class="text-4xl font-bold m-1">Minesweeper</h1>
       <p class="mt-1">Can you clear the minefield?</p>
@@ -29,35 +28,36 @@
       </div>
     </div>
     <main class="flex flex-col bg-slate-400 border-solid border-black p-4 gap-4 opacity-0">
-      <div class="flex justify-between items-center border-4 border-t-slate-300 border-l-slate-300 border-r-slate-100 border-b-slate-100 px-4">
+      <div
+        class="flex justify-between items-center border-4 border-t-slate-300 border-l-slate-300 border-r-slate-100 border-b-slate-100 px-4"
+      >
         <h2 class="flag">5</h2>
-        <button class="reset h-8">
-          Reset
-        </button>
+        <button class="reset h-8"> Reset </button>
         <h2 class="timer">025</h2>
       </div>
-        <div class={`grid border-4 border-t-slate-300 border-l-slate-300 border-r-slate-100 border-b-slate-100`}>
-          
-        </div>
-      </main>
+      <div
+        class={`grid border-4 border-t-slate-300 border-l-slate-300 border-r-slate-100 border-b-slate-100`}
+      >
+      </div>
+    </main>
   </div>
 </div>
 <script>
   import Minesweeper from './index.ts';
   let selectedLevel: 'easy' | 'medium' | 'hard' = 'easy';
   const main = document.querySelector('main');
-  if(!main) {
+  if (!main) {
     throw new Error('Main element not found');
   }
   const grid = document.querySelector('.grid');
-  if(!grid) {
+  if (!grid) {
     throw new Error('Grid element not found');
   }
 
   const buildGrid = (mode: 'easy' | 'medium' | 'hard' = 'easy') => {
-
-
-    let rows = 9, cols = 9, mines = 10;
+    let rows = 9,
+      cols = 9,
+      mines = 10;
     if (mode === 'medium') {
       rows = 12;
       cols = 12;
@@ -74,10 +74,11 @@
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
         const cell = document.createElement('button');
-        if(!cell) {
+        if (!cell) {
           throw new Error('Cell element not created');
         }
-        cell.className = 'flex items-center justify-center border-[0.25px] bg-slate-100 border-black m-cell text-base cursor-pointer';
+        cell.className =
+          'flex items-center justify-center border-[0.25px] bg-slate-100 border-black m-cell text-base cursor-pointer';
         cell.dataset.rowIndex = `${row}`;
         cell.dataset.colIndex = `${col}`;
         cell.style.height = '40px';
@@ -85,31 +86,31 @@
         cell.addEventListener('contextmenu', (evt) => {
           evt.preventDefault();
           // @ts-expect-error fixme
-        const rowIndex = evt.currentTarget.dataset.rowIndex;
-        // @ts-expect-error fixme
+          const rowIndex = evt.currentTarget.dataset.rowIndex;
+          // @ts-expect-error fixme
           const colIndex = evt.currentTarget.dataset.colIndex;
           minesweeper.handleClick('right', rowIndex, colIndex);
         });
         cell.addEventListener('click', (evt) => {
-        // @ts-expect-error fixme
-        const rowIndex = evt.currentTarget.dataset.rowIndex;
-        // @ts-expect-error fixme
-        const colIndex = evt.currentTarget.dataset.colIndex;
-        minesweeper.handleClick(evt.which === 3 ? 'right' : 'left', rowIndex, colIndex);
-      });
+          // @ts-expect-error fixme
+          const rowIndex = evt.currentTarget.dataset.rowIndex;
+          // @ts-expect-error fixme
+          const colIndex = evt.currentTarget.dataset.colIndex;
+          minesweeper.handleClick(evt.which === 3 ? 'right' : 'left', rowIndex, colIndex);
+        });
         grid.appendChild(cell);
       }
     }
 
     main.classList.remove('opacity-0');
-  }
+  };
 
   document.querySelectorAll('.game-level').forEach((button) => {
     button.addEventListener('click', () => {
       //@ts-expect-error fix later
       const level = button.dataset.level;
       grid.innerHTML = ''; // Clear previous grid
-      grid.classList = 'grid'
+      grid.classList = 'grid';
       main.classList.add('opacity-0'); // Hide the main content while building the grid
       selectedLevel = level;
       buildGrid(level);
@@ -117,15 +118,13 @@
   });
 
   const resetButton = document.querySelector('.reset');
-  if(!resetButton) {
+  if (!resetButton) {
     throw new Error('Reset button not found');
   }
-  resetButton.addEventListener('click', () => { 
+  resetButton.addEventListener('click', () => {
     grid.innerHTML = ''; // Clear previous grid
     grid.classList = 'grid';
     main.classList.add('opacity-0'); // Hide the main content while building the grid
     buildGrid(selectedLevel);
   });
-
-  
 </script>

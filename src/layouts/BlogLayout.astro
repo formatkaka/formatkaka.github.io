@@ -2,12 +2,12 @@
 type Props = {
   title: string;
   description?: string;
-}
+};
 
-const { title, description = "Siddhant Loya - Prose, Poetry and Tech" } = Astro.props;
+const { title, description = 'Siddhant Loya - Prose, Poetry and Tech' } = Astro.props;
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -21,8 +21,8 @@ const { title, description = "Siddhant Loya - Prose, Poetry and Tech" } = Astro.
     />
     <title>{title}</title>
     <style>
-      @import "tailwindcss";
-      
+      @import 'tailwindcss';
+
       :root,
       @theme {
         --color-primary: #a6dcef;
@@ -30,24 +30,21 @@ const { title, description = "Siddhant Loya - Prose, Poetry and Tech" } = Astro.
         --text-color-primary: #1b2021;
         --text-color-links: #f6ad7b;
       }
-
-
     </style>
   </head>
   <body>
     <slot />
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.spoiler').forEach(spoiler => {
+        document.querySelectorAll('.spoiler').forEach((spoiler) => {
           spoiler.addEventListener('click', () => {
             spoiler.classList.toggle('revealed');
           });
         });
       });
     </script>
-    
-    <style is:global>
 
+    <style is:global>
       :root {
         --color-primary: #a6dcef;
         --bg-second: #f2eee5;
@@ -144,7 +141,8 @@ const { title, description = "Siddhant Loya - Prose, Poetry and Tech" } = Astro.
         z-index: 2;
       }
 
-      .link::after, a::after {
+      .link::after,
+      a::after {
         content: '';
         width: 100%;
         position: absolute;
@@ -156,7 +154,8 @@ const { title, description = "Siddhant Loya - Prose, Poetry and Tech" } = Astro.
         transition: all 0.2s;
       }
 
-      .link:hover.link::after, a:hover::after {
+      .link:hover.link::after,
+      a:hover::after {
         height: 100%;
       }
 
@@ -212,18 +211,17 @@ const { title, description = "Siddhant Loya - Prose, Poetry and Tech" } = Astro.
         border-radius: 4px;
         user-select: none;
       }
-      
+
       .spoiler * {
         color: #333 !important;
         background: transparent;
       }
-      
-      
+
       .spoiler.revealed {
         background: transparent;
         color: inherit;
       }
-      
+
       .spoiler.revealed * {
         color: inherit !important;
       }

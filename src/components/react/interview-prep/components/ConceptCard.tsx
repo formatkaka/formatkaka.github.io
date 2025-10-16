@@ -83,9 +83,7 @@ export const ConceptCard = (props: ConceptCardProps) => {
             >
               <Trash2 className="w-4 h-4" />
             </button>
-            <Badge className={getStatusColor(concept.status)}>
-              {concept.status}
-            </Badge>
+            <Badge className={getStatusColor(concept.status)}>{concept.status}</Badge>
           </div>
         </div>
       </CardHeader>
@@ -140,17 +138,13 @@ export const ConceptCard = (props: ConceptCardProps) => {
                   className="flex items-center gap-2 text-sm p-2 rounded-md
                     hover:bg-muted transition-colors group"
                 >
-                  <span className="text-muted-foreground">
-                    {getResourceIcon(resource.type)}
-                  </span>
-                  <span className="flex-1 group-hover:text-primary">
-                    {resource.title}
-                  </span>
-                  {resource.completedAt && (
-                    <CheckCircle2 className="w-4 h-4 text-green-500" />
-                  )}
-                  <ExternalLink className="w-3 h-3 text-muted-foreground
-                    opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <span className="text-muted-foreground">{getResourceIcon(resource.type)}</span>
+                  <span className="flex-1 group-hover:text-primary">{resource.title}</span>
+                  {resource.completedAt && <CheckCircle2 className="w-4 h-4 text-green-500" />}
+                  <ExternalLink
+                    className="w-3 h-3 text-muted-foreground
+                    opacity-0 group-hover:opacity-100 transition-opacity"
+                  />
                 </a>
               ))}
             </div>
@@ -163,9 +157,7 @@ export const ConceptCard = (props: ConceptCardProps) => {
               {questionCount} related {questionCount === 1 ? 'question' : 'questions'}
             </span>
             {concept.lastReviewed && (
-              <span>
-                Last: {new Date(concept.lastReviewed).toLocaleDateString()}
-              </span>
+              <span>Last: {new Date(concept.lastReviewed).toLocaleDateString()}</span>
             )}
           </div>
           {concept.nextReview && (

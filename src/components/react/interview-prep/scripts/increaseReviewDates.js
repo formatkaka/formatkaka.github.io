@@ -1,7 +1,7 @@
 // Script to increase problem review dates by 4 days (problems only)
 // Run this in the browser console
 
-(function() {
+(function () {
   const STORAGE_KEY = 'leetcodeProblems';
   const DAYS_TO_ADD = 4;
 
@@ -17,9 +17,9 @@
     const problemsJson = localStorage.getItem(STORAGE_KEY);
     if (problemsJson) {
       const problems = JSON.parse(problemsJson);
-      const updatedProblems = problems.map(problem => ({
+      const updatedProblems = problems.map((problem) => ({
         ...problem,
-        nextReview: addDaysToDate(problem.nextReview, DAYS_TO_ADD)
+        nextReview: addDaysToDate(problem.nextReview, DAYS_TO_ADD),
       }));
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedProblems));
       console.log(`✅ Updated ${updatedProblems.length} problems`);

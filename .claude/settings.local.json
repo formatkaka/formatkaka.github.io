@@ -1,10 +1,6 @@
 {
   "permissions": {
-    "allow": [
-      "mcp__ide__getDiagnostics",
-      "Bash(pnpm lint:*)",
-      "Bash(tree:*)"
-    ],
+    "allow": ["mcp__ide__getDiagnostics", "Bash(pnpm lint:*)", "Bash(tree:*)"],
     "deny": [],
     "ask": []
   }

@@ -12,20 +12,22 @@ posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
   <div>
     <h1 class="title">Tech Blogs</h1>
     <ul>
-      {posts.map((post) => (
-        <li class="mb-2">
-          <p class="date">
-            {post.data.pubDate.toLocaleDateString('en-us', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-            })}
-          </p>
-          <a href={`/blogs/${post.slug}`} class="link">
-            {post.data.title}
-          </a>
-        </li>
-      ))}
+      {
+        posts.map((post) => (
+          <li class="mb-2">
+            <p class="date">
+              {post.data.pubDate.toLocaleDateString('en-us', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              })}
+            </p>
+            <a href={`/blogs/${post.slug}`} class="link">
+              {post.data.title}
+            </a>
+          </li>
+        ))
+      }
     </ul>
     <div class="mt-8">
       <h2 class="text-xl font-bold mb-4">Tech Projects</h2>
@@ -36,10 +38,16 @@ posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
     <div class="mt-8">
       <h2 class="text-xl font-bold mb-4">Tech Tools</h2>
       <div class="flex flex-wrap gap-4">
-        <a href="/tech/egg-toss" class="inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors">
+        <a
+          href="/tech/egg-toss"
+          class="inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors"
+        >
           Play Egg Toss
         </a>
-        <a href="/tech/interview-prep" class="inline-block bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-colors">
+        <a
+          href="/tech/interview-prep"
+          class="inline-block bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-colors"
+        >
           Interview Prep Tracker
         </a>
       </div>

@@ -61,7 +61,7 @@ export const useInterviewPrep = () => {
   const getReviewLoadByDate = (dateString: string): number => {
     const date = new Date(dateString);
     date.setHours(0, 0, 0, 0);
-    return problems.filter(p => {
+    return problems.filter((p) => {
       if (!p.nextReview) return false;
       const reviewDate = new Date(p.nextReview);
       reviewDate.setHours(0, 0, 0, 0);
@@ -121,16 +121,17 @@ export const useInterviewPrep = () => {
     let filtered = currentTab === 'due' ? problems.filter(isDueToday) : problems;
 
     if (currentTopicFilter !== 'all') {
-      filtered = filtered.filter(p => p.topic === currentTopicFilter);
+      filtered = filtered.filter((p) => p.topic === currentTopicFilter);
     }
 
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(p =>
-        p.name.toLowerCase().includes(query) ||
-        p.topic.toLowerCase().includes(query) ||
-        p.company.toLowerCase().includes(query) ||
-        p.itemType.toLowerCase().includes(query)
+      filtered = filtered.filter(
+        (p) =>
+          p.name.toLowerCase().includes(query) ||
+          p.topic.toLowerCase().includes(query) ||
+          p.company.toLowerCase().includes(query) ||
+          p.itemType.toLowerCase().includes(query)
       );
     }
 
@@ -138,11 +139,16 @@ export const useInterviewPrep = () => {
   };
 
   const getUniqueTopics = (): string[] => {
-    const topics = problems.map(p => p.topic).filter(Boolean);
+    const topics = problems.map((p) => p.topic).filter(Boolean);
     return Array.from(new Set(topics)).sort();
   };
 
-  const addProblem = (newProblem: Omit<Problem, 'id' | 'created' | 'attempts' | 'confidence' | 'status' | 'lastSolved' | 'nextReview'>) => {
+  const addProblem = (
+    newProblem: Omit<
+      Problem,
+      'id' | 'created' | 'attempts' | 'confidence' | 'status' | 'lastSolved' | 'nextReview'
+    >
+  ) => {
     const problem: Problem = {
       ...newProblem,
       id: Date.now(),
@@ -153,67 +159,77 @@ export const useInterviewPrep = () => {
       nextReview: null,
       created: new Date().toISOString(),
     };
-    setProblems(prev => [...prev, problem]);
+    setProblems((prev) => [...prev, problem]);
   };
 
-  const updateProblem = (id: number, updatedData: Omit<Problem, 'id' | 'created' | 'attempts' | 'confidence' | 'status' | 'lastSolved' | 'nextReview'>) => {
-    setProblems(prev => prev.map(p =>
-      p.id === id ? { ...p, ...updatedData } : p
-    ));
+  const updateProblem = (
+    id: number,
+    updatedData: Omit<
+      Problem,
+      'id' | 'created' | 'attempts' | 'confidence' | 'status' | 'lastSolved' | 'nextReview'
+    >
+  ) => {
+    setProblems((prev) => prev.map((p) => (p.id === id ? { ...p, ...updatedData } : p)));
   };
 
   const updateProblemStatus = (id: number, newStatus: string) => {
-    setProblems(prev => prev.map(p => {
-      if (p.id !== id) return p;
+    setProblems((prev) =>
+      prev.map((p) => {
+        if (p.id !== id) return p;
 
-      const updated = { ...p, status: newStatus, lastSolved: new Date().toISOString() };
+        const updated = { ...p, status: newStatus, lastSolved: new Date().toISOString() };
 
-      if (newStatus === 'completed' || newStatus === 'needs-review') {
-        updated.nextReview = calculateNextReview(p.confidence);
-        updated.attempts = p.attempts + 1;
-      }
+        if (newStatus === 'completed' || newStatus === 'needs-review') {
+          updated.nextReview = calculateNextReview(p.confidence);
+          updated.attempts = p.attempts + 1;
+        }
 
-      return updated;
-    }));
+        return updated;
+      })
+    );
   };
 
   const updateConfidence = (id: number, confidence: number) => {
-    setProblems(prev => prev.map(p => {
-      if (p.id !== id) return p;
+    setProblems((prev) =>
+      prev.map((p) => {
+        if (p.id !== id) return p;
 
-      const getStatusFromConfidence = (conf: number): string => {
-        if (conf >= 4) return 'mastered';
-        if (conf >= 3) return 'completed';
-        if (conf >= 1) return 'in-progress';
-        return 'not-started';
-      };
+        const getStatusFromConfidence = (conf: number): string => {
+          if (conf >= 4) return 'mastered';
+          if (conf >= 3) return 'completed';
+          if (conf >= 1) return 'in-progress';
+          return 'not-started';
+        };
 
-      const updated = {
-        ...p,
-        confidence,
-        lastSolved: new Date().toISOString(),
-        status: getStatusFromConfidence(confidence),
-      };
+        const updated = {
+          ...p,
+          confidence,
+          lastSolved: new Date().toISOString(),
+          status: getStatusFromConfidence(confidence),
+        };
 
-      if (confidence >= 1) {
-        updated.nextReview = calculateNextReview(confidence);
-        updated.attempts = p.attempts + 1;
-      }
+        if (confidence >= 1) {
+          updated.nextReview = calculateNextReview(confidence);
+          updated.attempts = p.attempts + 1;
+        }
 
-      return updated;
-    }));
+        return updated;
+      })
+    );
   };
 
   const setManualReviewDate = (id: number, dateString: string) => {
-    setProblems(prev => prev.map(p => {
-      if (p.id !== id) return p;
-      const reviewDate = new Date(dateString + 'T00:00:00');
-      return { ...p, nextReview: reviewDate.toISOString() };
-    }));
+    setProblems((prev) =>
+      prev.map((p) => {
+        if (p.id !== id) return p;
+        const reviewDate = new Date(dateString + 'T00:00:00');
+        return { ...p, nextReview: reviewDate.toISOString() };
+      })
+    );
   };
 
   const deleteProblem = (id: number) => {
-    setProblems(prev => prev.filter(p => p.id !== id));
+    setProblems((prev) => prev.filter((p) => p.id !== id));
   };
 
   const exportToJSON = () => {
@@ -251,7 +267,7 @@ Click Cancel to keep existing data and cancel import`;
           alert(`Successfully imported ${importedProblems.length} items!`);
         }
       } catch (error) {
-        alert('Error parsing JSON file. Please ensure it\'s a valid JSON file.');
+        alert("Error parsing JSON file. Please ensure it's a valid JSON file.");
         console.error('Import error:', error);
       }
     };
@@ -260,7 +276,10 @@ Click Cancel to keep existing data and cancel import`;
   };
 
   const addConcept = (
-    newConcept: Omit<Concept, 'id' | 'created' | 'confidence' | 'relatedQuestions' | 'lastReviewed' | 'nextReview'>
+    newConcept: Omit<
+      Concept,
+      'id' | 'created' | 'confidence' | 'relatedQuestions' | 'lastReviewed' | 'nextReview'
+    >
   ) => {
     const concept: Concept = {
       ...newConcept,
@@ -306,13 +325,14 @@ Click Cancel to keep existing data and cancel import`;
 
   const updateConcept = (
     id: number,
-    updatedData: Omit<Concept, 'id' | 'created' | 'confidence' | 'relatedQuestions' | 'lastReviewed' | 'nextReview'>
+    updatedData: Omit<
+      Concept,
+      'id' | 'created' | 'confidence' | 'relatedQuestions' | 'lastReviewed' | 'nextReview'
+    >
   ) => {
     setConcepts((prev) =>
       prev.map((c) =>
-        c.id === id
-          ? { ...c, ...updatedData, lastReviewed: new Date().toISOString() }
-          : c
+        c.id === id ? { ...c, ...updatedData, lastReviewed: new Date().toISOString() } : c
       )
     );
   };
@@ -334,9 +354,9 @@ Click Cancel to keep existing data and cancel import`;
 
   const stats = {
     total: problems.length,
-    completed: problems.filter(p => p.status === 'completed' || p.status === 'mastered').length,
+    completed: problems.filter((p) => p.status === 'completed' || p.status === 'mastered').length,
     dueToday: problems.filter(isDueToday).length,
-    mastered: problems.filter(p => p.status === 'mastered').length,
+    mastered: problems.filter((p) => p.status === 'mastered').length,
     conceptsLearning: concepts.filter((c) => c.status === 'learning').length,
     conceptsPracticing: concepts.filter((c) => c.status === 'practicing').length,
     conceptsMastered: concepts.filter((c) => c.status === 'mastered').length,

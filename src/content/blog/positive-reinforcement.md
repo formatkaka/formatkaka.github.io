@@ -1,8 +1,8 @@
 ---
-title: "Essay - Positive Reinforcement"
-description: "An essay exploring the concept of positive reinforcement"
+title: 'Essay - Positive Reinforcement'
+description: 'An essay exploring the concept of positive reinforcement'
 pubDate: 2020-08-09
-category: "books"
+category: 'books'
 ---
 
 The way a human being develops is a result of many different factors
@@ -15,11 +15,11 @@ It is difficult to believe that Buddha or Hitler are born. What I mean is that c
 
 Yes, human's, like other animals are natural predators. But the phenomenon of genocide is not found in animal kingdom. It is very unnatural. Exploitation on such a scale is something I find difficult to articulate. Consumerism has somehow mutated the problem to something even more weird. Agression has been turned to passive-aggressive behaviour. Money, power, lack of empathy has played important role here.
 
-But coming to the point, one of the very simple things we can do to solve this, is positive reinforcement. This is an intagible skill. And generally people only need very little of it. A small *genuine* can go a long way in making someone. (Although when it's fake, positive reinforcement can be cringy :p )
+But coming to the point, one of the very simple things we can do to solve this, is positive reinforcement. This is an intagible skill. And generally people only need very little of it. A small _genuine_ can go a long way in making someone. (Although when it's fake, positive reinforcement can be cringy :p )
 
 Maybe someone like hitler never understood the importance of empathy. Maybe because he never received it. **Who knows, you might prevent the next hitler.**
 
-*These thoughts are half-baked. So read them and forget.*
+_These thoughts are half-baked. So read them and forget._
 
 I plan to read up more on this, some of the resources I've referred and some more that I plan to refer
 

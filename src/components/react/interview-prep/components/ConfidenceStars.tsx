@@ -8,7 +8,7 @@ type ConfidenceStarsProps = {
 export const ConfidenceStars = ({ confidence, onUpdate }: ConfidenceStarsProps) => {
   return (
     <div className="flex gap-0.5">
-      {[1, 2, 3, 4, 5].map(i => (
+      {[1, 2, 3, 4, 5].map((i) => (
         <Star
           key={i}
           className={`w-5 h-5 cursor-pointer transition-all ${

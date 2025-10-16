@@ -2,12 +2,12 @@
 type Props = {
   title: string;
   description?: string;
-}
+};
 
-const { title, description = "Siddhant Loya - Prose, Poetry and Tech" } = Astro.props;
+const { title, description = 'Siddhant Loya - Prose, Poetry and Tech' } = Astro.props;
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -21,8 +21,8 @@ const { title, description = "Siddhant Loya - Prose, Poetry and Tech" } = Astro.
     />
     <title>{title}</title>
     <style>
-      @import "tailwindcss";
-      
+      @import 'tailwindcss';
+
       :root,
       @theme {
         --color-primary: #a6dcef;
@@ -38,9 +38,10 @@ const { title, description = "Siddhant Loya - Prose, Poetry and Tech" } = Astro.
       @source inline("block");
       @source inline("hidden");
 
-
       /* 1. Use a more-intuitive box-sizing model */
-      *, *::before, *::after {
+      *,
+      *::before,
+      *::after {
         box-sizing: border-box;
       }
 
@@ -64,18 +65,31 @@ const { title, description = "Siddhant Loya - Prose, Poetry and Tech" } = Astro.
       }
 
       /* 6. Improve media defaults */
-      img, picture, video, canvas, svg {
+      img,
+      picture,
+      video,
+      canvas,
+      svg {
         display: block;
         max-width: 100%;
       }
 
       /* 7. Inherit fonts for form controls */
-      input, button, textarea, select {
+      input,
+      button,
+      textarea,
+      select {
         font: inherit;
       }
 
       /* 8. Avoid text overflows */
-      p, h1, h2, h3, h4, h5, h6 {
+      p,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
         overflow-wrap: break-word;
       }
 
@@ -83,24 +97,31 @@ const { title, description = "Siddhant Loya - Prose, Poetry and Tech" } = Astro.
       p {
         text-wrap: pretty;
       }
-      h1, h2, h3, h4, h5, h6 {
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
         text-wrap: balance;
       }
 
       /*
         10. Create a root stacking context
       */
-      #root, #__next {
+      #root,
+      #__next {
         isolation: isolate;
       }
-
     </style>
   </head>
-  <body class="min-h-screen bg-[#a6dcef] text-[#1b2021] font-['Source_Sans_Pro',_sans-serif] m-0 p-0">
+  <body
+    class="min-h-screen bg-[#a6dcef] text-[#1b2021] font-['Source_Sans_Pro',_sans-serif] m-0 p-0"
+  >
     <slot />
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.spoiler').forEach(spoiler => {
+        document.querySelectorAll('.spoiler').forEach((spoiler) => {
           spoiler.addEventListener('click', () => {
             spoiler.classList.toggle('revealed');
           });

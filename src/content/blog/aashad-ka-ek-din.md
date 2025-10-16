@@ -1,9 +1,10 @@
 ---
-title: "Book Review: आषाढ़ का एक दिन (Aashadh ka ek din)"
+title: 'Book Review: आषाढ़ का एक दिन (Aashadh ka ek din)'
 description: "A review of Mohan Rakesh's most famous play"
 pubDate: 2025-09-07
-category: "books"
+category: 'books'
 ---
+
 <div class="intro">
 
 **Themes:** <span>नाटक</span>, <span>कला बनाम भौतिकता</span>, <span>प्रेम और त्याग</span>, <span>प्रकृति और सभ्यता</span>

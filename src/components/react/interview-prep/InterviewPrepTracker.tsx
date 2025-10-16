@@ -135,7 +135,7 @@ export const InterviewPrepTracker = () => {
               className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 cursor-pointer bg-white"
             >
               <option value="all">All Topics</option>
-              {topics.map(topic => (
+              {topics.map((topic) => (
                 <option key={topic} value={topic}>
                   {topic}
                 </option>

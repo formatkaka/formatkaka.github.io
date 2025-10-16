@@ -111,13 +111,11 @@ export const InterviewPrepTable = ({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {problems.map(problem => (
+          {problems.map((problem) => (
             <TableRow
               key={problem.id}
               className={`text-sm ${
-                isOverdue(problem) && currentTab === 'due'
-                  ? 'bg-red-50 hover:bg-red-100'
-                  : ''
+                isOverdue(problem) && currentTab === 'due' ? 'bg-red-50 hover:bg-red-100' : ''
               }`}
             >
               <TableCell className="font-medium py-2">

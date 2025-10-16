@@ -33,14 +33,17 @@ type AddConceptFormProps = {
     tags: string[];
     status: Concept['status'];
   }) => void;
-  onUpdate: (id: number, concept: {
-    name: string;
-    category: string;
-    description: string;
-    resources: Resource[];
-    tags: string[];
-    status: Concept['status'];
-  }) => void;
+  onUpdate: (
+    id: number,
+    concept: {
+      name: string;
+      category: string;
+      description: string;
+      resources: Resource[];
+      tags: string[];
+      status: Concept['status'];
+    }
+  ) => void;
   categories: string[];
 };
 
@@ -328,9 +331,7 @@ export const AddConceptForm = (props: AddConceptFormProps) => {
           <Button variant="outline" onClick={handleClose}>
             Cancel
           </Button>
-          <Button onClick={handleSave}>
-            {editingConcept ? 'Update Concept' : 'Save Concept'}
-          </Button>
+          <Button onClick={handleSave}>{editingConcept ? 'Update Concept' : 'Save Concept'}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

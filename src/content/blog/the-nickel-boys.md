@@ -1,8 +1,8 @@
 ---
-title: "Book Review: The Nickel Boys"
+title: 'Book Review: The Nickel Boys'
 description: "A review of Colson Whitehead's powerful novel about a reform school"
 pubDate: 2020-03-22
-category: "books"
+category: 'books'
 ---
 
 **Themes:** Historical Fiction, Historical, America  
@@ -15,14 +15,14 @@ One fine day, I was discussing with a close relative, the importance of great or
 Although I had read on racism before the 21st century, and also seen how it affected generations in Indian popular culture. I still lacked the context to fully interpret MLKJ's speech from the perspective of West.
 
 ![Martin_Luther_King_Jr Speech](/assets/mlkj-speech.jpg)
-*Figure 1 - A father holding his child while listening to the speech.*
+_Figure 1 - A father holding his child while listening to the speech._
 
 The book's protagonist Elwood Curtis, is a well-mannered, intelligent and curious kid. An orphan, living with his grandmother in the US of 1960's, he was always helpful to her. One of the highlight's of Elwood's (replace with age), was listening to MLKJ's speech cassette.
 
 That speech planted a seed which began to take root. He developed the understanding of society and culture with the speech in mind. In such a young age, he was ready to make the effort. Going out to protests, asking questions (even if only to himself).
 
 ![Ideas are Bulletproof](/assets/ideas-are-bulletproof.jpg)
-*Figure 2 - Ideas are Bulletproof*
+_Figure 2 - Ideas are Bulletproof_
 
 Due to some unfortunate incident, Elwood ends up in a so called "reform school (Nickel Academy)".
 
@@ -34,11 +34,11 @@ Despite all this, Elwood throughout his struggles managed to remember MLKJ's spe
 
 ## Quotes
 
-- In context of the ongoing demonstrations - *They were beaten with metal bars, blasted with fire hoses, spat on by white housewives with angry faces, and frozen by the camera in tableaus of noble resistance.*
+- In context of the ongoing demonstrations - _They were beaten with metal bars, blasted with fire hoses, spat on by white housewives with angry faces, and frozen by the camera in tableaus of noble resistance._
 
-- In the context of nickel - *It was crazy to run and crazy not to run*
+- In the context of nickel - _It was crazy to run and crazy not to run_
 
-- *The world continued to instruct : Do not love for they will disappear, do not trust for you will be betrayed, do not stand up for you will be swatted down. Still he heard those higher imperatives : Love and that love will be returned , trust in the righteous path and it will lead you to deliverance, fight and things will change.*
+- _The world continued to instruct : Do not love for they will disappear, do not trust for you will be betrayed, do not stand up for you will be swatted down. Still he heard those higher imperatives : Love and that love will be returned , trust in the righteous path and it will lead you to deliverance, fight and things will change._
 
 ## Conclusion
 

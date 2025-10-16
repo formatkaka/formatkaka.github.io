@@ -17,9 +17,12 @@ export default defineConfig({
     envDir: './env',
   },
 
-  integrations: [mdx(), react({
-    babel: {
-      plugins: ['babel-plugin-react-compiler']
-    }
-  })]
+  integrations: [
+    mdx(),
+    react({
+      babel: {
+        plugins: ['babel-plugin-react-compiler'],
+      },
+    }),
+  ],
 });
