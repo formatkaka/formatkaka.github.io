@@ -1,10 +1,281 @@
 ---
-title: "Part 1 : Building Tab Component"
-description: "Learn how to build an autocomplete search component with keyboard navigation, debounced API calls, and proper focus management"
+title: 'Building Tab Component'
+description: 'Learn how to build an autocomplete search component with keyboard navigation, debounced API calls, and proper focus management'
 pubDate: 2025-09-02
-category: "tech"
+category: 'tech'
 ---
 
-import { TabComponentV1 } from '../../tech/react-projects/tabs/index';
+import {TabComponentV1} from '../../tech/react-projects/tabs/index';
+
+## Demo
 
 <TabComponentV1 client:load />
+
+Deep diving on writing beautiful components, I start building this component
+
+## My Original Approach
+
+I first went through this article [Advanced React component composition](https://frontendmastery.com/posts/advanced-react-component-composition-guide/) 
+and started writing a basic version of the tabs component. 
+
+One important thing in this article is about orchestration between components. The default way I preferred would be to go with the radix way, by using 
+an identifier. Radix uses key named `value` for this. But going as per the article I decided to implement it without any identifier.
+
+## The Radix Way
+
+```javascript
+
+	<Tabs.Root defaultValue="tab1">
+		<Tabs.List aria-label="Manage your account">
+			<Tabs.Trigger value="tab1">
+				Account
+			</Tabs.Trigger>
+			<Tabs.Trigger value="tab2">
+				Password
+			</Tabs.Trigger>
+		</Tabs.List>
+		<Tabs.Content value="tab1">
+			// .... Content
+		</Tabs.Content>
+		<Tabs.Content value="tab2">
+			// .... Content
+		</Tabs.Content>
+	</Tabs.Root>
+  
+```
+
+One thing I like to do before writing component is to write how my final component should look from the perspective of consumer. 
+This gives me a solid base on how to proceed and let's me try out some variations and understand if the component is extensible or not.
+I like radix's way of using `[Component].Root` , `[Component].Trigger` .... names. Feels scoped and clean.
+
+## Psueocode
+
+```javascript
+
+	<Tabs>
+		<Tabs.List aria-label="Manage your account">
+			<Tabs.Trigger value="tab1">
+				Account
+			</Tabs.Trigger>
+			<Tabs.Trigger value="tab2">
+				Password
+			</Tabs.Trigger>
+		</Tabs.List>
+		<Tabs.Content value="tab1">
+			// .... Content
+		</Tabs.Content>
+		<Tabs.Content value="tab2">
+			// .... Content
+		</Tabs.Content>
+	</Tabs>
+  
+```
+
+## Initial version I created without identifier
+
+```javascript
+
+  export const Root = (props) => {
+    const [index, setIndex] = useState(0);
+    const id = useId();
+    
+    return (
+      <RootContext value={{ onClick: setIndex, index, id }}>
+        <div className="w-full space-y-4">
+          {children}
+        </div>
+      </RootContext>
+    );
+  };
+
+  export const Trigger = (props: TTriggersProps) => {
+    const { children } = props;
+    const { onClick, index: activeIndex } = useRootContext()
+
+    return (
+      <div className="flex gap-1">
+        {React.Children.map(children, (child, index) => {
+          const isActive = activeIndex === index;
+          return (
+            <div
+              role="tab"
+              onClick={() => {
+                onClick(index)
+              }}
+              className={`box-border w-[100px] h-[50px] flex justify-center items-center cursor-pointer ${isActive ? 'border-b-4' : 'pb-1'}`}
+            >
+              {child}
+            </div>
+          )
+        })}
+      </div>
+    )
+  }  
+
+  export const Panel = (props) => {
+    const { children } = props;
+    const { index, id } = useRootContext();
+    const className = `tab-item-${id}`;
+    
+    useLayoutEffect(() => {
+      const items = document.querySelectorAll(`.${className}`);
+      items.forEach((item, arrIndex) => {
+        if (arrIndex === index) {
+          item.classList.remove("hidden");
+          item.classList.add("block");
+        } else {
+          item.classList.add("hidden");
+          item.classList.remove("block");
+        }
+      });
+    }, [index]);
+    
+    return <div className={`hidden ${className}`}>{children}</div>;
+  };
+  
+```
+
+Came up with this originally. Went through the article again and ended up feeding my code to claude. 
+And out came a lot of suggestions
+
+## The Issues
+
+### DOM Manipulation in React? Really?
+
+I was using useLayoutEffect to grab elements with querySelectorAll and manually toggling CSS classes. That's basically jQuery inside React. Not great.
+
+React's whole thing is being declarative - you tell it what to show, not how to show it. I was going against that completely.
+
+### Server Rendering Was Broken
+
+Didn't even think about this initially, but when the server renders my tabs, it sends down ALL the panels with a "hidden" class. So the user sees... nothing. Just blank space until JavaScript loads and my useLayoutEffect runs.
+
+That defeats the whole point of SSR.
+
+### Everything Stays Mounted
+
+Even the hidden tab panels were still fully mounted in the DOM. All their useEffects running, all their state maintained. Pretty wasteful when you've got 5-6 tabs.
+
+## Refactoring
+
+### Step 1: Rendering the react way
+
+The main insight - instead of rendering everything and hiding stuff with CSS, just render what you need:
+```javascript
+
+  export const Tabs = (props) => {
+    const [index, setIndex] = useState(0);
+    const id = useId();
+    
+    const childrenArray = React.Children.toArray(children);
+    const [tabsList, ...panels] = childrenArray;
+    
+    return (
+      <RootContext value={{ onClick: setIndex, index, id, panelData: {...} }}>
+        <div className="w-full space-y-4">
+          {tabsList}
+          {panels[index]}  {/* Just render the one we need */}
+        </div>
+      </RootContext>
+    );
+  };
+  
+```
+
+That's it. If it's not the active panel, it doesn't exist. No hiding, no DOM manipulation.
+
+### Step 2: TabPanel Gets Simple
+```javascript
+
+  export const TabPanel = (props) => {
+    const { children } = props;
+    const { panelData } = useRootContext();
+    
+    return <div {...panelData}>{children}</div>;
+  };
+  
+```
+
+Deleted like 15 lines of useLayoutEffect nonsense. Just render the content. Done.
+
+### Step 3: Accessibility Stuff
+
+Added proper ARIA attributes so screen readers work:
+```javascript
+
+  <TabContext
+    value={{
+      id: `${tabsId}-${index}`,
+      role: 'tab',
+      'aria-selected': isActive,
+      'aria-controls': `${tabsId}-${index}-panel`,
+      tabIndex: isActive ? 0 : -1,
+      onClick: () => onClick(index),
+    }}
+  >
+  
+```
+
+### Step 4: Split the Context
+
+Originally had one big RootContext with everything. Split it into two:
+- One for the tab list stuff
+- One for the panel stuff
+
+Each component only gets what it needs. Cleaner.
+
+
+### Step 5: Add keyboard controls and focus controls
+
+Adding keyboard controls finishes up a major chunk of functional and non-functional requirements for this component.
+
+```javascript
+
+  const onSelect = (index: number) => {
+    if (!ref.current) {
+      throw new Error('ref does not exist');
+    }
+
+    const selectedTab = ref?.current?.querySelector(`[id=${tabsId}-${index}]`) as HTMLDivElement;
+    selectedTab.focus();
+    onClick(index);
+  };
+
+  const onKeyDown = (evt: KeyboardEvent<HTMLDivElement>) => {
+    if (evt.key === 'ArrowRight') {
+      onClick(activeIndex === numOfTabs - 1 ? activeIndex : activeIndex + 1);
+    }
+
+    if (evt.key === 'ArrowLeft') {
+      onClick(activeIndex === 0 ? activeIndex : activeIndex - 1);
+    }
+  };
+  
+```
+
+
+## What Actually Changed
+
+### Before
+- Render all panels
+- Hide them with CSS
+- Use useLayoutEffect to show/hide on clicks
+- querySelector all over the place
+
+### After
+- Render only the active panel
+- No CSS hiding tricks
+- No useLayoutEffect/DOM queries
+- works with SSR
+
+## Things I Didn't Change
+
+- I used two contexts instead of three. Did not feel enough need to refactor and break into 3.
+
+## Final Thoughts
+
+The refactored version does more with less code. It's faster, more accessible, works with SSR, and is honestly easier to understand.
+
+Sometimes you build something that works and you move on. But every now and then it's worth going back and asking "is this actually the right way?"
+If you're building component libraries or reusable UI stuff, read [this article](https://frontendmastery.com/posts/advanced-react-component-composition-guide/). 
+It makes you appreciate how libs like radix / react-aria are written.

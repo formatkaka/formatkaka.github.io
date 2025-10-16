@@ -1,86 +1,121 @@
-import type { TReactBaseProps } from "@/types/react"
-import React, { useId, useLayoutEffect, useState } from "react";
-import { RootContext, useRootContext } from "./context";
+import type { TReactBaseProps } from '@/types/react';
+import React, { useId, useRef, useState, type KeyboardEvent } from 'react';
+import { RootContext, TabContext, useRootContext, useTabContext } from './context';
 
-export const Tabs = (props: TTabsProps) => {
+export const Root = (props: TTabsProps) => {
   const { children } = props;
   const [index, setIndex] = useState(0);
   const id = useId();
 
+  const childrenArray = React.Children.toArray(children);
+  const [tabsList, ...panels] = childrenArray;
+
   return (
-    <RootContext value={{onClick: setIndex, index, id}}>
-      {children}
-    </RootContext>
-  )
-
-}
-
-export const TabsList = (props: TTriggersProps) => {
-  const { children } = props;
-  const { onClick } = useRootContext()
-
-  return React.Children.map(children, (child, index) => {
-    return (
-      <div
-        role="tab"
-        onClick={() => {
-          onClick(index)
-        }}
-      >
-        {child}
+    <RootContext
+      value={{
+        onClick: setIndex,
+        index,
+        id,
+        panelData: {
+          role: 'tabpanel',
+          id: `${id}-${index}`,
+          'aria-labelledby': `${id}-${index}`,
+        },
+      }}
+    >
+      <div className="w-full space-y-4 border-1 p-4">
+        {tabsList}
+        {panels[index]}
       </div>
-    )
-  })
-}
+    </RootContext>
+  );
+};
 
-export const TabItem = (props: TReactBaseProps) => {
+export const List = (props: TTriggersProps) => {
   const { children } = props;
-  return <>{children}</>
-}
+  const { onClick, index: activeIndex, id: tabsId } = useRootContext();
 
-export const Item = (props: TReactBaseProps) => {
+  const numOfTabs = React.Children.count(children);
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  const onSelect = (index: number) => {
+    if (!ref.current) {
+      throw new Error('ref does not exist');
+    }
+
+    const selectedTab = ref?.current?.querySelector(`[id=${tabsId}-${index}]`) as HTMLDivElement;
+    selectedTab.focus();
+    onClick(index);
+  };
+
+  const onKeyDown = (evt: KeyboardEvent<HTMLDivElement>) => {
+    if (evt.key === 'ArrowRight') {
+      onSelect(activeIndex === numOfTabs - 1 ? activeIndex : activeIndex + 1);
+    }
+
+    if (evt.key === 'ArrowLeft') {
+      onSelect(activeIndex === 0 ? activeIndex : activeIndex - 1);
+    }
+  };
+
+  return (
+    <div role="tablist" className="flex gap-1" ref={ref}>
+      {React.Children.map(children, (child, index) => {
+        const isActive = activeIndex === index;
+        return (
+          <TabContext
+            value={{
+              key: `${tabsId}-${index}`,
+              id: `${tabsId}-${index}`,
+              role: 'tab',
+              'aria-setsize': React.Children.count(children),
+              'aria-posinset': index + 1,
+              'aria-selected': isActive,
+              'aria-controls': `${tabsId}-${index}-tab`,
+              // managing focussability
+              tabIndex: isActive ? 0 : -1,
+              onClick: () => onSelect(index),
+              onKeyDown: (evt: KeyboardEvent<HTMLDivElement>) => onKeyDown(evt),
+              isActive,
+            }}
+          >
+            {child}
+          </TabContext>
+        );
+      })}
+    </div>
+  );
+};
+
+export const Trigger = (props: TReactBaseProps) => {
   const { children } = props;
-  const { index, id } = useRootContext();
-  
+  const { isActive, ...rest } = useTabContext();
 
-  const className = `tab-item-${id}`;
+  return (
+    <div
+      {...rest}
+      className={`box-border w-[100px] h-[50px] flex justify-center items-center cursor-pointer ${isActive ? 'border-b-4' : 'pb-1'}`}
+    >
+      {children}
+    </div>
+  );
+};
 
-  useLayoutEffect(() => {
-    const items = document.querySelectorAll(`.${className}`);
-    items.forEach((item, arrIndex) => {
-      if(arrIndex === index) {
-        item.classList.remove("hidden")
-        item.classList.add("block");
-      }else {
-        item.classList.add("hidden");
-        item.classList.remove("block")
-      }
-    })
-  }, [index])
+export const Panel = (props: TReactBaseProps) => {
+  const { children } = props;
 
-  return <div className={className}>{children}</div>
-}
+  const { panelData } = useRootContext();
 
-type TTabsProps = TReactBaseProps
+  return <div {...panelData}>{children}</div>;
+};
+
+type TTabsProps = TReactBaseProps;
 
 type TTriggersProps = TReactBaseProps;
-/**
- * Tabs -> 
- * 
- *    <Tabs>
- *        <Tabs.Trigger>
- *            <button>1</button>
- *            <button>2</button>
- *            <button>3</button>
- *        </Tabs.Trigger>
- * 
- *        <Tabs.Item>
- *            1
- *        </Tabs.Item>
- * 
- *        <Tabs.Item>
- *            2
- *        </Tabs.Item> 
- *    <Tabs>
- * 
- */
+
+export const Tabs = {
+  Root,
+  Trigger,
+  List,
+  Panel,
+};

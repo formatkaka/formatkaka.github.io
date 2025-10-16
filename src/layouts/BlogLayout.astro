@@ -227,6 +227,17 @@ const { title, description = "Siddhant Loya - Prose, Poetry and Tech" } = Astro.
       .spoiler.revealed * {
         color: inherit !important;
       }
+
+      /* Inline code styling */
+      :not(pre) > code {
+        background-color: #2d3748;
+        color: #e2e8f0;
+        padding: 0.2em 0.4em;
+        border-radius: 3px;
+        font-size: 0.9em;
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: 500;
+      }
     </style>
   </body>
 </html>

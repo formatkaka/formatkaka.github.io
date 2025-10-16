@@ -3,6 +3,7 @@
 ## Typescript
 
 - Use type always instead of interface. In a file, if you see interface rewrite it to type.
+- Always write types at end of file
 
 ## General Principles
 
