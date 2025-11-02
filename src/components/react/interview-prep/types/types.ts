@@ -1,3 +1,8 @@
+export type Note = {
+  text: string;
+  date: string;
+};
+
 export type Problem = {
   id: number;
   name: string;
@@ -13,6 +18,7 @@ export type Problem = {
   nextReview: string | null;
   created: string;
   concepts?: number[];
+  notes?: Note[];
 };
 
 export type Resource = {

@@ -14,13 +14,16 @@ export const InterviewPrepTracker = () => {
     concepts,
     currentTab,
     currentTopicFilter,
+    itemTypeFilter,
     searchQuery,
     topics,
+    itemTypes,
     categories,
     stats,
     isOverdue,
     setCurrentTab,
     setCurrentTopicFilter,
+    setItemTypeFilter,
     setSearchQuery,
     addProblem,
     updateProblem,
@@ -35,11 +38,18 @@ export const InterviewPrepTracker = () => {
     updateConceptConfidence,
     updateConceptStatus,
     deleteConcept,
+    redistributeReviewDates,
+    addNote,
   } = useInterviewPrep();
 
   const [editingProblem, setEditingProblem] = useState<Problem | null>(null);
   const [editingConcept, setEditingConcept] = useState<Concept | null>(null);
   const [showAddConcept, setShowAddConcept] = useState(false);
+
+  const handleTabChange = (tab: 'all' | 'due' | 'concepts') => {
+    setCurrentTab(tab);
+    setItemTypeFilter('all');
+  };
 
   const handleEdit = (problem: Problem) => {
     setEditingProblem(problem);
@@ -57,6 +67,19 @@ export const InterviewPrepTracker = () => {
   const handleCloseConcept = () => {
     setShowAddConcept(false);
     setEditingConcept(null);
+  };
+
+  const handleRedistribute = () => {
+    const confirmed = confirm(
+      'This will redistribute all review dates to ensure max 3 items per day.\n\n' +
+        'Priority: Overdue → Today → Future\n\n' +
+        'Do you want to continue?'
+    );
+
+    if (confirmed) {
+      redistributeReviewDates();
+      alert('✅ Review dates have been redistributed successfully!');
+    }
   };
 
   return (
@@ -94,7 +117,7 @@ export const InterviewPrepTracker = () => {
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
-              onClick={() => setCurrentTab('all')}
+              onClick={() => handleTabChange('all')}
             >
               All Items
             </button>
@@ -104,7 +127,7 @@ export const InterviewPrepTracker = () => {
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
-              onClick={() => setCurrentTab('due')}
+              onClick={() => handleTabChange('due')}
             >
               Due Today
             </button>
@@ -114,7 +137,7 @@ export const InterviewPrepTracker = () => {
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
-              onClick={() => setCurrentTab('concepts')}
+              onClick={() => handleTabChange('concepts')}
             >
               Concepts
             </button>
@@ -144,6 +167,38 @@ export const InterviewPrepTracker = () => {
           </div>
         </div>
 
+        {/* Quick Item Type Filters - Shown on Due Today tab */}
+        {currentTab === 'due' && (
+          <div className="px-8 py-3 bg-gray-50 border-b border-gray-200">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600 font-medium">Quick Filter:</span>
+              <button
+                className={`px-3 py-1 text-xs font-medium rounded-md transition-all cursor-pointer ${
+                  itemTypeFilter === 'all'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-100'
+                }`}
+                onClick={() => setItemTypeFilter('all')}
+              >
+                All
+              </button>
+              {itemTypes.map((type) => (
+                <button
+                  key={type}
+                  className={`px-3 py-1 text-xs font-medium rounded-md transition-all cursor-pointer ${
+                    itemTypeFilter === type
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-100'
+                  }`}
+                  onClick={() => setItemTypeFilter(type)}
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Content - Table or Concepts List */}
         {currentTab === 'concepts' ? (
           <div className="p-8">
@@ -168,6 +223,7 @@ export const InterviewPrepTracker = () => {
             onSetReviewDate={setManualReviewDate}
             onEdit={handleEdit}
             onDelete={deleteProblem}
+            onAddNote={addNote}
           />
         )}
 
@@ -190,6 +246,12 @@ export const InterviewPrepTracker = () => {
             Your data is saved locally in your browser. Export regularly to back up your progress!
           </p>
           <div className="flex gap-3">
+            <button
+              onClick={handleRedistribute}
+              className="px-4 py-2 bg-purple-600 text-white font-medium rounded-md hover:bg-purple-700 transition-colors cursor-pointer text-sm"
+            >
+              🔄 Redistribute Reviews
+            </button>
             <button
               onClick={exportToJSON}
               className="px-4 py-2 bg-emerald-500 text-white font-medium rounded-md hover:bg-emerald-600 transition-colors cursor-pointer text-sm"

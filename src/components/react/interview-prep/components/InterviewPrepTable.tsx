@@ -6,9 +6,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/react/ui/table';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, StickyNote } from 'lucide-react';
 import type { Problem, TabType, Concept } from '../types/types';
 import { ConfidenceStars } from './ConfidenceStars';
+import { useState } from 'react';
 
 type InterviewPrepTableProps = {
   problems: Problem[];
@@ -20,6 +21,7 @@ type InterviewPrepTableProps = {
   onSetReviewDate: (id: number, date: string) => void;
   onEdit: (problem: Problem) => void;
   onDelete: (id: number) => void;
+  onAddNote: (id: number, noteText: string) => void;
 };
 
 const formatDate = (dateString: string | null): string => {
@@ -65,7 +67,9 @@ export const InterviewPrepTable = ({
   onSetReviewDate,
   onEdit,
   onDelete,
+  onAddNote,
 }: InterviewPrepTableProps) => {
+  const [expandedNotes, setExpandedNotes] = useState<number | null>(null);
   const getConceptNames = (conceptIds?: number[]) => {
     if (!conceptIds || conceptIds.length === 0) return [];
     return conceptIds
@@ -92,6 +96,17 @@ export const InterviewPrepTable = ({
     }
   };
 
+  const handleAddNote = (id: number) => {
+    const noteText = prompt('Add note for next iteration:');
+    if (noteText && noteText.trim()) {
+      onAddNote(id, noteText.trim());
+    }
+  };
+
+  const toggleNotes = (id: number) => {
+    setExpandedNotes(expandedNotes === id ? null : id);
+  };
+
   return (
     <div className="px-8 pb-6">
       <Table>
@@ -107,6 +122,7 @@ export const InterviewPrepTable = ({
             <TableHead className="py-2">Status</TableHead>
             <TableHead className="py-2">Last Reviewed</TableHead>
             <TableHead className="py-2">Next Review</TableHead>
+            <TableHead className="py-2">Notes</TableHead>
             <TableHead className="py-2">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -187,6 +203,51 @@ export const InterviewPrepTable = ({
                 title="Click to set custom date"
               >
                 {formatDate(problem.nextReview)}
+              </TableCell>
+              <TableCell className="py-2">
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleAddNote(problem.id)}
+                    className="p-1.5 text-purple-600 hover:bg-purple-50 rounded-md transition-colors cursor-pointer border-0"
+                    title="Add note"
+                  >
+                    <StickyNote className="w-3 h-3" />
+                  </button>
+                  {problem.notes && problem.notes.length > 0 && (
+                    <div className="relative">
+                      <button
+                        onClick={() => toggleNotes(problem.id)}
+                        className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-medium cursor-pointer border-0 hover:bg-purple-200"
+                      >
+                        {problem.notes.length}
+                      </button>
+                      {expandedNotes === problem.id && (
+                        <div className="absolute z-10 right-0 mt-1 w-80 bg-white border border-gray-300 rounded-lg shadow-lg p-3 max-h-60 overflow-y-auto">
+                          <div className="flex justify-between items-center mb-2">
+                            <h4 className="font-semibold text-sm">Notes</h4>
+                            <button
+                              onClick={() => toggleNotes(problem.id)}
+                              className="text-gray-500 hover:text-gray-700 text-xs"
+                            >
+                              Close
+                            </button>
+                          </div>
+                          <div className="space-y-2">
+                            {problem.notes.map((note, idx) => (
+                              <div key={idx} className="border-b border-gray-200 pb-2 last:border-b-0">
+                                <div className="text-xs text-gray-500 mb-1">
+                                  {new Date(note.date).toLocaleDateString()} at{' '}
+                                  {new Date(note.date).toLocaleTimeString()}
+                                </div>
+                                <div className="text-sm text-gray-800">{note.text}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </TableCell>
               <TableCell className="py-2">
                 <div className="flex gap-2">

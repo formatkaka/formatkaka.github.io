@@ -10,6 +10,7 @@ export const useInterviewPrep = () => {
   const [concepts, setConcepts] = useState<Concept[]>([]);
   const [currentTab, setCurrentTab] = useState<TabType>('all');
   const [currentTopicFilter, setCurrentTopicFilter] = useState<string>('all');
+  const [itemTypeFilter, setItemTypeFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   // Load problems from localStorage on mount
@@ -93,7 +94,7 @@ export const useInterviewPrep = () => {
 
   const calculateNextReview = (confidence: number): string => {
     if (confidence <= 2) {
-      return findLeastLoadedDay(3, 5);
+      return findLeastLoadedDay(3, 7);
     } else if (confidence <= 4) {
       return findLeastLoadedDay(7, 14);
     } else {
@@ -124,6 +125,10 @@ export const useInterviewPrep = () => {
       filtered = filtered.filter((p) => p.topic === currentTopicFilter);
     }
 
+    if (itemTypeFilter !== 'all') {
+      filtered = filtered.filter((p) => p.itemType === itemTypeFilter);
+    }
+
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -141,6 +146,11 @@ export const useInterviewPrep = () => {
   const getUniqueTopics = (): string[] => {
     const topics = problems.map((p) => p.topic).filter(Boolean);
     return Array.from(new Set(topics)).sort();
+  };
+
+  const getUniqueItemTypes = (): string[] => {
+    const itemTypes = problems.map((p) => p.itemType).filter(Boolean);
+    return Array.from(new Set(itemTypes)).sort();
   };
 
   const addProblem = (
@@ -347,6 +357,95 @@ Click Cancel to keep existing data and cancel import`;
     );
   };
 
+  const addNote = (id: number, noteText: string) => {
+    setProblems((prev) =>
+      prev.map((p) =>
+        p.id === id
+          ? {
+              ...p,
+              notes: [
+                ...(p.notes || []),
+                {
+                  text: noteText,
+                  date: new Date().toISOString(),
+                },
+              ],
+            }
+          : p
+      )
+    );
+  };
+
+  const redistributeReviewDates = (): boolean => {
+    const MAX_ITEMS_PER_DAY = 3;
+    const today = getTodayNormalized();
+
+    const itemsWithReview = problems.filter((p) => p.nextReview !== null);
+    const itemsWithoutReview = problems.filter((p) => p.nextReview === null);
+
+    const overdue: Problem[] = [];
+    const dueToday: Problem[] = [];
+    const future: Problem[] = [];
+
+    itemsWithReview.forEach((item) => {
+      const reviewDate = new Date(item.nextReview!);
+      reviewDate.setHours(0, 0, 0, 0);
+
+      if (reviewDate < today) {
+        overdue.push(item);
+      } else if (reviewDate.getTime() === today.getTime()) {
+        dueToday.push(item);
+      } else {
+        future.push(item);
+      }
+    });
+
+    overdue.sort((a, b) => {
+      const dateA = new Date(a.nextReview!);
+      const dateB = new Date(b.nextReview!);
+      return dateA.getTime() - dateB.getTime();
+    });
+
+    dueToday.sort((a, b) => {
+      const dateA = new Date(a.nextReview!);
+      const dateB = new Date(b.nextReview!);
+      return dateA.getTime() - dateB.getTime();
+    });
+
+    future.sort((a, b) => {
+      const dateA = new Date(a.nextReview!);
+      const dateB = new Date(b.nextReview!);
+      return dateA.getTime() - dateB.getTime();
+    });
+
+    const sortedItems = [...overdue, ...dueToday, ...future];
+
+    const dateSlots = new Map<string, number>();
+    const currentDate = new Date(today);
+
+    const redistributedItems = sortedItems.map((item) => {
+      const dateKey = currentDate.toISOString();
+      const currentCount = dateSlots.get(dateKey) || 0;
+
+      if (currentCount >= MAX_ITEMS_PER_DAY) {
+        currentDate.setDate(currentDate.getDate() + 1);
+        dateSlots.set(currentDate.toISOString(), 1);
+      } else {
+        dateSlots.set(dateKey, currentCount + 1);
+      }
+
+      return {
+        ...item,
+        nextReview: new Date(currentDate).toISOString(),
+      };
+    });
+
+    const allRedistributed = [...redistributedItems, ...itemsWithoutReview];
+    setProblems(allRedistributed);
+
+    return true;
+  };
+
   const getUniqueCategories = (): string[] => {
     const categories = concepts.map((c) => c.category).filter(Boolean);
     return Array.from(new Set(categories)).sort();
@@ -368,13 +467,16 @@ Click Cancel to keep existing data and cancel import`;
     concepts,
     currentTab,
     currentTopicFilter,
+    itemTypeFilter,
     searchQuery,
     topics: getUniqueTopics(),
+    itemTypes: getUniqueItemTypes(),
     categories: getUniqueCategories(),
     stats,
     isOverdue,
     setCurrentTab,
     setCurrentTopicFilter,
+    setItemTypeFilter,
     setSearchQuery,
     addProblem,
     updateProblem,
@@ -389,5 +491,7 @@ Click Cancel to keep existing data and cancel import`;
     updateConceptConfidence,
     updateConceptStatus,
     deleteConcept,
+    redistributeReviewDates,
+    addNote,
   };
 };
