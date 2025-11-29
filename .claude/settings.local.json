@@ -1,6 +1,12 @@
 {
   "permissions": {
-    "allow": ["mcp__ide__getDiagnostics", "Bash(pnpm lint:*)", "Bash(tree:*)"],
+    "allow": [
+      "mcp__ide__getDiagnostics",
+      "Bash(pnpm lint:*)",
+      "Bash(tree:*)",
+      "WebSearch",
+      "WebFetch(domain:faqs.ankiweb.net)"
+    ],
     "deny": [],
     "ask": []
   }

@@ -5,6 +5,7 @@ import { AddProblemForm } from './components/AddProblemForm';
 import { StatsCards } from './components/StatsCards';
 import { ConceptsList } from './components/ConceptsList';
 import { AddConceptForm } from './components/AddConceptForm';
+import { AddBufferDaysDialog } from './components/AddBufferDaysDialog';
 import type { Problem, Concept } from './types/types';
 
 export const InterviewPrepTracker = () => {
@@ -39,12 +40,14 @@ export const InterviewPrepTracker = () => {
     updateConceptStatus,
     deleteConcept,
     redistributeReviewDates,
+    addBufferDays,
     addNote,
   } = useInterviewPrep();
 
   const [editingProblem, setEditingProblem] = useState<Problem | null>(null);
   const [editingConcept, setEditingConcept] = useState<Concept | null>(null);
   const [showAddConcept, setShowAddConcept] = useState(false);
+  const [showBufferDaysDialog, setShowBufferDaysDialog] = useState(false);
 
   const handleTabChange = (tab: 'all' | 'due' | 'concepts') => {
     setCurrentTab(tab);
@@ -80,6 +83,14 @@ export const InterviewPrepTracker = () => {
       redistributeReviewDates();
       alert('✅ Review dates have been redistributed successfully!');
     }
+  };
+
+  const handleApplyBuffer = (bufferDays: number) => {
+    const updatedCount = addBufferDays(bufferDays);
+    alert(
+      `✅ Successfully added ${bufferDays} buffer day${bufferDays > 1 ? 's' : ''}!\n\n` +
+        `${updatedCount} task${updatedCount !== 1 ? 's' : ''} shifted forward.`
+    );
   };
 
   return (
@@ -247,6 +258,12 @@ export const InterviewPrepTracker = () => {
           </p>
           <div className="flex gap-3">
             <button
+              onClick={() => setShowBufferDaysDialog(true)}
+              className="px-4 py-2 bg-orange-600 text-white font-medium rounded-md hover:bg-orange-700 transition-colors cursor-pointer text-sm"
+            >
+              ⏸️ Add Buffer Days
+            </button>
+            <button
               onClick={handleRedistribute}
               className="px-4 py-2 bg-purple-600 text-white font-medium rounded-md hover:bg-purple-700 transition-colors cursor-pointer text-sm"
             >
@@ -275,6 +292,13 @@ export const InterviewPrepTracker = () => {
             </label>
           </div>
         </div>
+
+        {/* Add Buffer Days Dialog */}
+        <AddBufferDaysDialog
+          open={showBufferDaysDialog}
+          onClose={() => setShowBufferDaysDialog(false)}
+          onApply={handleApplyBuffer}
+        />
       </div>
     </div>
   );

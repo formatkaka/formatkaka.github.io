@@ -446,6 +446,34 @@ Click Cancel to keep existing data and cancel import`;
     return true;
   };
 
+  const addBufferDays = (bufferDays: number): number => {
+    const today = getTodayNormalized();
+    let updatedCount = 0;
+
+    const updatedProblems = problems.map((problem) => {
+      if (!problem.nextReview) return problem;
+
+      const reviewDate = new Date(problem.nextReview);
+      reviewDate.setHours(0, 0, 0, 0);
+
+      // Only shift non-overdue tasks (today and future)
+      if (reviewDate >= today) {
+        const newReviewDate = new Date(reviewDate);
+        newReviewDate.setDate(newReviewDate.getDate() + bufferDays);
+        updatedCount++;
+        return {
+          ...problem,
+          nextReview: newReviewDate.toISOString(),
+        };
+      }
+
+      return problem;
+    });
+
+    setProblems(updatedProblems);
+    return updatedCount;
+  };
+
   const getUniqueCategories = (): string[] => {
     const categories = concepts.map((c) => c.category).filter(Boolean);
     return Array.from(new Set(categories)).sort();
@@ -492,6 +520,7 @@ Click Cancel to keep existing data and cancel import`;
     updateConceptStatus,
     deleteConcept,
     redistributeReviewDates,
+    addBufferDays,
     addNote,
   };
 };
