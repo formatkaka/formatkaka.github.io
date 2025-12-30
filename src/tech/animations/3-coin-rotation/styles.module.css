@@ -1,0 +1,26 @@
+.wrapper {
+  position: relative;
+  animation: rotate 2s linear infinite;
+  transform-style: preserve-3d;
+  height: 56px;
+  width: 56px;
+}
+
+.coin {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  backface-visibility: hidden;
+  top: 0;
+  left: 0;
+}
+
+.back {
+  transform: rotateY(180deg);
+}
+
+@keyframes rotate {
+  to {
+    transform: rotateY(360deg);
+  }
+}

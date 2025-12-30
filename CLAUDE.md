@@ -48,3 +48,12 @@
 - Write tests for all business logic
 - Use descriptive test names
 - Test edge cases and error conditions
+
+## Add animation
+
+For future reference: When you ask to "add animation", I'll follow this pattern:
+
+1. Create a new numbered folder in src/tech/animations/N-animation-name/
+2. Add index.tsx with the React component
+3. Add styles.css with animation styles
+4. Update learning-animations.astro with a new card following the existing design pattern (gradient header, decorative background, footer with metadata)
