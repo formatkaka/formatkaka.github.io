@@ -1,0 +1,2 @@
+# Ignore battle JSON files but keep directory
+*.json

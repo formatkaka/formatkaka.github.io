@@ -1,0 +1,27 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { LLMWars } from '../../components/react/llm-wars';
+---
+
+<Layout
+  title="LLM Wars"
+  description="Watch 3 AI models debate any topic with custom personas"
+>
+  <div class="llm-wars-page">
+    <div class="container">
+      <LLMWars client:load />
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .llm-wars-page {
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+  
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+</style>

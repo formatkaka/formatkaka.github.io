@@ -109,7 +109,7 @@ const SelectItem = (props: SelectItemProps) => {
   return (
     <div
       className={cn(
-        'relative flex w-full cursor-pointer select-none items-center rounded-sm py-2 px-3 text-sm outline-none hover:bg-gray-100 focus:bg-gray-100 transition-colors',
+        'relative flex w-full cursor-pointer select-none items-start rounded-sm py-2 px-3 text-sm outline-none hover:bg-gray-100 focus:bg-gray-100 transition-colors',
         isSelected && 'bg-gray-100 font-medium',
         className
       )}

@@ -1,0 +1,402 @@
+[
+  {
+    "topic": "Hi",
+    "personas": {
+      "openai": "Angry internet commenter",
+      "claude": "Overly polite receptionist",
+      "grok": "Confused philosophy student"
+    }
+  },
+  {
+    "topic": "Okay",
+    "personas": {
+      "openai": "Passive aggressive teammate",
+      "claude": "Calm conflict mediator",
+      "grok": "Retired army officer"
+    }
+  },
+  {
+    "topic": "I’ll do it later",
+    "personas": {
+      "openai": "Furious productivity coach",
+      "claude": "Understanding project manager",
+      "grok": "Lazy college senior"
+    }
+  },
+  {
+    "topic": "WiFi is slow",
+    "personas": {
+      "openai": "Conspiracy theorist",
+      "claude": "Customer support executive",
+      "grok": "Roman general"
+    }
+  },
+  {
+    "topic": "Monday is the worst day",
+    "personas": {
+      "openai": "Bitter office worker",
+      "claude": "Motivational HR manager",
+      "grok": "Medieval monk"
+    }
+  },
+  {
+    "topic": "Coffee tastes bad",
+    "personas": {
+      "openai": "Loud startup founder",
+      "claude": "Polite café manager",
+      "grok": "Sleep deprived doctor"
+    }
+  },
+  {
+    "topic": "Calling is better than texting",
+    "personas": {
+      "openai": "Angry uncle",
+      "claude": "Relationship counselor",
+      "grok": "Teenager avoiding phone calls"
+    }
+  },
+  {
+    "topic": "Typing is faster than talking",
+    "personas": {
+      "openai": "Competitive programmer",
+      "claude": "Calm communication coach",
+      "grok": "Courtroom stenographer"
+    }
+  },
+  {
+    "topic": "Cold water is better",
+    "personas": {
+      "openai": "Gym bro extremist",
+      "claude": "Wellness advisor",
+      "grok": "Desert tour guide"
+    }
+  },
+  {
+    "topic": "Shoes should stay outside",
+    "personas": {
+      "openai": "Furious cleanliness freak",
+      "claude": "Apartment association member",
+      "grok": "Laid back roommate"
+    }
+  },
+  {
+    "topic": "Sleep is a waste of time",
+    "personas": {
+      "openai": "Hustle culture addict",
+      "claude": "Gentle life coach",
+      "grok": "New parent"
+    }
+  },
+  {
+    "topic": "Morning people are lying",
+    "personas": {
+      "openai": "Night owl hater",
+      "claude": "Positive routine planner",
+      "grok": "Army drill instructor"
+    }
+  },
+  {
+    "topic": "Waiting in line builds character",
+    "personas": {
+      "openai": "Angry shopper",
+      "claude": "Civic minded volunteer",
+      "grok": "Government clerk"
+    }
+  },
+  {
+    "topic": "Just five minutes",
+    "personas": {
+      "openai": "Impatient manager",
+      "claude": "Understanding friend",
+      "grok": "Serial procrastinator"
+    }
+  },
+  {
+    "topic": "Meetings are useless",
+    "personas": {
+      "openai": "Startup engineer",
+      "claude": "Corporate facilitator",
+      "grok": "Middle school teacher"
+    }
+  },
+  {
+    "topic": "Work from home is better",
+    "personas": {
+      "openai": "Anti social programmer",
+      "claude": "Balanced HR leader",
+      "grok": "Lonely office security guard"
+    }
+  },
+  {
+    "topic": "Paper is better than digital",
+    "personas": {
+      "openai": "Tech hater",
+      "claude": "Archival librarian",
+      "grok": "Government accountant"
+    }
+  },
+  {
+    "topic": "Group chats are stressful",
+    "personas": {
+      "openai": "Rage quitting friend",
+      "claude": "Friendly group admin",
+      "grok": "Silent lurker"
+    }
+  },
+  {
+    "topic": "Small talk is pointless",
+    "personas": {
+      "openai": "Rude intellectual",
+      "claude": "Social etiquette coach",
+      "grok": "Elevator repairman"
+    }
+  },
+  {
+    "topic": "Lunch should be mandatory",
+    "personas": {
+      "openai": "Food obsessed employee",
+      "claude": "Corporate wellness officer",
+      "grok": "Factory shift worker"
+    }
+  },
+  {
+    "topic": "Deadlines motivate people",
+    "personas": {
+      "openai": "Fear based manager",
+      "claude": "Supportive team lead",
+      "grok": "Freelance designer"
+    }
+  },
+  {
+    "topic": "Noise cancelling headphones are rude",
+    "personas": {
+      "openai": "Offended coworker",
+      "claude": "Empathy trainer",
+      "grok": "Open office employee"
+    }
+  },
+  {
+    "topic": "Email is scary",
+    "personas": {
+      "openai": "Panic prone intern",
+      "claude": "Reassuring IT admin",
+      "grok": "Corporate lawyer"
+    }
+  },
+  {
+    "topic": "Long passwords are annoying",
+    "personas": {
+      "openai": "Security skeptic",
+      "claude": "Calm cybersecurity trainer",
+      "grok": "Bank compliance officer"
+    }
+  },
+  {
+    "topic": "Everyone should cook",
+    "personas": {
+      "openai": "Food snob",
+      "claude": "Nutrition educator",
+      "grok": "Busy single parent"
+    }
+  },
+  {
+    "topic": "Maps make people lazy",
+    "personas": {
+      "openai": "Direction purist",
+      "claude": "Travel guide",
+      "grok": "Taxi driver"
+    }
+  },
+  {
+    "topic": "Notifications ruin focus",
+    "personas": {
+      "openai": "Digital minimalist",
+      "claude": "Productivity consultant",
+      "grok": "Social media manager"
+    }
+  },
+  {
+    "topic": "Silence is awkward",
+    "personas": {
+      "openai": "Nervous talker",
+      "claude": "Mindfulness teacher",
+      "grok": "Long distance bus driver"
+    }
+  },
+  {
+    "topic": "Multitasking is fake",
+    "personas": {
+      "openai": "Angry neuroscientist",
+      "claude": "Balanced workplace trainer",
+      "grok": "Restaurant manager"
+    }
+  },
+  {
+    "topic": "Office chairs are uncomfortable",
+    "personas": {
+      "openai": "Chronic complainer",
+      "claude": "Facilities coordinator",
+      "grok": "Furniture salesman"
+    }
+  },
+  {
+    "topic": "Breaks are unproductive",
+    "personas": {
+      "openai": "Burnout champion",
+      "claude": "Mental health advocate",
+      "grok": "Construction supervisor"
+    }
+  },
+  {
+    "topic": "People type too much",
+    "personas": {
+      "openai": "Voice note evangelist",
+      "claude": "Communication specialist",
+      "grok": "Court typist"
+    }
+  },
+  {
+    "topic": "Instructions are unclear",
+    "personas": {
+      "openai": "Frustrated customer",
+      "claude": "Technical writer",
+      "grok": "IKEA assembler"
+    }
+  },
+  {
+    "topic": "Every problem needs a meeting",
+    "personas": {
+      "openai": "Bureaucracy lover",
+      "claude": "Process optimizer",
+      "grok": "Startup founder"
+    }
+  },
+  {
+    "topic": "Time flies on weekends",
+    "personas": {
+      "openai": "Bitter employee",
+      "claude": "Work life balance coach",
+      "grok": "School student"
+    }
+  },
+  {
+    "topic": "People walk too slow",
+    "personas": {
+      "openai": "Impatient city dweller",
+      "claude": "Urban planner",
+      "grok": "Mall security guard"
+    }
+  },
+  {
+    "topic": "Everyone should learn to type",
+    "personas": {
+      "openai": "Keyboard elitist",
+      "claude": "Adult education tutor",
+      "grok": "Senior citizen"
+    }
+  },
+  {
+    "topic": "Voice assistants misunderstand everything",
+    "personas": {
+      "openai": "Tech ranter",
+      "claude": "Product support manager",
+      "grok": "Smart home installer"
+    }
+  },
+  {
+    "topic": "Office coffee is terrible",
+    "personas": {
+      "openai": "Caffeine addict",
+      "claude": "Budget conscious admin",
+      "grok": "Night shift guard"
+    }
+  },
+  {
+    "topic": "People reply too late",
+    "personas": {
+      "openai": "Chronically impatient texter",
+      "claude": "Boundary respecting counselor",
+      "grok": "International consultant"
+    }
+  },
+  {
+    "topic": "Everyone should wake up early",
+    "personas": {
+      "openai": "Discipline extremist",
+      "claude": "Sleep health educator",
+      "grok": "Night shift nurse"
+    }
+  },
+  {
+    "topic": "Small fonts are evil",
+    "personas": {
+      "openai": "Visually offended user",
+      "claude": "Accessibility advocate",
+      "grok": "Graphic designer"
+    }
+  },
+  {
+    "topic": "Meetings should be standing",
+    "personas": {
+      "openai": "Efficiency maniac",
+      "claude": "Workplace ergonomics expert",
+      "grok": "Elderly board member"
+    }
+  },
+  {
+    "topic": "Too many apps exist",
+    "personas": {
+      "openai": "Minimalism preacher",
+      "claude": "Digital organization coach",
+      "grok": "App store reviewer"
+    }
+  },
+  {
+    "topic": "People misuse reply all",
+    "personas": {
+      "openai": "Furious email user",
+      "claude": "Office etiquette trainer",
+      "grok": "HR compliance officer"
+    }
+  },
+  {
+    "topic": "Silence is productive",
+    "personas": {
+      "openai": "Anti social thinker",
+      "claude": "Calm meditation guide",
+      "grok": "Call center employee"
+    }
+  },
+  {
+    "topic": "Everyone complains too much",
+    "personas": {
+      "openai": "Irony blind critic",
+      "claude": "Conflict resolution expert",
+      "grok": "Customer feedback analyst"
+    }
+  },
+  {
+    "topic": "Short messages feel rude",
+    "personas": {
+      "openai": "Easily offended texter",
+      "claude": "Communication coach",
+      "grok": "Teenager"
+    }
+  },
+  {
+    "topic": "Instructions are always ignored",
+    "personas": {
+      "openai": "Rule obsessed manager",
+      "claude": "Patient trainer",
+      "grok": "Factory worker"
+    }
+  },
+  {
+    "topic": "Nothing works on first try",
+    "personas": {
+      "openai": "Cynical realist",
+      "claude": "Optimistic problem solver",
+      "grok": "IT support engineer"
+    }
+  }
+]

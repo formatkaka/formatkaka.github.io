@@ -5,9 +5,16 @@
       "Bash(pnpm lint:*)",
       "Bash(tree:*)",
       "WebSearch",
-      "WebFetch(domain:faqs.ankiweb.net)"
+      "WebFetch(domain:faqs.ankiweb.net)",
+      "Bash(uv venv:*)",
+      "Bash(source .venv/bin/activate)",
+      "Bash(pip install:*)",
+      "Bash(python:*)",
+      "Bash(.venv/bin/pip install:*)",
+      "Bash(pnpm exec tsc:*)"
     ],
     "deny": [],
-    "ask": []
+    "ask": [],
+    "model": "opus-4-5"
   }
 }
