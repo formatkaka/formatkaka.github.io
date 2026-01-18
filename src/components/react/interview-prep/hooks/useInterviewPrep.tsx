@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import type { Problem, TabType, Concept } from '../types/types';
-import { sampleProblems, sampleConcepts } from '../data/sampleData';
 
 const STORAGE_KEY = 'leetcodeProblems';
 const CONCEPTS_STORAGE_KEY = 'interviewPrepConcepts';
@@ -17,13 +16,7 @@ export const useInterviewPrep = () => {
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     const loadedProblems = stored ? JSON.parse(stored) : [];
-
-    if (loadedProblems.length === 0) {
-      setProblems(sampleProblems);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(sampleProblems));
-    } else {
-      setProblems(loadedProblems);
-    }
+    setProblems(loadedProblems);
   }, []);
 
   // Save to localStorage whenever problems change
@@ -37,13 +30,7 @@ export const useInterviewPrep = () => {
   useEffect(() => {
     const stored = localStorage.getItem(CONCEPTS_STORAGE_KEY);
     const loadedConcepts = stored ? JSON.parse(stored) : [];
-
-    if (loadedConcepts.length === 0) {
-      setConcepts(sampleConcepts);
-      localStorage.setItem(CONCEPTS_STORAGE_KEY, JSON.stringify(sampleConcepts));
-    } else {
-      setConcepts(loadedConcepts);
-    }
+    setConcepts(loadedConcepts);
   }, []);
 
   // Save to localStorage whenever concepts change
