@@ -2,6 +2,7 @@
 LLM Service - Unified interface for calling different LLM providers
 """
 
+from agent_control import ControlViolationError, control
 from anthropic import Anthropic
 from openai import OpenAI
 
@@ -32,6 +33,7 @@ class LLMService:
             base_url="https://api.x.ai/v1",
         )
 
+    @control()  # Agent Control: checks inputs/outputs against server-defined safety policies
     async def generate_response(
         self,
         provider: LLMProvider,
@@ -42,6 +44,7 @@ class LLMService:
         current_round: int,
     ) -> str:
         """Generate a response from the specified LLM provider"""
+        print(f"Generating response for {provider} with persona {persona} and topic {topic} and mode {mode} and conversation history {conversation_history} and current round {current_round}")
         system_prompt = self._build_system_prompt(persona, topic, mode)
         messages = self._build_messages(conversation_history)
 
@@ -104,6 +107,7 @@ Rules:
 
         return messages
 
+    @control()  # Agent Control: checks inputs/outputs against server-defined safety policies
     async def _call_openai(
         self,
         system_prompt: str,

@@ -1,6 +1,6 @@
 import type { BattleResponse, LLMConfig, BattleMode, BattleMessage } from './types';
 
-const API_BASE = import.meta.env.PUBLIC_LLM_WARS_API || 'http://localhost:8000';
+const API_BASE = import.meta.env.PUBLIC_LLM_WARS_API || 'http://localhost:5123';
 
 export async function createBattle(
   topic: string,

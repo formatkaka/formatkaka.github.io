@@ -5,6 +5,7 @@ LLM Wars - FastAPI application
 import os
 from contextlib import asynccontextmanager
 
+import agent_control
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,6 +19,20 @@ load_dotenv()
 async def lifespan(app: FastAPI):
   """Application lifespan events"""
   print("🚀 LLM Wars API starting...")
+
+  # Initialize Agent Control for safety guardrails
+  agent_control_url = os.getenv("AGENT_CONTROL_URL", "http://localhost:8000")
+  try:
+    agent_control.init(
+      agent_name="LLM Wars Battle Agent",
+      agent_id="llm-wars-v1",
+      agent_description="Multi-LLM debate orchestrator with safety controls",
+      server_url=agent_control_url,
+    )
+    print(f"✅ Agent Control initialized (server: {agent_control_url})")
+  except Exception as e:
+    print(f"⚠️  Agent Control not available: {e}")
+    print("   Running without safety guardrails.")
 
   openai_key = os.getenv("OPENAI_API_KEY")
   anthropic_key = os.getenv("ANTHROPIC_API_KEY")
@@ -83,4 +98,4 @@ async def health():
 
 if __name__ == "__main__":
   import uvicorn
-  uvicorn.run(app, host="0.0.0.0", port=8000)
+  uvicorn.run(app, host="0.0.0.0", port=5123)
