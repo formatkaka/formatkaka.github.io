@@ -1,17 +1,18 @@
-import type { BattleResponse, LLMConfig, BattleMode, BattleMessage } from './types';
+import type { BattleResponse, LLMConfig, BattleMode, Language, BattleMessage } from './types';
 
 const API_BASE = import.meta.env.PUBLIC_LLM_WARS_API || 'http://localhost:5123';
 
 export async function createBattle(
   topic: string,
   mode: BattleMode,
+  language: Language,
   rounds: number,
   llms: LLMConfig[]
 ): Promise<BattleResponse> {
   const response = await fetch(`${API_BASE}/api/battle/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ topic, mode, rounds, llms }),
+    body: JSON.stringify({ topic, mode, language, rounds, llms }),
   });
 
   if (!response.ok) {

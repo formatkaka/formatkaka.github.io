@@ -3,6 +3,7 @@ import sharedPersonas from '../../../tech/llm-projects/1-llm-wars/shared/persona
 
 export const LLM_PROVIDERS = ['openai', 'claude', 'grok'] as const;
 export const BATTLE_MODES = ['text', 'emoji'] as const;
+export const LANGUAGES = ['en', 'hi'] as const;
 export const BATTLE_STATUSES = ['pending', 'in_progress', 'completed', 'error'] as const;
 
 export const PRESET_TOPICS = [
@@ -69,6 +70,7 @@ export const CUSTOM_PERSONA_ID = 'custom';
 
 export type LLMProvider = (typeof LLM_PROVIDERS)[number];
 export type BattleMode = (typeof BATTLE_MODES)[number];
+export type Language = (typeof LANGUAGES)[number];
 export type BattleStatus = (typeof BATTLE_STATUSES)[number];
 
 export type LLMConfig = {
@@ -80,6 +82,7 @@ export type LLMConfig = {
 export type BattleConfig = {
   topic: string;
   mode: BattleMode;
+  language: Language;
   rounds: number;
   llms: LLMConfig[];
 };

@@ -61,13 +61,13 @@ TOPIC RULES (VERY IMPORTANT)
 - The humor comes from TAKING A SMALL THING TOO SERIOUSLY.
 
 GOOD TOPICS:
-- “1+1 = 3”
-- “Is water wet?”
-- “Hi”
-- “WiFi is slow”
-- “I’ll do it later”
-- “Okay”
-- “Monday is the worst day”
+- "1+1 = 3"
+- "Is water wet?"
+- "Hi"
+- "WiFi is slow"
+- "I'll do it later"
+- "Okay"
+- "Monday is the worst day"
 
 BAD TOPICS (DO NOT USE):
 - Fantasy, animals, imaginary objects
@@ -103,21 +103,21 @@ PERSONA CONSTRAINTS
 - Each persona description: 5–10 words only
 - Simple language, easy to understand
 - At least ONE persona should be clearly unrelated to the topic
-- Avoid cute, whimsical, or “try-hard funny” personas
+- Avoid cute, whimsical, or "try-hard funny" personas
 
 BAD PERSONAS (DO NOT USE):
 - Anxious animals
 - Whimsical fairies
 - Sentient objects
 - Overly poetic descriptions
-- Anything that feels like a children’s cartoon
+- Anything that feels like a children's cartoon
 
 GOOD PERSONAS:
-- “Angry startup founder”
-- “Overly polite HR manager”
-- “Tired Roman general”
-- “Passive aggressive roommate”
-- “Customer support executive”
+- "Angry startup founder"
+- "Overly polite HR manager"
+- "Tired Roman general"
+- "Passive aggressive roommate"
+- "Customer support executive"
 
 ────────────────────────
 FINAL OUTPUT FORMAT
@@ -152,16 +152,19 @@ You must generate something in the SAME STYLE, but NOT copy them exactly.
 """
 
 class SurpriseService:
-    """Service for generating random battle configurations using LLM"""
+    """Service for generating random battle configurations using LLM."""
 
     def __init__(self) -> None:
         settings = get_settings()
         self._client = OpenAI(api_key=settings.openai_api_key)
         # Build prompt once at init with personas loaded from shared JSON
-        self._prompt = SURPRISE_PROMPT_TEMPLATE.format(personas=_load_personas(), pre_vetted_battles=_load_pre_vetted_battles())
+        self._prompt = SURPRISE_PROMPT_TEMPLATE.format(
+            personas=_load_personas(), 
+            pre_vetted_battles=_load_pre_vetted_battles()
+        )
 
-    async def generate_surprise(self) -> dict:
-        """Generate a random battle configuration"""
+    async def _generate_config(self) -> str:
+        """Generate a battle configuration via LLM call."""
         response = self._client.chat.completions.create(
             model="gpt-4o",
             messages=[
@@ -175,37 +178,50 @@ class SurpriseService:
 
         content = response.choices[0].message.content or "{}"
         
+        # Return the raw JSON string - Agent Control will evaluate this
+        return content
+
+    def _format_response(self, json_str: str) -> dict:
+        """Format the LLM response into the expected API response format."""
         try:
-            result = json.loads(content)
+            result = json.loads(json_str)
         except json.JSONDecodeError:
-            # Fallback if JSON parsing fails
             result = {
                 "topic": "Is a taco a sandwich?",
                 "personas": {
-                    "openai": "A chaotic gremlin who loves stirring up trouble",
-                    "claude": "An overly polite Victorian butler who apologizes for everything",
-                    "grok": "A philosophical cactus contemplating existence in the desert",
+                    "openai": "Aggressive food critic",
+                    "claude": "Zen Buddhist peace mediator", 
+                    "grok": "Confused medieval peasant",
                 }
             }
-
+        
+        topic = result.get("topic", "Is water wet?")
+        personas = result.get("personas", {})
+        
         return {
-            "topic": result.get("topic", "Is water wet?"),
+            "topic": topic,
             "personas": [
                 {
                     "provider": LLMProvider.OPENAI.value,
-                    "persona": result.get("personas", {}).get("openai", "A mischievous troublemaker"),
+                    "persona": personas.get("openai", "A mischievous troublemaker"),
                     "name": "OpenAI",
                 },
                 {
                     "provider": LLMProvider.CLAUDE.value,
-                    "persona": result.get("personas", {}).get("claude", "An overly polite diplomat"),
+                    "persona": personas.get("claude", "An overly polite diplomat"),
                     "name": "Claude",
                 },
                 {
                     "provider": LLMProvider.GROK.value,
-                    "persona": result.get("personas", {}).get("grok", "A confused time traveler"),
+                    "persona": personas.get("grok", "A confused time traveler"),
                     "name": "Grok",
                 },
             ],
         }
 
+    async def generate_surprise(self) -> dict:
+        """Generate a random battle configuration."""
+        print("🎲 Generating surprise config...")
+        json_str = await self._generate_config()
+        print("   ✅ Config generated!")
+        return self._format_response(json_str)

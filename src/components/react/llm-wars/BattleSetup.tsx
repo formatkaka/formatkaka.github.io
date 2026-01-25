@@ -3,12 +3,13 @@ import { LLMCard } from './LLMCard';
 import { getSurpriseConfig } from './api';
 import { LLM_PROVIDERS, PRESET_PERSONAS } from './types';
 
-import type { BattleMode, LLMConfig } from './types';
+import type { BattleMode, Language, LLMConfig } from './types';
 
 type BattleSetupProps = {
   onStartBattle: (
     topic: string,
     mode: BattleMode,
+    language: Language,
     rounds: number,
     llms: LLMConfig[]
   ) => void;
@@ -26,6 +27,7 @@ export function BattleSetup(props: BattleSetupProps) {
 
   const [topic, setTopic] = useState('');
   const [mode, setMode] = useState<BattleMode>('text');
+  const [language, setLanguage] = useState<Language>('en');
   const [rounds, setRounds] = useState('3');
   const [personas, setPersonas] = useState<Record<string, string>>(DEFAULT_PERSONAS);
   const [isSurpriseLoading, setIsSurpriseLoading] = useState(false);
@@ -43,7 +45,7 @@ export function BattleSetup(props: BattleSetupProps) {
       name: provider.charAt(0).toUpperCase() + provider.slice(1),
     }));
 
-    onStartBattle(topic, mode, parseInt(rounds, 10), llms);
+    onStartBattle(topic, mode, language, parseInt(rounds, 10), llms);
   };
 
   const handleSurpriseMe = async () => {
@@ -133,6 +135,26 @@ export function BattleSetup(props: BattleSetupProps) {
               className={`toggle-btn ${mode === 'emoji' ? 'active' : ''}`}
             >
               Emoji
+            </button>
+          </div>
+        </div>
+
+        <div className="setting">
+          <label className="label">Language</label>
+          <div className="toggle-group">
+            <button
+              type="button"
+              onClick={() => setLanguage('en')}
+              className={`toggle-btn ${language === 'en' ? 'active' : ''}`}
+            >
+              English
+            </button>
+            <button
+              type="button"
+              onClick={() => setLanguage('hi')}
+              className={`toggle-btn ${language === 'hi' ? 'active' : ''}`}
+            >
+              हिंदी
             </button>
           </div>
         </div>

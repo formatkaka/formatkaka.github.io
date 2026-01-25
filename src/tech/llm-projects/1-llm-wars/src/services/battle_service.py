@@ -5,8 +5,6 @@ Battle Service - Orchestrates turn-based LLM battles
 import asyncio
 from collections.abc import AsyncGenerator
 
-from agent_control import ControlViolationError
-
 from ..models.battle import (
     BattleConfig,
     BattleMessage,
@@ -30,6 +28,7 @@ class BattleService:
         config = BattleConfig(
             topic=request.topic,
             mode=request.mode,
+            language=request.language,
             rounds=request.rounds,
             llms=request.llms,
         )
@@ -88,18 +87,15 @@ class BattleService:
                 state.current_round = round_num
 
                 for llm_config in state.config.llms:
-                    try:
-                        response = await self._llm_service.generate_response(
-                            provider=llm_config.provider,
-                            persona=llm_config.persona,
-                            topic=state.config.topic,
-                            mode=state.config.mode,
-                            conversation_history=state.messages,
-                            current_round=round_num,
-                        )
-                    except ControlViolationError as e:
-                        # Safety control was triggered - use a safe placeholder
-                        response = f"[Content blocked by {e.control_name}]"
+                    response = await self._llm_service.generate_response(
+                        provider=llm_config.provider,
+                        persona=llm_config.persona,
+                        message=state.config.topic,
+                        mode=state.config.mode,
+                        language=state.config.language,
+                        conversation_history=state.messages,
+                        current_round=round_num,
+                    )
 
                     message = BattleMessage(
                         provider=llm_config.provider,
@@ -122,18 +118,15 @@ class BattleService:
     async def _run_round(self, state: BattleState, round_num: int) -> None:
         """Run a single round - each LLM responds once"""
         for llm_config in state.config.llms:
-            try:
-                response = await self._llm_service.generate_response(
-                    provider=llm_config.provider,
-                    persona=llm_config.persona,
-                    topic=state.config.topic,
-                    mode=state.config.mode,
-                    conversation_history=state.messages,
-                    current_round=round_num,
-                )
-            except ControlViolationError as e:
-                # Safety control was triggered - use a safe placeholder
-                response = f"[Content blocked by {e.control_name}]"
+            response = await self._llm_service.generate_response(
+                provider=llm_config.provider,
+                persona=llm_config.persona,
+                message=state.config.topic,
+                mode=state.config.mode,
+                language=state.config.language,
+                conversation_history=state.messages,
+                current_round=round_num,
+            )
 
             message = BattleMessage(
                 provider=llm_config.provider,

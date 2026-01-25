@@ -4,7 +4,7 @@ import { BattleArena } from './BattleArena';
 import { createBattle, streamBattle } from './api';
 import { generateBattleTitle } from './types';
 
-import type { BattleMode, BattleMessage, BattleStatus, LLMConfig } from './types';
+import type { BattleMode, Language, BattleMessage, BattleStatus, LLMConfig } from './types';
 
 type BattleState = {
   id: string;
@@ -25,13 +25,14 @@ export function LLMWars() {
   const handleStartBattle = async (
     topic: string,
     mode: BattleMode,
+    language: Language,
     rounds: number,
     llms: LLMConfig[]
   ) => {
     setIsLoading(true);
 
     try {
-      const response = await createBattle(topic, mode, rounds, llms);
+      const response = await createBattle(topic, mode, language, rounds, llms);
 
       setBattle({
         id: response.id,

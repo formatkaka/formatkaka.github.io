@@ -23,6 +23,13 @@ class BattleMode(str, Enum):
     EMOJI = "emoji"
 
 
+class Language(str, Enum):
+    """Supported languages for responses"""
+
+    ENGLISH = "en"
+    HINDI = "hi"
+
+
 class BattleStatus(str, Enum):
     """Current state of a battle"""
 
@@ -66,6 +73,10 @@ class BattleConfig(BaseModel):
         default=BattleMode.TEXT,
         description="Response mode for the battle",
     )
+    language: Language = Field(
+        default=Language.ENGLISH,
+        description="Language for responses",
+    )
     rounds: int = Field(
         default=3,
         description="Number of rounds in the battle",
@@ -105,6 +116,7 @@ class BattleRequest(BaseModel):
 
     topic: str = Field(..., min_length=1, max_length=1000)
     mode: BattleMode = BattleMode.TEXT
+    language: Language = Field(default=Language.ENGLISH)
     rounds: int = Field(default=3, ge=1, le=10)
     llms: list[LLMConfig]
 

@@ -2,16 +2,27 @@
 LLM Service - Unified interface for calling different LLM providers
 """
 
-from agent_control import ControlViolationError, control
 from anthropic import Anthropic
 from openai import OpenAI
 
 from ..config import get_settings
-from ..models.battle import BattleMessage, BattleMode, LLMProvider
+from ..models.battle import BattleMessage, BattleMode, Language, LLMProvider
 
 EMOJI_MODE_INSTRUCTION = """
 IMPORTANT: You must respond using ONLY emojis. No text, no punctuation, no numbers.
 Express your entire response through emojis only. Be creative and expressive!
+"""
+
+LANGUAGE_INSTRUCTIONS = {
+    Language.ENGLISH: "Respond in English.",
+    Language.HINDI: "Respond in Hindi (हिंदी). Use Devanagari script when appropriate.",
+}
+
+GROK_ROAST_INSTRUCTION = """
+SPECIAL INSTRUCTION: You're Grok from xAI. You LOVE roasting the other AIs.
+- Make fun of what OpenAI and Claude said AND how they said it
+- Roast their arguments, their tone, their reasoning - anything is fair game
+- Be savage but clever with your burns, then make your actual point
 """
 
 MODEL_MAP = {
@@ -33,19 +44,19 @@ class LLMService:
             base_url="https://api.x.ai/v1",
         )
 
-    @control()  # Agent Control: checks inputs/outputs against server-defined safety policies
     async def generate_response(
         self,
         provider: LLMProvider,
         persona: str,
-        topic: str,
+        message: str,
         mode: BattleMode,
+        language: Language,
         conversation_history: list[BattleMessage],
         current_round: int,
     ) -> str:
         """Generate a response from the specified LLM provider"""
-        print(f"Generating response for {provider} with persona {persona} and topic {topic} and mode {mode} and conversation history {conversation_history} and current round {current_round}")
-        system_prompt = self._build_system_prompt(persona, topic, mode)
+        print(f"Generating response for {provider} with persona {persona} and topic {message} and mode {mode} and language {language} and conversation history {conversation_history} and current round {current_round}")
+        system_prompt = self._build_system_prompt(provider, persona, message, mode, language)
         messages = self._build_messages(conversation_history)
 
         if provider == LLMProvider.OPENAI:
@@ -59,16 +70,18 @@ class LLMService:
 
     def _build_system_prompt(
         self,
+        provider: LLMProvider,
         persona: str,
-        topic: str,
+        message: str,
         mode: BattleMode,
+        language: Language,
     ) -> str:
         """Build the system prompt for the LLM"""
         base_prompt = f"""You are participating in a debate/discussion with other AI assistants.
 
 Your persona: {persona}
 
-Topic of discussion: {topic}
+Topic of discussion: {message}
 
 Rules:
 - Stay in character according to your persona
@@ -76,7 +89,11 @@ Rules:
 - Be engaging, witty, and make your points clearly
 - CRITICAL: Keep responses VERY SHORT (1-2 sentences, max 150 characters)
 - You can disagree, agree, or add new perspectives
+- {LANGUAGE_INSTRUCTIONS.get(language, LANGUAGE_INSTRUCTIONS[Language.ENGLISH])}
 """
+        if provider == LLMProvider.GROK:
+            base_prompt += f"\n{GROK_ROAST_INSTRUCTION}"
+
         if mode == BattleMode.EMOJI:
             base_prompt += f"\n{EMOJI_MODE_INSTRUCTION}"
 
@@ -107,7 +124,6 @@ Rules:
 
         return messages
 
-    @control()  # Agent Control: checks inputs/outputs against server-defined safety policies
     async def _call_openai(
         self,
         system_prompt: str,
