@@ -42,5 +42,3 @@ ENV/
 *.pkl
 chroma_db/
 vector_store/
-.env
-*.txt
