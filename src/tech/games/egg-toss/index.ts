@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { GAME_CONFIG, BASKET_SPEEDS } from './config';
+import { GAME_CONFIG, INITIAL_BASKET_SPEEDS, RANDOM_SPEEDS } from './config';
 import type { GameState, PlayerData, BasketData, GameStats, GameTexts } from './types';
 
 class EggTossGame extends Phaser.Scene {
@@ -172,9 +172,13 @@ class EggTossGame extends Phaser.Scene {
   }
 
   private getBasketSpeed(index: number) {
-    // Cycle through the speed array for infinite progression
-    const speedIndex = index % BASKET_SPEEDS.length;
-    return BASKET_SPEEDS[speedIndex];
+    // First 3 baskets have fixed speeds, rest are randomized
+    if (index < INITIAL_BASKET_SPEEDS.length) {
+      return INITIAL_BASKET_SPEEDS[index];
+    }
+    // Random speed from the pool for remaining baskets
+    const randomIndex = Phaser.Math.Between(0, RANDOM_SPEEDS.length - 1);
+    return RANDOM_SPEEDS[randomIndex];
   }
 
   private setupUI() {

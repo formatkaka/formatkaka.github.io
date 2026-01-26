@@ -2,9 +2,56 @@
 type Props = {
   title: string;
   description?: string;
+  category?: 'books' | 'tech' | 'personal' | 'movies' | 'thoughts';
 };
 
-const { title, description = 'Siddhant Loya - Prose, Poetry and Tech' } = Astro.props;
+const { title, description = 'Siddhant Loya - Prose, Poetry and Tech', category } = Astro.props;
+
+// Generate breadcrumbs from the current URL
+const pathname = Astro.url.pathname;
+const segments = pathname.split('/').filter(Boolean);
+
+// Map segment names to display labels
+const labelMap: Record<string, string> = {
+  blogs: 'Blogs',
+  tech: 'Tech',
+  poetry: 'Poetry',
+  books: 'Books',
+  personal: 'Personal',
+  movies: 'Movies',
+  thoughts: 'Thoughts',
+};
+
+// Map categories to their parent section URL
+const categoryToSection: Record<string, { href: string; label: string }> = {
+  tech: { href: '/tech', label: 'Tech' },
+  books: { href: '/blogs', label: 'Blogs' },
+  personal: { href: '/blogs', label: 'Blogs' },
+  movies: { href: '/blogs', label: 'Blogs' },
+  thoughts: { href: '/blogs', label: 'Blogs' },
+};
+
+// Build breadcrumb items
+let breadcrumbs: Array<{ href: string; label: string; isLast: boolean }>;
+
+if (category && categoryToSection[category] && segments[0] !== categoryToSection[category].href.slice(1)) {
+  // Override: show the correct section based on category
+  const section = categoryToSection[category];
+  const postSlug = segments[segments.length - 1];
+  const postLabel = postSlug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  breadcrumbs = [
+    { href: section.href, label: section.label, isLast: false },
+    { href: pathname, label: postLabel, isLast: true },
+  ];
+} else {
+  // Default: use URL-based breadcrumbs
+  breadcrumbs = segments.map((segment, index) => {
+    const href = '/' + segments.slice(0, index + 1).join('/');
+    const label = labelMap[segment] || segment.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    const isLast = index === segments.length - 1;
+    return { href, label, isLast };
+  });
+}
 ---
 
 <!doctype html>
@@ -33,6 +80,19 @@ const { title, description = 'Siddhant Loya - Prose, Poetry and Tech' } = Astro.
     </style>
   </head>
   <body>
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="/" class="breadcrumb-link">Home</a>
+      {breadcrumbs.map((crumb) => (
+        <>
+          <span class="breadcrumb-separator">/</span>
+          {crumb.isLast ? (
+            <span class="breadcrumb-current">{crumb.label}</span>
+          ) : (
+            <a href={crumb.href} class="breadcrumb-link">{crumb.label}</a>
+          )}
+        </>
+      ))}
+    </nav>
     <slot />
     <script>
       document.addEventListener('DOMContentLoaded', () => {
@@ -64,7 +124,45 @@ const { title, description = 'Siddhant Loya - Prose, Poetry and Tech' } = Astro.
       body {
         width: 80%;
         max-width: 700px;
-        margin-top: 100px;
+        margin-top: 60px;
+      }
+
+      /* Breadcrumbs */
+      .breadcrumbs {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+      }
+
+      .breadcrumb-link {
+        color: var(--text-color-primary);
+        text-decoration: none;
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+      }
+
+      .breadcrumb-link::after {
+        display: none;
+      }
+
+      .breadcrumb-link:hover {
+        opacity: 1;
+        text-decoration: underline;
+        text-decoration-color: var(--text-color-links);
+        text-underline-offset: 3px;
+      }
+
+      .breadcrumb-separator {
+        color: var(--text-color-primary);
+        opacity: 0.4;
+      }
+
+      .breadcrumb-current {
+        color: var(--text-color-primary);
+        font-weight: 500;
       }
 
       .title {

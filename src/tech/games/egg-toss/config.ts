@@ -1,6 +1,6 @@
-export const BASKET_SPEEDS = [
-  10, 15, 20, 0, 25, 30, 0, 40, 50, 0, 60, 75, 90, 0, 110, 125, 140, 0, 160, 180,
-];
+// First 3 baskets have fixed speeds, rest are randomized from RANDOM_SPEEDS pool
+export const INITIAL_BASKET_SPEEDS = [16, 23, 30];
+export const RANDOM_SPEEDS = [0, 37, 46, 60, 76, 90, 113, 136, 166, 187];
 
 export const GAME_CONFIG = {
   CANVAS: {

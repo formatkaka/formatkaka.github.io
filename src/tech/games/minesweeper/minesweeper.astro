@@ -15,8 +15,42 @@
   .clicked-mine {
     background-color: var(--color-red-500);
   }
+
+  .game-level {
+    background-color: #f2eee5;
+    color: #1b2021;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .game-level:hover {
+    background-color: #e8e4db;
+    transform: translateY(-1px);
+  }
+
+  .game-level:active {
+    transform: translateY(0);
+  }
+
+  .reset {
+    background-color: #f2eee5;
+    color: #1b2021;
+    padding: 0.25rem 1rem;
+    border-radius: 4px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+  }
+
+  .reset:hover {
+    background-color: #e8e4db;
+  }
 </style>
-<div class="h-screen w-screen overflow-hidden bg-primary p-0 m-0">
+<div class="h-screen w-screen overflow-hidden bg-[#a6dcef] p-0 m-0">
   <div class="flex flex-col items-center justify-center h-full gap-8">
     <div class="text-center">
       <h1 class="text-4xl font-bold m-1">Minesweeper</h1>

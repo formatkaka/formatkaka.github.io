@@ -6,63 +6,256 @@ const posts = await getCollection('blog', ({ data }) => {
   return data.category === 'tech';
 });
 posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const projects = [
+  {
+    title: 'LLM Wars',
+    description: 'Watch AI models debate each other',
+    href: '/tech/llm-wars',
+    icon: '🤖',
+  },
+  {
+    title: 'Minesweeper',
+    description: 'Classic puzzle game built with vanilla JS',
+    href: '/tech/minesweeper',
+    icon: '💣',
+  },
+  {
+    title: 'Egg Toss',
+    description: 'A fun catching game',
+    href: '/tech/egg-toss',
+    icon: '🥚',
+  },
+];
+
+const tools = [
+  {
+    title: 'Interview Prep Tracker',
+    description: 'Track your coding interview preparation progress',
+    href: '/tech/interview-prep',
+    icon: '📝',
+  },
+  {
+    title: 'Learning Animations',
+    description: 'CSS & JS animation experiments',
+    href: '/tech/learning-animations',
+    icon: '✨',
+  },
+];
 ---
 
-<BlogLayout title="Tech Blogs">
-  <div>
-    <h1 class="title">Tech Blogs</h1>
-    <ul>
-      {
-        posts.map((post) => (
-          <li class="mb-2">
-            <p class="date">
-              {post.data.pubDate.toLocaleDateString('en-us', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-              })}
-            </p>
-            <a href={`/blogs/${post.slug}`} class="link">
-              {post.data.title}
+<BlogLayout title="Tech">
+  <div class="tech-container">
+    <h1 class="page-title">Tech</h1>
+    
+    <!-- Writings Section -->
+    <section class="section">
+      <h2 class="section-heading">Writings</h2>
+      <ul class="writings-list">
+        {
+          posts.map((post) => (
+            <li class="writing-item">
+              <span class="writing-date">
+                {post.data.pubDate.toLocaleDateString('en-us', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric',
+                })}
+              </span>
+              <a href={`/blogs/${post.slug}`} class="writing-link">
+                {post.data.title}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <!-- Projects & Tools Grid -->
+    <section class="section">
+      <h2 class="section-heading">Projects</h2>
+      <div class="projects-grid">
+        {
+          projects.map((project) => (
+            <a href={project.href} class="project-card">
+              <span class="project-icon">{project.icon}</span>
+              <div class="project-content">
+                <h3 class="project-title">{project.title}</h3>
+                <p class="project-description">{project.description}</p>
+              </div>
             </a>
-          </li>
-        ))
-      }
-    </ul>
-    <div class="mt-8">
-      <h2 class="text-xl font-bold mb-4">Tech Projects</h2>
-      <a href="/tech/minesweeper" class="inline-block bg-blue-500 text-white py-2 px-4 rounded">
-        Play Minesweeper
-      </a>
-    </div>
-    <div class="mt-8">
-      <h2 class="text-xl font-bold mb-4">Tech Tools</h2>
-      <div class="flex flex-wrap gap-4">
-        <a
-          href="/tech/egg-toss"
-          class="inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors"
-        >
-          Play Egg Toss
-        </a>
-        <a
-          href="/tech/interview-prep"
-          class="inline-block bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-colors"
-        >
-          Interview Prep Tracker
-        </a>
-        <a
-          href="/tech/learning-animations"
-          class="inline-block bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-600 transition-colors"
-        >
-          Learning Animations
-        </a>
-        <a
-          href="/tech/llm-wars"
-          class="inline-block bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition-colors"
-        >
-          LLM Wars
-        </a>
+          ))
+        }
       </div>
-    </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-heading">Tools & Experiments</h2>
+      <div class="projects-grid">
+        {
+          tools.map((tool) => (
+            <a href={tool.href} class="project-card">
+              <span class="project-icon">{tool.icon}</span>
+              <div class="project-content">
+                <h3 class="project-title">{tool.title}</h3>
+                <p class="project-description">{tool.description}</p>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </section>
   </div>
+
+  <style>
+    .tech-container {
+      padding-bottom: 4rem;
+    }
+
+    .page-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 2.5rem;
+      text-decoration: underline;
+      text-underline-offset: 8px;
+      text-decoration-color: var(--text-color-links);
+    }
+
+    .section {
+      margin-bottom: 3rem;
+    }
+
+    .section-heading {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-color-primary);
+      margin-bottom: 1.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.7;
+    }
+
+    /* Writings List */
+    .writings-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .writing-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .writing-item:first-child {
+      padding-top: 0;
+    }
+
+    .writing-item:last-child {
+      border-bottom: none;
+    }
+
+    .writing-date {
+      font-size: 0.875rem;
+      color: rgba(27, 32, 33, 0.6);
+      font-family: monospace;
+    }
+
+    .writing-link {
+      font-size: 1.125rem;
+      color: var(--text-color-primary);
+      text-decoration: none;
+      position: relative;
+      display: inline-block;
+    }
+
+    .writing-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: var(--text-color-links);
+      z-index: -1;
+      transition: height 0.2s ease;
+    }
+
+    .writing-link:hover::after {
+      height: 100%;
+    }
+
+    /* Projects Grid */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .project-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.25rem;
+      background: var(--bg-second);
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text-color-primary);
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+
+    .project-card::after {
+      display: none;
+    }
+
+    .project-card:hover {
+      border-color: var(--text-color-links);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .project-icon {
+      font-size: 1.75rem;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .project-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .project-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0 0 0.25rem 0;
+      color: var(--text-color-primary);
+    }
+
+    .project-description {
+      font-size: 0.875rem;
+      color: rgba(27, 32, 33, 0.7);
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .page-title {
+        font-size: 2rem;
+      }
+
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .writing-item {
+        padding: 0.75rem 0;
+      }
+    }
+  </style>
 </BlogLayout>
