@@ -1,6 +1,23 @@
-import type { BattleResponse, LLMConfig, BattleMode, Language, BattleMessage } from './types';
+import type { BattleResponse, BattleConfig, LLMConfig, BattleMode, Language, BattleMessage, LLMProvider } from './types';
 
 const API_BASE = import.meta.env.PUBLIC_LLM_WARS_API || 'http://localhost:5123';
+
+async function apiRequest<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  const response = await fetch(`${API_BASE}${endpoint}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ detail: 'Request failed' }));
+    throw new Error(error.detail || 'Request failed');
+  }
+
+  return response.json();
+}
 
 export async function createBattle(
   topic: string,
@@ -9,41 +26,24 @@ export async function createBattle(
   rounds: number,
   llms: LLMConfig[]
 ): Promise<BattleResponse> {
-  const response = await fetch(`${API_BASE}/api/battle/`, {
+  return apiRequest<BattleResponse>('/api/battle/', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ topic, mode, language, rounds, llms }),
   });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Failed to create battle');
-  }
-
-  return response.json();
 }
 
 export async function getBattle(battleId: string): Promise<BattleResponse> {
-  const response = await fetch(`${API_BASE}/api/battle/${battleId}`);
+  return apiRequest<BattleResponse>(`/api/battle/${battleId}`);
+}
 
-  if (!response.ok) {
-    throw new Error('Failed to get battle');
-  }
-
-  return response.json();
+export async function getBattleConfig(battleId: string): Promise<BattleConfig> {
+  return apiRequest<BattleConfig>(`/api/battle/${battleId}/config`);
 }
 
 export async function runBattleSync(battleId: string): Promise<BattleResponse> {
-  const response = await fetch(`${API_BASE}/api/battle/${battleId}/run`, {
+  return apiRequest<BattleResponse>(`/api/battle/${battleId}/run`, {
     method: 'POST',
   });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Failed to run battle');
-  }
-
-  return response.json();
 }
 
 export function streamBattle(
@@ -52,28 +52,51 @@ export function streamBattle(
   onComplete: () => void,
   onError: (error: string) => void
 ): () => void {
-  const eventSource = new EventSource(`${API_BASE}/api/battle/${battleId}/stream`);
+  const url = `${API_BASE}/api/battle/${battleId}/stream`;
+  console.log('🔌 Connecting to stream:', url);
+  
+  const eventSource = new EventSource(url);
+
+  eventSource.onopen = () => {
+    console.log('✅ EventSource connected');
+  };
 
   eventSource.onmessage = (event) => {
-    const data = JSON.parse(event.data);
+    try {
+      console.log('📨 Received message:', event.data);
+      const data = JSON.parse(event.data);
 
-    if (data.type === 'complete') {
-      onComplete();
-      eventSource.close();
-    } else if (data.type === 'error') {
-      onError(data.message);
-      eventSource.close();
-    } else {
-      onMessage(data as BattleMessage);
+      if (data.type === 'complete') {
+        console.log('✅ Battle complete');
+        onComplete();
+        eventSource.close();
+      } else if (data.type === 'error') {
+        console.error('❌ Battle error:', data.message);
+        onError(data.message);
+        eventSource.close();
+      } else {
+        console.log('💬 Battle message:', data);
+        onMessage(data as BattleMessage);
+      }
+    } catch (error) {
+      console.error('❌ Failed to parse message:', error, event.data);
+      onError('Failed to parse message');
     }
   };
 
-  eventSource.onerror = () => {
-    onError('Connection lost');
-    eventSource.close();
+  eventSource.onerror = (error) => {
+    console.error('❌ EventSource error:', error);
+    // EventSource will automatically retry, so only close on persistent errors
+    if (eventSource.readyState === EventSource.CLOSED) {
+      onError('Connection lost');
+      eventSource.close();
+    }
   };
 
-  return () => eventSource.close();
+  return () => {
+    console.log('🔌 Closing EventSource');
+    eventSource.close();
+  };
 }
 
 export type SurpriseConfig = {
@@ -86,11 +109,16 @@ export type SurpriseConfig = {
 };
 
 export async function getSurpriseConfig(): Promise<SurpriseConfig> {
-  const response = await fetch(`${API_BASE}/api/battle/surprise`);
+  return apiRequest<SurpriseConfig>('/api/battle/surprise');
+}
 
-  if (!response.ok) {
-    throw new Error('Failed to get surprise configuration');
-  }
+export async function voteForBattle(battleId: string, provider: LLMProvider): Promise<void> {
+  await apiRequest(`/api/battle/${battleId}/vote`, {
+    method: 'POST',
+    body: JSON.stringify({ provider }),
+  });
+}
 
-  return response.json();
+export async function getBattleVotes(battleId: string): Promise<Record<LLMProvider, number>> {
+  return apiRequest<Record<LLMProvider, number>>(`/api/battle/${battleId}/votes`);
 }

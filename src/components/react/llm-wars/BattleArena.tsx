@@ -1,10 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { MessageBubble, TypingIndicator } from './MessageBubble';
-import { LLM_COLORS, LLM_LABELS, PRESET_PERSONAS } from './types';
+import { LLM_COLORS } from './types';
+import { voteForBattle, getBattleVotes } from './api';
+import { StatusBadge } from './components/StatusBadge';
+import { VoteCard } from './components/VoteCard';
+import { SharedBattleOverlay } from './components/SharedBattleOverlay';
 
 import type { BattleMessage, BattleStatus, LLMConfig, LLMProvider } from './types';
+import type { BattleConfig } from './types';
 
 type BattleArenaProps = {
+  battleId: string;
   topic: string;
   title: string;
   messages: BattleMessage[];
@@ -14,10 +20,15 @@ type BattleArenaProps = {
   errorMessage: string | null;
   llms: LLMConfig[];
   onReset: () => void;
+  showSharedOverlay?: boolean;
+  sharedBattleConfig?: BattleConfig | null;
+  onViewSharedBattle?: () => void;
+  loadingShared?: boolean;
 };
 
 export function BattleArena(props: BattleArenaProps) {
   const {
+    battleId,
     topic,
     title,
     messages,
@@ -27,7 +38,25 @@ export function BattleArena(props: BattleArenaProps) {
     errorMessage,
     llms,
     onReset,
+    showSharedOverlay = false,
+    sharedBattleConfig,
+    onViewSharedBattle,
+    loadingShared = false,
   } = props;
+
+  const [shareCopied, setShareCopied] = useState(false);
+  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
+
+  const handleShare = async () => {
+    const shareUrl = `${window.location.origin}${window.location.pathname}?battle=${battleId}`;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    } catch (error) {
+      console.error('Failed to copy to clipboard:', error);
+    }
+  };
 
   const [votes, setVotes] = useState<Record<LLMProvider, number>>({
     openai: 0,
@@ -35,11 +64,35 @@ export function BattleArena(props: BattleArenaProps) {
     grok: 0,
   });
   const [userVote, setUserVote] = useState<LLMProvider | null>(null);
+  const [isVoting, setIsVoting] = useState(false);
 
-  const handleVote = (provider: LLMProvider) => {
-    if (userVote) return;
-    setUserVote(provider);
-    setVotes((prev) => ({ ...prev, [provider]: prev[provider] + 1 }));
+  // Load existing votes when battle is completed
+  useEffect(() => {
+    if (status === 'completed' && battleId) {
+      getBattleVotes(battleId)
+        .then((voteCounts) => {
+          setVotes(voteCounts);
+        })
+        .catch((error) => {
+          console.error('Failed to load votes:', error);
+        });
+    }
+  }, [status, battleId]);
+
+  const handleVote = async (provider: LLMProvider) => {
+    if (userVote || isVoting) return;
+    
+    setIsVoting(true);
+    try {
+      await voteForBattle(battleId, provider);
+      setUserVote(provider);
+      setVotes((prev) => ({ ...prev, [provider]: prev[provider] + 1 }));
+    } catch (error) {
+      console.error('Failed to save vote:', error);
+      // Optionally show error to user
+    } finally {
+      setIsVoting(false);
+    }
   };
 
   const totalVotes = Object.values(votes).reduce((a, b) => a + b, 0);
@@ -50,10 +103,33 @@ export function BattleArena(props: BattleArenaProps) {
   };
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+
+  const updateScrollIndicator = () => {
+    const container = messagesContainerRef.current;
+    if (!container) {
+      setShowScrollIndicator(false);
+      return;
+    }
+
+    const threshold = 24; // px from bottom
+    const isOverflowing = container.scrollHeight > container.clientHeight + 8;
+    const distanceFromBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight;
+    setShowScrollIndicator(isOverflowing && distanceFromBottom > threshold);
+  };
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    updateScrollIndicator();
   }, [messages]);
+
+  const handleScroll = () => {
+    updateScrollIndicator();
+  };
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const messagesByRound = messages.reduce<Record<number, BattleMessage[]>>((acc, msg) => {
     if (!acc[msg.round_number]) {
@@ -76,45 +152,56 @@ export function BattleArena(props: BattleArenaProps) {
   const typingLLM = getCurrentTypingLLM();
 
   return (
-    <div className="battle-arena">
+    <div className="relative font-sans">
+      {showSharedOverlay && sharedBattleConfig && (
+        <SharedBattleOverlay
+          config={sharedBattleConfig}
+          loading={loadingShared}
+          onViewBattle={onViewSharedBattle || (() => {})}
+        />
+      )}
+
       {/* Header */}
-      <div className="arena-header">
-        <div className="header-left">
-          <h2 className="battle-title">{title}</h2>
-          <p className="battle-topic">{topic}</p>
+      <div className="mb-4 flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-bold text-[#1b2021] mb-1">{title}</h2>
+          <p className="text-sm text-[#666]">{topic}</p>
         </div>
-        <button onClick={onReset} className="new-btn" type="button">
+        <button
+          onClick={onReset}
+          className="whitespace-nowrap rounded-md border-0 bg-white px-4 py-2 text-sm font-semibold text-[#555] outline-none transition hover:bg-[#fff8f4] hover:text-[#1b2021]"
+          type="button"
+        >
           New Battle
         </button>
       </div>
 
       {/* Status Bar */}
-      <div className="status-bar">
-        <div className="round-info">
-          Round <span className="round-num">{currentRound}</span> of {totalRounds}
+      <div className="mb-4 flex items-center gap-4 rounded-lg bg-white px-4 py-3">
+        <div className="text-sm text-[#666]">
+          Round <span className="font-bold text-[#1b2021]">{currentRound}</span> of {totalRounds}
         </div>
-        <div className={`status-badge ${status}`}>
-          {status === 'in_progress' && '● In Progress'}
-          {status === 'completed' && '✓ Completed'}
-          {status === 'error' && '✕ Error'}
-          {status === 'pending' && '○ Pending'}
-        </div>
+        <StatusBadge status={status} />
       </div>
 
       {errorMessage && (
-        <div className="error-box">
+        <div className="mb-4 rounded-lg bg-[#ffebee] px-4 py-3 text-sm text-[#c62828]">
           {errorMessage}
         </div>
       )}
 
       {/* Messages */}
-      <div className="messages-container">
+      <div
+        className="relative max-h-[500px] min-h-[300px] overflow-y-auto rounded-xl bg-white pb-10"
+        ref={messagesContainerRef}
+        onScroll={handleScroll}
+      >
         {Object.entries(messagesByRound).map(([round, roundMessages]) => (
-          <div key={round} className="round-section">
-            <div className="round-header">
-              <span>Round {round}</span>
+          <div key={round} className="border-b border-[#f0f0f0]">
+            <div className="sticky top-0 border-b border-[#f0f0f0] bg-[#fafafa] px-4 py-2 text-[11px] font-semibold uppercase tracking-wide text-[#888]">
+              Round {round}
             </div>
-            <div className="round-messages">
+            <div className="py-2">
               {roundMessages.map((message, idx) => (
                 <MessageBubble key={`${round}-${idx}`} message={message} llms={llms} />
               ))}
@@ -123,7 +210,7 @@ export function BattleArena(props: BattleArenaProps) {
         ))}
 
         {typingLLM && (
-          <div className="typing-wrapper">
+          <div className="border-t border-[#f0f0f0] px-4 py-2">
             <TypingIndicator
               name={typingLLM.name}
               color={LLM_COLORS[typingLLM.provider]}
@@ -132,360 +219,69 @@ export function BattleArena(props: BattleArenaProps) {
         )}
 
         <div ref={messagesEndRef} />
+
+        <div
+          className={`pointer-events-none sticky bottom-4 flex justify-end px-4 pb-4 transition-all duration-200 ${
+            showScrollIndicator ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1.5'
+          }`}
+        >
+          <button
+            className="pointer-events-auto inline-flex items-center gap-1 rounded-full border border-[#f6ad7b] bg-[#fff8f4] px-3 py-1.5 text-xs font-semibold text-[#1b2021] outline-none shadow-md transition hover:bg-[#ffe9dd] hover:border-[#e8946a]"
+            type="button"
+            onClick={scrollToBottom}
+          >
+            ↓ Scroll to latest
+          </button>
+        </div>
       </div>
+
+      {/* Share Button - Always visible, enabled when completed */}
+      {status === 'completed' && (
+        <div className="my-4 flex justify-center">
+          <button
+            onClick={handleShare}
+            className={`inline-flex items-center gap-2 rounded-full border border-[#f6ad7b] px-4 py-2 text-sm font-semibold text-[#1b2021] outline-none transition ${
+              shareCopied
+                ? 'bg-[#e8f5e9] border-[#4caf50] text-[#2e7d32]'
+                : 'bg-[#fff8f4] hover:bg-[#ffe9dd] hover:border-[#e8946a]'
+            }`}
+            type="button"
+          >
+            {shareCopied ? '✓ Copied!' : '🔗 Share Battle'}
+          </button>
+        </div>
+      )}
 
       {/* Victory Section */}
       {status === 'completed' && (
-        <div className="victory-section">
-          <h3 className="victory-title">Who won this debate?</h3>
+        <div className="mt-6 rounded-xl bg-white p-6 text-center">
+          <h3 className="mb-5 text-lg font-semibold text-[#1b2021]">Who won this debate?</h3>
           
-          <div className="vote-grid">
-            {llms.map((llm) => {
-              const personaLabel =
-                PRESET_PERSONAS.find((p) => p.description === llm.persona)?.label || 'Custom';
-              const isSelected = userVote === llm.provider;
-              const percentage = getVotePercentage(llm.provider);
-
-              return (
-                <button
-                  key={llm.provider}
-                  onClick={() => handleVote(llm.provider)}
-                  disabled={userVote !== null}
-                  className={`vote-card ${isSelected ? 'selected' : ''} ${userVote && !isSelected ? 'faded' : ''}`}
-                  type="button"
-                >
-                  <div 
-                    className="vote-avatar"
-                    style={{ backgroundColor: LLM_COLORS[llm.provider] }}
-                  >
-                    {llm.provider.charAt(0).toUpperCase()}
-                  </div>
-                  <div className="vote-name">{LLM_LABELS[llm.provider]}</div>
-                  <div className="vote-persona">{personaLabel}</div>
-
-                  {userVote && (
-                    <div className="vote-result">
-                      <div className="result-bar">
-                        <div 
-                          className="result-fill"
-                          style={{ 
-                            width: `${percentage}%`,
-                            backgroundColor: LLM_COLORS[llm.provider]
-                          }}
-                        />
-                      </div>
-                      <span className="result-percent">{percentage}%</span>
-                    </div>
-                  )}
-
-                  {isSelected && (
-                    <div className="winner-badge">Your pick!</div>
-                  )}
-                </button>
-              );
-            })}
+          <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+            {llms.map((llm) => (
+              <VoteCard
+                key={llm.provider}
+                llm={llm}
+                isSelected={userVote === llm.provider}
+                percentage={getVotePercentage(llm.provider)}
+                hasVoted={userVote !== null}
+                onVote={() => handleVote(llm.provider)}
+                disabled={userVote !== null}
+              />
+            ))}
           </div>
 
-          <button onClick={onReset} className="rematch-btn" type="button">
+          <button
+            onClick={onReset}
+            className="rounded-lg border-0 bg-[#1b2021] px-8 py-3 text-base font-semibold text-white outline-none transition hover:bg-[#333]"
+            type="button"
+          >
             Start New Battle
           </button>
         </div>
       )}
 
-      <style>{`
-        .battle-arena {
-          font-family: 'Source Sans Pro', sans-serif;
-        }
-        
-        /* Header */
-        .arena-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          margin-bottom: 1rem;
-          gap: 1rem;
-        }
-        
-        .battle-title {
-          font-size: 1.25rem;
-          font-weight: 700;
-          color: #1b2021;
-          margin: 0 0 0.25rem;
-        }
-        
-        .battle-topic {
-          font-size: 0.875rem;
-          color: #666;
-          margin: 0;
-        }
-        
-        .new-btn {
-          padding: 0.5rem 1rem;
-          background: white;
-          border: 1px solid #ddd;
-          border-radius: 6px;
-          font-family: inherit;
-          font-size: 0.875rem;
-          color: #555;
-          cursor: pointer;
-          transition: all 0.2s;
-          white-space: nowrap;
-        }
-        
-        .new-btn:hover {
-          border-color: #f6ad7b;
-          color: #1b2021;
-        }
-        
-        /* Status Bar */
-        .status-bar {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          margin-bottom: 1rem;
-          padding: 0.75rem 1rem;
-          background: white;
-          border-radius: 8px;
-        }
-        
-        .round-info {
-          font-size: 0.875rem;
-          color: #666;
-        }
-        
-        .round-num {
-          font-weight: 700;
-          color: #1b2021;
-        }
-        
-        .status-badge {
-          font-size: 0.8125rem;
-          padding: 0.25rem 0.75rem;
-          border-radius: 20px;
-        }
-        
-        .status-badge.in_progress {
-          background: #e8f5e9;
-          color: #2e7d32;
-        }
-        
-        .status-badge.completed {
-          background: #e3f2fd;
-          color: #1565c0;
-        }
-        
-        .status-badge.error {
-          background: #ffebee;
-          color: #c62828;
-        }
-        
-        .status-badge.pending {
-          background: #f5f5f5;
-          color: #666;
-        }
-        
-        /* Error Box */
-        .error-box {
-          padding: 1rem;
-          background: #ffebee;
-          border-radius: 8px;
-          color: #c62828;
-          font-size: 0.875rem;
-          margin-bottom: 1rem;
-        }
-        
-        /* Messages */
-        .messages-container {
-          background: white;
-          border-radius: 12px;
-          min-height: 300px;
-          max-height: 500px;
-          overflow-y: auto;
-        }
-        
-        .round-section {
-          border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .round-section:last-child {
-          border-bottom: none;
-        }
-        
-        .round-header {
-          position: sticky;
-          top: 0;
-          background: #fafafa;
-          padding: 0.5rem 1rem;
-          font-size: 0.75rem;
-          font-weight: 600;
-          color: #888;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .round-messages {
-          padding: 0.5rem 0;
-        }
-        
-        .typing-wrapper {
-          padding: 0.5rem 1rem;
-          border-top: 1px solid #f0f0f0;
-        }
-        
-        /* Scrollbar */
-        .messages-container::-webkit-scrollbar {
-          width: 8px;
-        }
-        
-        .messages-container::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        
-        .messages-container::-webkit-scrollbar-thumb {
-          background: #ddd;
-          border-radius: 4px;
-        }
-        
-        /* Victory Section */
-        .victory-section {
-          margin-top: 1.5rem;
-          padding: 1.5rem;
-          background: white;
-          border-radius: 12px;
-          text-align: center;
-        }
-        
-        .victory-title {
-          font-size: 1.125rem;
-          font-weight: 600;
-          color: #1b2021;
-          margin: 0 0 1.25rem;
-        }
-        
-        .vote-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 1rem;
-          margin-bottom: 1.5rem;
-        }
-        
-        .vote-card {
-          padding: 1.25rem 1rem;
-          background: #fafafa;
-          border: 2px solid transparent;
-          border-radius: 12px;
-          cursor: pointer;
-          transition: all 0.2s;
-          position: relative;
-        }
-        
-        .vote-card:hover:not(:disabled) {
-          background: #f5f5f5;
-          border-color: #ddd;
-        }
-        
-        .vote-card.selected {
-          background: #fff5ef;
-          border-color: #f6ad7b;
-        }
-        
-        .vote-card.faded {
-          opacity: 0.5;
-        }
-        
-        .vote-card:disabled {
-          cursor: default;
-        }
-        
-        .vote-avatar {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin: 0 auto 0.5rem;
-          font-size: 1rem;
-          font-weight: 700;
-          color: white;
-        }
-        
-        .vote-name {
-          font-size: 0.875rem;
-          font-weight: 600;
-          color: #1b2021;
-        }
-        
-        .vote-persona {
-          font-size: 0.75rem;
-          color: #888;
-          margin-top: 0.125rem;
-        }
-        
-        .vote-result {
-          margin-top: 0.75rem;
-        }
-        
-        .result-bar {
-          height: 6px;
-          background: #e5e5e5;
-          border-radius: 3px;
-          overflow: hidden;
-          margin-bottom: 0.25rem;
-        }
-        
-        .result-fill {
-          height: 100%;
-          transition: width 0.5s ease-out;
-        }
-        
-        .result-percent {
-          font-size: 0.75rem;
-          font-weight: 600;
-          color: #666;
-        }
-        
-        .winner-badge {
-          position: absolute;
-          top: -8px;
-          right: -8px;
-          background: #f6ad7b;
-          color: white;
-          font-size: 0.625rem;
-          font-weight: 600;
-          padding: 0.25rem 0.5rem;
-          border-radius: 10px;
-        }
-        
-        .rematch-btn {
-          padding: 0.75rem 2rem;
-          background: #1b2021;
-          border: none;
-          border-radius: 8px;
-          font-family: inherit;
-          font-size: 1rem;
-          font-weight: 600;
-          color: white;
-          cursor: pointer;
-          transition: background 0.2s;
-        }
-        
-        .rematch-btn:hover {
-          background: #333;
-        }
-        
-        @media (max-width: 640px) {
-          .arena-header {
-            flex-direction: column;
-            align-items: flex-start;
-          }
-          
-          .vote-grid {
-            grid-template-columns: 1fr;
-          }
-        }
-      `}</style>
+      
     </div>
   );
 }

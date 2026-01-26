@@ -1,4 +1,6 @@
-import { LLM_COLORS, PRESET_PERSONAS } from './types';
+import { useEffect, useState } from 'react';
+import { LLM_COLORS } from './types';
+import { getPersonaDisplay } from './utils';
 
 import type { BattleMessage, LLMConfig } from './types';
 
@@ -12,82 +14,65 @@ export function MessageBubble(props: MessageBubbleProps) {
 
   const color = LLM_COLORS[message.provider];
   const llmConfig = llms.find((llm) => llm.provider === message.provider);
+  const personaDisplay = getPersonaDisplay(llmConfig);
 
-  const personaLabel = PRESET_PERSONAS.find(
-    (p) => p.description === llmConfig?.persona
-  )?.label || 'Custom';
+  const [displayText, setDisplayText] = useState('');
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    const content = message.content || '';
+    if (!content) {
+      setDisplayText('');
+      setIsAnimating(false);
+      return;
+    }
+
+    const useWords = content.includes(' ');
+    const tokens = useWords ? content.split(' ') : content.split('');
+    let index = 0;
+
+    setDisplayText('');
+    setIsAnimating(true);
+
+    const interval = setInterval(() => {
+      const nextIndex = index + 1;
+      if (nextIndex >= tokens.length) {
+        setDisplayText(content);
+        setIsAnimating(false);
+        clearInterval(interval);
+        return;
+      }
+
+      const nextText = tokens.slice(0, nextIndex).join(useWords ? ' ' : '');
+      setDisplayText(nextText);
+      index = nextIndex;
+    }, useWords ? 90 : 40);
+
+    return () => clearInterval(interval);
+  }, [message.content]);
 
   return (
-    <div className="message-bubble">
-      <div 
-        className="avatar"
+    <div className="flex gap-3 px-4 py-3 hover:bg-[#fafafa]">
+      <div
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
         style={{ backgroundColor: color }}
       >
         {message.name.charAt(0).toUpperCase()}
       </div>
-      <div className="content">
-        <div className="header">
-          <span className="name" style={{ color }}>{message.name}</span>
-          <span className="persona">{personaLabel}</span>
+      <div className="min-w-0 flex-1">
+        <div className="mb-1">
+          <span className="text-sm font-semibold" style={{ color }}>
+            {message.name}
+          </span>
+          <span className="text-sm text-[#999]"> - {personaDisplay}</span>
         </div>
-        <p className="text">{message.content}</p>
+        <p className="text-[15px] leading-relaxed text-[#333] whitespace-pre-wrap break-words">
+          {displayText}
+          {isAnimating && (
+            <span className="ml-1 inline-block text-[#999] animate-pulse">▍</span>
+          )}
+        </p>
       </div>
-
-      <style>{`
-        .message-bubble {
-          display: flex;
-          gap: 0.75rem;
-          padding: 0.75rem 1rem;
-        }
-        
-        .message-bubble:hover {
-          background: #fafafa;
-        }
-        
-        .avatar {
-          width: 36px;
-          height: 36px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 0.875rem;
-          font-weight: 700;
-          color: white;
-          flex-shrink: 0;
-        }
-        
-        .content {
-          flex: 1;
-          min-width: 0;
-        }
-        
-        .header {
-          display: flex;
-          align-items: baseline;
-          gap: 0.5rem;
-          margin-bottom: 0.25rem;
-        }
-        
-        .name {
-          font-size: 0.875rem;
-          font-weight: 600;
-        }
-        
-        .persona {
-          font-size: 0.75rem;
-          color: #999;
-        }
-        
-        .text {
-          font-size: 0.9375rem;
-          color: #333;
-          line-height: 1.6;
-          margin: 0;
-          white-space: pre-wrap;
-          word-break: break-word;
-        }
-      `}</style>
     </div>
   );
 }
@@ -101,81 +86,23 @@ export function TypingIndicator(props: TypingIndicatorProps) {
   const { name, color } = props;
 
   return (
-    <div className="typing-indicator">
-      <div 
-        className="avatar"
+    <div className="flex items-center gap-3">
+      <div
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
         style={{ backgroundColor: color }}
       >
         {name.charAt(0).toUpperCase()}
       </div>
-      <div className="content">
-        <span className="name" style={{ color }}>{name}</span>
-        <div className="dots">
-          <span className="dot" />
-          <span className="dot" />
-          <span className="dot" />
+      <div className="flex items-center gap-2">
+        <span className="text-sm font-semibold" style={{ color }}>
+          {name}
+        </span>
+        <div className="flex gap-1">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#ccc] animate-bounce" style={{ animationDelay: '0s' }} />
+          <span className="h-1.5 w-1.5 rounded-full bg-[#ccc] animate-bounce" style={{ animationDelay: '0.16s' }} />
+          <span className="h-1.5 w-1.5 rounded-full bg-[#ccc] animate-bounce" style={{ animationDelay: '0.32s' }} />
         </div>
       </div>
-
-      <style>{`
-        .typing-indicator {
-          display: flex;
-          gap: 0.75rem;
-          align-items: center;
-        }
-        
-        .avatar {
-          width: 36px;
-          height: 36px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 0.875rem;
-          font-weight: 700;
-          color: white;
-          flex-shrink: 0;
-        }
-        
-        .content {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-        }
-        
-        .name {
-          font-size: 0.875rem;
-          font-weight: 600;
-        }
-        
-        .dots {
-          display: flex;
-          gap: 4px;
-        }
-        
-        .dot {
-          width: 6px;
-          height: 6px;
-          background: #ccc;
-          border-radius: 50%;
-          animation: bounce 1.4s infinite ease-in-out both;
-        }
-        
-        .dot:nth-child(1) { animation-delay: 0s; }
-        .dot:nth-child(2) { animation-delay: 0.16s; }
-        .dot:nth-child(3) { animation-delay: 0.32s; }
-        
-        @keyframes bounce {
-          0%, 80%, 100% { 
-            transform: scale(0.8);
-            opacity: 0.5;
-          }
-          40% { 
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
-      `}</style>
     </div>
   );
 }

@@ -18,6 +18,7 @@ class Settings(BaseSettings):
   openai_api_key: str = ""
   anthropic_api_key: str = ""
   grok_api_key: str = ""
+  database_url: str = ""  # Automatically reads from DATABASE_URL env var (case-insensitive)
   environment: str = "development"
 
   class Config:

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { LLM_COLORS, LLM_LABELS, PRESET_PERSONAS, CUSTOM_PERSONA_ID } from './types';
 
 import type { LLMProvider } from './types';
@@ -24,7 +24,6 @@ export function LLMCard(props: LLMCardProps) {
   const [customPersona, setCustomPersona] = useState(
     currentPreset ? '' : persona
   );
-  const [isSelectOpen, setIsSelectOpen] = useState(false);
 
   // Sync state when persona prop changes from parent (e.g., Surprise Me!)
   useEffect(() => {
@@ -40,7 +39,6 @@ export function LLMCard(props: LLMCardProps) {
 
   const handlePresetChange = (presetId: string) => {
     setSelectedPreset(presetId);
-    setIsSelectOpen(false);
 
     if (presetId === CUSTOM_PERSONA_ID) {
       onPersonaChange(customPersona);
@@ -59,53 +57,30 @@ export function LLMCard(props: LLMCardProps) {
     }
   };
 
-  // Derive display label from current state
-  const displayLabel = selectedPreset === CUSTOM_PERSONA_ID 
-    ? 'Custom' 
-    : PRESET_PERSONAS.find((p) => p.id === selectedPreset)?.label || 'Custom';
-
   return (
-    <div className="llm-card">
+    <div className="rounded-lg border border-[#eee] bg-white px-3 py-3 text-center shadow-sm transition hover:border-[#f6ad7b] hover:shadow-md">
       {/* Avatar */}
-      <div className="avatar" style={{ backgroundColor: color }}>
+      <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full text-base font-bold text-white" style={{ backgroundColor: color }}>
         {provider.charAt(0).toUpperCase()}
       </div>
 
       {/* Name */}
-      <div className="name">{label}</div>
+      <div className="mb-2 text-[13px] font-semibold text-[#1b2021]">{label}</div>
 
       {/* Persona Selector */}
-      <div className="persona-select">
-        <button 
-          className="select-trigger"
-          onClick={() => setIsSelectOpen(!isSelectOpen)}
-          type="button"
+      <div className="mb-2">
+        <select
+          className="w-full rounded-md border border-[#e5e5e5] bg-[#f8f8f8] px-2 py-2 text-xs text-[#1b2021] transition hover:border-[#d0d0d0]"
+          value={selectedPreset}
+          onChange={(e) => handlePresetChange(e.target.value)}
         >
-          <span className="select-value">{displayLabel}</span>
-          <span className="select-arrow">{isSelectOpen ? '▲' : '▼'}</span>
-        </button>
-        
-        {isSelectOpen && (
-          <div className="select-dropdown">
-            {PRESET_PERSONAS.map((preset) => (
-              <button
-                key={preset.id}
-                onClick={() => handlePresetChange(preset.id)}
-                className={`select-option ${selectedPreset === preset.id ? 'active' : ''}`}
-                type="button"
-              >
-                <span className="option-label">{preset.label}</span>
-              </button>
-            ))}
-            <button
-              onClick={() => handlePresetChange(CUSTOM_PERSONA_ID)}
-              className={`select-option ${selectedPreset === CUSTOM_PERSONA_ID ? 'active' : ''}`}
-              type="button"
-            >
-              <span className="option-label">✏️ Custom</span>
-            </button>
-          </div>
-        )}
+          {PRESET_PERSONAS.map((preset) => (
+            <option key={preset.id} value={preset.id}>
+              {preset.label}
+            </option>
+          ))}
+          <option value={CUSTOM_PERSONA_ID}>Custom</option>
+        </select>
       </div>
 
       {selectedPreset === CUSTOM_PERSONA_ID ? (
@@ -113,166 +88,14 @@ export function LLMCard(props: LLMCardProps) {
           placeholder="Describe the persona..."
           value={customPersona}
           onChange={(e) => handleCustomChange(e.target.value)}
-          className="custom-input"
+          className="mt-1 w-full rounded-md border border-[#e5e5e5] bg-white px-2 py-2 text-xs text-[#1b2021] transition focus:border-[#f6ad7b] focus:outline-none"
           rows={2}
         />
       ) : (
-        <p className="persona-desc">
+        <p className="mt-1 line-clamp-2 text-[11px] text-[#888]">
           {PRESET_PERSONAS.find((p) => p.id === selectedPreset)?.description}
         </p>
       )}
-
-      <style>{`
-        .llm-card {
-          background: white;
-          border-radius: 12px;
-          padding: 1.25rem;
-          text-align: center;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-          transition: box-shadow 0.2s;
-        }
-        
-        .llm-card:hover {
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-        
-        .avatar {
-          width: 48px;
-          height: 48px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin: 0 auto 0.75rem;
-          font-size: 1.25rem;
-          font-weight: 700;
-          color: white;
-        }
-        
-        .name {
-          font-size: 0.875rem;
-          font-weight: 600;
-          color: #1b2021;
-          margin-bottom: 0.75rem;
-        }
-        
-        .persona-select {
-          position: relative;
-          margin-bottom: 0.5rem;
-        }
-        
-        .select-trigger {
-          width: 100%;
-          padding: 0.5rem 0.75rem;
-          background: #f8f8f8;
-          border: 1px solid #e5e5e5;
-          border-radius: 6px;
-          font-family: inherit;
-          font-size: 0.8125rem;
-          color: #1b2021;
-          cursor: pointer;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          transition: border-color 0.2s;
-        }
-        
-        .select-trigger:hover {
-          border-color: #ccc;
-        }
-        
-        .select-value {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-        
-        .select-arrow {
-          font-size: 0.625rem;
-          color: #888;
-          margin-left: 0.5rem;
-        }
-        
-        .select-dropdown {
-          position: absolute;
-          top: 100%;
-          left: 0;
-          right: 0;
-          background: white;
-          border: 1px solid #ddd;
-          border-radius: 8px;
-          margin-top: 0.25rem;
-          max-height: 200px;
-          overflow-y: auto;
-          z-index: 100;
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-        }
-        
-        .select-option {
-          width: 100%;
-          padding: 0.625rem 0.75rem;
-          background: transparent;
-          border: none;
-          font-family: inherit;
-          font-size: 0.8125rem;
-          color: #555;
-          cursor: pointer;
-          text-align: left;
-          transition: background 0.15s;
-        }
-        
-        .select-option:hover {
-          background: #f8f8f8;
-        }
-        
-        .select-option.active {
-          background: #fff5ef;
-          color: #1b2021;
-          font-weight: 500;
-        }
-        
-        .option-label {
-          display: block;
-        }
-        
-        .custom-input {
-          width: 100%;
-          padding: 0.5rem;
-          border: 1px solid #e5e5e5;
-          border-radius: 6px;
-          font-family: inherit;
-          font-size: 0.75rem;
-          color: #1b2021;
-          resize: none;
-          margin-top: 0.25rem;
-        }
-        
-        .custom-input:focus {
-          outline: none;
-          border-color: #f6ad7b;
-        }
-        
-        .persona-desc {
-          font-size: 0.75rem;
-          color: #888;
-          margin: 0.25rem 0 0;
-          line-height: 1.4;
-        }
-        
-        /* Scrollbar */
-        .select-dropdown::-webkit-scrollbar {
-          width: 6px;
-        }
-        
-        .select-dropdown::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        
-        .select-dropdown::-webkit-scrollbar-thumb {
-          background: #ddd;
-          border-radius: 3px;
-        }
-      `}</style>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { LLMCard } from './LLMCard';
 import { getSurpriseConfig } from './api';
 import { LLM_PROVIDERS, PRESET_PERSONAS } from './types';
+import { ToggleButtonGroup } from './components/ToggleButtonGroup';
 
 import type { BattleMode, Language, LLMConfig } from './types';
 
@@ -37,7 +38,10 @@ export function BattleSetup(props: BattleSetupProps) {
   };
 
   const handleSubmit = () => {
-    if (!topic.trim()) return;
+    if (!topic.trim()) {
+      console.warn('Topic is empty, cannot start battle');
+      return;
+    }
 
     const llms: LLMConfig[] = LLM_PROVIDERS.map((provider) => ({
       provider,
@@ -45,6 +49,7 @@ export function BattleSetup(props: BattleSetupProps) {
       name: provider.charAt(0).toUpperCase() + provider.slice(1),
     }));
 
+    console.log('Starting battle with config:', { topic, mode, language, rounds, llms });
     onStartBattle(topic, mode, language, parseInt(rounds, 10), llms);
   };
 
@@ -78,34 +83,39 @@ export function BattleSetup(props: BattleSetupProps) {
   const isValid = topic.trim().length > 0;
 
   return (
-    <div className="battle-setup">
-      {/* Surprise Me Button */}
-      <button 
-        onClick={handleSurpriseMe} 
-        className={`surprise-btn ${isSurpriseLoading ? 'loading' : ''}`}
-        type="button"
-        disabled={isSurpriseLoading}
-      >
-        <span className="surprise-icon">{isSurpriseLoading ? '⏳' : '✨'}</span>
-        <span>{isSurpriseLoading ? 'Generating...' : 'Surprise Me!'}</span>
-      </button>
+    <div className="space-y-5">
+      <div className="flex items-center justify-between gap-4 rounded-lg border border-[#eee1d6] bg-white px-5 py-4 shadow-sm">
+        <div className="flex flex-col gap-1">
+          <span className="text-sm font-bold text-[#1b2021]">Quick start</span>
+          <span className="text-[15px] text-[#777]">Let the AIs pick a fun topic</span>
+        </div>
+        <button 
+          onClick={handleSurpriseMe} 
+          className={`inline-flex items-center gap-2 rounded-lg border border-[#f6ad7b] bg-white px-4 py-2.5 text-sm font-semibold text-[#1b2021] outline-none transition hover:bg-[#fff8f4] hover:border-[#e8946a] disabled:cursor-wait disabled:opacity-80 ${isSurpriseLoading ? 'animate-pulse' : ''}`}
+          type="button"
+          disabled={isSurpriseLoading}
+        >
+          <span>{isSurpriseLoading ? '⏳' : '✨'}</span>
+          <span>{isSurpriseLoading ? 'Generating...' : 'Surprise Me'}</span>
+        </button>
+      </div>
 
       {/* Topic Section */}
-      <div className="section">
-        <label className="label">Battle Topic</label>
+      <div className="space-y-2.5">
+        <label className="text-sm font-bold text-[#1b2021]">Battle topic</label>
         <textarea
           placeholder="e.g., Who would win: a trillion lions or the sun?"
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
-          className="topic-input"
+          className="mx-auto block w-full max-w-[880px] rounded-lg border border-[#d8d0c5] bg-white px-4 py-3 text-[16px] text-[#1b2021] shadow-sm transition focus:border-[#f6ad7b] focus:outline-none focus:ring-2 focus:ring-[#f6ad7b]/20"
           rows={2}
         />
       </div>
 
       {/* Fighters Section */}
-      <div className="section">
-        <label className="label">Choose Personas</label>
-        <div className="fighters-grid">
+      <div className="space-y-2">
+        <label className="text-sm font-bold text-[#1b2021]">Choose personas</label>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
           {LLM_PROVIDERS.map((provider) => (
             <LLMCard
               key={provider}
@@ -118,255 +128,44 @@ export function BattleSetup(props: BattleSetupProps) {
       </div>
 
       {/* Settings Row */}
-      <div className="settings-row">
-        <div className="setting">
-          <label className="label">Mode</label>
-          <div className="toggle-group">
-            <button
-              type="button"
-              onClick={() => setMode('text')}
-              className={`toggle-btn ${mode === 'text' ? 'active' : ''}`}
-            >
-              Text
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode('emoji')}
-              className={`toggle-btn ${mode === 'emoji' ? 'active' : ''}`}
-            >
-              Emoji
-            </button>
-          </div>
-        </div>
+      <div className="flex flex-wrap items-end gap-4 rounded-lg border border-[#eee] bg-[#fafafa] px-5 py-4 shadow-sm">
+        <ToggleButtonGroup
+          label="Mode"
+          options={[
+            { value: 'text', label: 'Text' },
+            { value: 'emoji', label: 'Emoji' },
+          ]}
+          value={mode}
+          onChange={(value) => setMode(value as BattleMode)}
+        />
 
-        <div className="setting">
-          <label className="label">Language</label>
-          <div className="toggle-group">
-            <button
-              type="button"
-              onClick={() => setLanguage('en')}
-              className={`toggle-btn ${language === 'en' ? 'active' : ''}`}
-            >
-              English
-            </button>
-            <button
-              type="button"
-              onClick={() => setLanguage('hi')}
-              className={`toggle-btn ${language === 'hi' ? 'active' : ''}`}
-            >
-              हिंदी
-            </button>
-          </div>
-        </div>
+        <ToggleButtonGroup
+          label="Language"
+          options={[
+            { value: 'en', label: 'English' },
+            { value: 'hi', label: 'हिंदी' },
+          ]}
+          value={language}
+          onChange={(value) => setLanguage(value as Language)}
+        />
 
-        <div className="setting">
-          <label className="label">Rounds</label>
-          <div className="toggle-group">
-            {[1, 2, 3, 4, 5].map((n) => (
-              <button
-                key={n}
-                type="button"
-                onClick={() => setRounds(String(n))}
-                className={`toggle-btn round-btn ${rounds === String(n) ? 'active' : ''}`}
-              >
-                {n}
-              </button>
-            ))}
-          </div>
-        </div>
+        <ToggleButtonGroup
+          label="Rounds"
+          options={[1, 2, 3, 4, 5].map((n) => ({ value: String(n), label: String(n) }))}
+          value={rounds}
+          onChange={setRounds}
+        />
       </div>
 
       {/* Start Button */}
       <button
         onClick={handleSubmit}
         disabled={!isValid || isLoading}
-        className={`start-btn ${!isValid || isLoading ? 'disabled' : ''}`}
+        className="w-full rounded-lg border-0 bg-[#f6ad7b] px-6 py-4 text-lg font-semibold text-white outline-none shadow-md transition hover:bg-[#e8946a] hover:shadow-lg disabled:cursor-not-allowed disabled:bg-[#e0d8cf] disabled:text-[#9a9a9a] disabled:shadow-none"
         type="button"
       >
         {isLoading ? 'Starting...' : 'Start Battle'}
       </button>
-
-      <style>{`
-        .battle-setup {
-          font-family: 'Source Sans Pro', sans-serif;
-        }
-        
-        .section {
-          margin-bottom: 1.5rem;
-        }
-        
-        .label {
-          display: block;
-          font-size: 0.875rem;
-          font-weight: 600;
-          color: #1b2021;
-          margin-bottom: 0.5rem;
-        }
-        
-        /* Surprise Button */
-        .surprise-btn {
-          width: 100%;
-          padding: 0.875rem 1.5rem;
-          background: white;
-          border: 2px dashed #f6ad7b;
-          border-radius: 8px;
-          font-family: inherit;
-          font-size: 1rem;
-          font-weight: 600;
-          color: #1b2021;
-          cursor: pointer;
-          transition: all 0.2s;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          margin-bottom: 1.5rem;
-        }
-        
-        .surprise-btn:hover:not(:disabled) {
-          background: #fff8f4;
-          border-color: #e8946a;
-        }
-        
-        .surprise-btn:disabled {
-          cursor: wait;
-          opacity: 0.8;
-        }
-        
-        .surprise-btn.loading {
-          background: #fff8f4;
-          border-style: solid;
-          animation: pulse 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.7; }
-        }
-        
-        .surprise-icon {
-          font-size: 1.25rem;
-        }
-        
-        /* Topic Input */
-        .topic-input {
-          width: 100%;
-          padding: 0.75rem 1rem;
-          border: 1px solid #ddd;
-          border-radius: 8px;
-          font-family: inherit;
-          font-size: 1rem;
-          color: #1b2021;
-          resize: none;
-          transition: border-color 0.2s, box-shadow 0.2s;
-          background: white;
-        }
-        
-        .topic-input:focus {
-          outline: none;
-          border-color: #f6ad7b;
-          box-shadow: 0 0 0 3px rgba(246, 173, 123, 0.15);
-        }
-        
-        .topic-input::placeholder {
-          color: #999;
-        }
-        
-        /* Fighters Grid */
-        .fighters-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 1rem;
-        }
-        
-        /* Settings Row */
-        .settings-row {
-          display: flex;
-          gap: 2rem;
-          margin-bottom: 1.5rem;
-          flex-wrap: wrap;
-        }
-        
-        .setting {
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-        }
-        
-        .toggle-group {
-          display: flex;
-          gap: 0.25rem;
-          background: white;
-          border: 1px solid #ddd;
-          border-radius: 8px;
-          padding: 0.25rem;
-        }
-        
-        .toggle-btn {
-          padding: 0.5rem 1rem;
-          background: transparent;
-          border: none;
-          border-radius: 6px;
-          font-family: inherit;
-          font-size: 0.875rem;
-          color: #666;
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-        
-        .toggle-btn:hover {
-          color: #1b2021;
-        }
-        
-        .toggle-btn.active {
-          background: #f6ad7b;
-          color: white;
-        }
-        
-        .round-btn {
-          padding: 0.5rem 0.75rem;
-          min-width: 2.5rem;
-        }
-        
-        /* Start Button */
-        .start-btn {
-          width: 100%;
-          padding: 1rem 2rem;
-          background: #1b2021;
-          border: none;
-          border-radius: 8px;
-          font-family: inherit;
-          font-size: 1.125rem;
-          font-weight: 600;
-          color: white;
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-        
-        .start-btn:hover:not(.disabled) {
-          background: #333;
-        }
-        
-        .start-btn.disabled {
-          background: #ccc;
-          cursor: not-allowed;
-        }
-        
-        @media (max-width: 640px) {
-          .fighters-grid {
-            grid-template-columns: 1fr;
-          }
-          
-          .settings-row {
-            gap: 1rem;
-          }
-          
-          .toggle-btn {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.8125rem;
-          }
-        }
-      `}</style>
     </div>
   );
 }
