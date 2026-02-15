@@ -2,11 +2,19 @@
 LLM Service - Unified interface for calling different LLM providers
 """
 
+from datetime import datetime
+
 from anthropic import Anthropic
-from openai import OpenAI
+from galileo import galileo_context
+from galileo.openai import openai as galileo_openai
 
 from ..config import get_settings
 from ..models.battle import BattleMessage, BattleMode, Language, LLMProvider
+
+
+def _openai_client(api_key: str, base_url: str | None = None):
+    """OpenAI client: Galileo-wrapped for tracing (GALILEO_API_KEY assumed set)."""
+    return galileo_openai.OpenAI(api_key=api_key, base_url=base_url)
 
 EMOJI_MODE_INSTRUCTION = """
 IMPORTANT: You must respond using ONLY emojis. No text, no punctuation, no numbers.
@@ -37,10 +45,10 @@ class LLMService:
 
     def __init__(self) -> None:
         settings = get_settings()
-        self._openai_client = OpenAI(api_key=settings.openai_api_key)
+        self._openai_client = _openai_client(settings.openai_api_key)
         self._anthropic_client = Anthropic(api_key=settings.anthropic_api_key)
-        self._grok_client = OpenAI(
-            api_key=settings.grok_api_key,
+        self._grok_client = _openai_client(
+            settings.grok_api_key,
             base_url="https://api.x.ai/v1",
         )
 
@@ -129,7 +137,11 @@ Rules:
         system_prompt: str,
         messages: list[dict],
     ) -> str:
-        """Call OpenAI API"""
+        """Call OpenAI API; trace named for Galileo."""
+        logger = galileo_context.get_logger_instance()
+        trace_input = messages[-1]["content"] if messages else ""
+        logger.start_trace(name="OpenAI (LLM Wars)", input=trace_input)
+
         response = self._openai_client.chat.completions.create(
             model=MODEL_MAP[LLMProvider.OPENAI],
             messages=[
@@ -139,28 +151,56 @@ Rules:
             max_tokens=60,
             temperature=0.8,
         )
-        return response.choices[0].message.content or ""
+        output = response.choices[0].message.content or ""
+        logger.conclude(output=output)
+        return output
 
     async def _call_claude(
         self,
         system_prompt: str,
         messages: list[dict],
     ) -> str:
-        """Call Anthropic Claude API"""
+        """Call Anthropic Claude API; logs to Galileo via manual Logger API."""
+        logger = galileo_context.get_logger_instance()
+        trace_input = messages[-1]["content"] if messages else ""
+        logger.start_trace(name="Claude (LLM Wars)", input=trace_input)
+        start_time_ns = int(datetime.now().timestamp() * 1_000_000_000)
+
         response = self._anthropic_client.messages.create(
             model=MODEL_MAP[LLMProvider.CLAUDE],
             max_tokens=60,
             system=system_prompt,
             messages=messages,
         )
-        return response.content[0].text if response.content else ""
+        output_text = response.content[0].text if response.content else ""
+
+        logged_messages = [{"role": "system", "content": system_prompt}] + messages
+        duration_ns = int(datetime.now().timestamp() * 1_000_000_000) - start_time_ns
+        usage = response.usage
+        logger.add_llm_span(
+            input=logged_messages,
+            output=output_text,
+            model=MODEL_MAP[LLMProvider.CLAUDE],
+            num_input_tokens=usage.input_tokens,
+            num_output_tokens=usage.output_tokens,
+            total_tokens=usage.input_tokens + usage.output_tokens,
+            duration_ns=duration_ns,
+        )
+        logger.conclude(output=output_text)
+        logger.flush()
+
+        return output_text
 
     async def _call_grok(
         self,
         system_prompt: str,
         messages: list[dict],
     ) -> str:
-        """Call xAI Grok API (OpenAI-compatible)"""
+        """Call xAI Grok API (OpenAI-compatible); trace named for Galileo."""
+        logger = galileo_context.get_logger_instance()
+        trace_input = messages[-1]["content"] if messages else ""
+        logger.start_trace(name="Grok (LLM Wars)", input=trace_input)
+
         response = self._grok_client.chat.completions.create(
             model=MODEL_MAP[LLMProvider.GROK],
             messages=[
@@ -170,4 +210,6 @@ Rules:
             max_tokens=60,
             temperature=0.8,
         )
-        return response.choices[0].message.content or ""
+        output = response.choices[0].message.content or ""
+        logger.conclude(output=output)
+        return output

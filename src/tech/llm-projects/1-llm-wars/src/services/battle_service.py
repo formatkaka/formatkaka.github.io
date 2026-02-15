@@ -7,6 +7,7 @@ from collections import Counter
 from collections.abc import AsyncGenerator
 from typing import Optional
 
+from galileo import galileo_context
 from sqlalchemy.orm import Session
 
 from ..models.battle import (
@@ -127,25 +128,26 @@ class BattleService:
         )
 
     async def run_battle(self, battle_id: str) -> BattleState:
-        """Run a complete battle (all rounds)"""
+        """Run a complete battle (all rounds). One Galileo session per battle."""
         state = self._battles.get(battle_id)
         if not state:
             raise ValueError(f"Battle not found: {battle_id}")
 
-        state.status = BattleStatus.IN_PROGRESS
-
+        galileo_context.start_session(name=f"Battle {battle_id}")
         try:
+            state.status = BattleStatus.IN_PROGRESS
             for round_num in range(1, state.config.rounds + 1):
                 state.current_round = round_num
                 await self._run_round(state, round_num)
 
             state.status = BattleStatus.COMPLETED
-            # Save to database after completion
             self.save_battle(state)
         except Exception as e:
             state.status = BattleStatus.ERROR
             state.error_message = str(e)
             self.save_battle(state)
+        finally:
+            galileo_context.clear_session()
 
         return state
 
@@ -153,20 +155,20 @@ class BattleService:
         self,
         battle_id: str,
     ) -> AsyncGenerator[BattleMessage, None]:
-        """Run battle and yield messages as they're generated"""
+        """Run battle and yield messages as they're generated. One Galileo session per battle."""
         print(f"🎬 Starting battle streaming for: {battle_id}")
         state = self._battles.get(battle_id)
         if not state:
             raise ValueError(f"Battle not found: {battle_id}")
 
-        # Clear any existing messages to ensure we only generate the configured number of rounds
-        state.messages = []
-        state.status = BattleStatus.IN_PROGRESS
-        state.current_round = 0
-        state.error_message = None
-        print(f"📊 Battle status set to IN_PROGRESS, cleared messages")
-
+        galileo_context.start_session(name=f"Battle {battle_id}")
         try:
+            state.messages = []
+            state.status = BattleStatus.IN_PROGRESS
+            state.current_round = 0
+            state.error_message = None
+            print(f"📊 Battle status set to IN_PROGRESS, cleared messages")
+
             for round_num in range(1, state.config.rounds + 1):
                 print(f"🔄 Starting round {round_num}/{state.config.rounds}")
                 state.current_round = round_num
@@ -178,26 +180,24 @@ class BattleService:
                     response = await self._generate_llm_response(state, llm_config, round_num)
                     print(f"✅ [Round {round_num}] Got response from {llm_config.provider}: {response[:50]}...")
 
-                    # Create message with explicit round number
                     message = self._create_message(llm_config, response, round_num)
                     print(f"   Created message: provider={message.provider}, round={message.round_number}")
                     
-                    # Append to state immediately
                     state.messages.append(message)
                     print(f"📤 [Round {round_num}] Yielding message from {llm_config.provider} (round_number={message.round_number})...")
                     yield message
 
-                    # Add delay between messages so users can read them
                     await asyncio.sleep(2.0)
 
             state.status = BattleStatus.COMPLETED
-            # Save to database after completion
             self.save_battle(state)
         except Exception as e:
             state.status = BattleStatus.ERROR
             state.error_message = str(e)
             self.save_battle(state)
             raise
+        finally:
+            galileo_context.clear_session()
 
     def _create_message(
         self, llm_config: LLMConfig, content: str, round_num: int

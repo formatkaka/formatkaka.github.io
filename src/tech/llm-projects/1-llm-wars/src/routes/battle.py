@@ -4,6 +4,7 @@ Battle routes - LLM battle API endpoints
 
 import asyncio
 import json
+import traceback
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException
 from fastapi.responses import StreamingResponse
@@ -155,7 +156,6 @@ async def stream_battle(battle_id: str) -> StreamingResponse:
             yield f"data: {json.dumps({'type': 'complete'})}\n\n"
         except Exception as e:
             print(f"❌ Stream error: {e}")
-            import traceback
             traceback.print_exc()
             yield f"data: {json.dumps({'type': 'error', 'message': str(e)})}\n\n"
 

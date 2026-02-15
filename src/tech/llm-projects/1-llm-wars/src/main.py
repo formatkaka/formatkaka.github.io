@@ -8,6 +8,8 @@ from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from galileo import galileo_context
+import uvicorn
 
 from src.config import get_settings
 from src.models.database import get_engine, get_session_factory, init_db
@@ -39,6 +41,14 @@ async def lifespan(app: FastAPI):
     print("⚠️  Warning: GROK_API_KEY not found")
   else:
     print(f"✅ GROK_API_KEY loaded ({settings.grok_api_key[:8]}...)")
+
+  # Galileo for LLM tracing (GALILEO_API_KEY assumed set).
+  # Set env so request-handler tasks (different asyncio tasks) see the project;
+  # context vars set in lifespan don't propagate to other tasks.
+  os.environ.setdefault("GALILEO_PROJECT", "LLM-Wars")
+  os.environ.setdefault("GALILEO_LOG_STREAM", "development")
+  galileo_context.init(project=os.environ.get("GALILEO_PROJECT"), log_stream=os.environ.get("GALILEO_LOG_STREAM"))
+  print(f"✅ Galileo tracing enabled (project: {os.environ.get('GALILEO_PROJECT')}, log stream: {os.environ.get('GALILEO_LOG_STREAM')})")
 
   # Initialize database if DATABASE_URL is provided
   db_session = None
@@ -109,5 +119,4 @@ async def health():
 
 
 if __name__ == "__main__":
-  import uvicorn
   uvicorn.run(app, host="0.0.0.0", port=5123)

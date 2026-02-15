@@ -20,6 +20,8 @@ class Settings(BaseSettings):
   grok_api_key: str = ""
   database_url: str = ""  # Automatically reads from DATABASE_URL env var (case-insensitive)
   environment: str = "development"
+  # Optional: set to enable Galileo tracing (project "LLM-Wars", log stream "default")
+  galileo_api_key: str = ""
 
   class Config:
     case_sensitive = False

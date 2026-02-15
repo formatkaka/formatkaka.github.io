@@ -5,7 +5,8 @@ Surprise Service - LLM-driven random battle configuration generator
 import json
 from pathlib import Path
 
-from openai import OpenAI
+from galileo import galileo_context
+from galileo.openai import openai as galileo_openai
 
 from ..config import get_settings
 from ..models.battle import LLMProvider
@@ -156,7 +157,7 @@ class SurpriseService:
 
     def __init__(self) -> None:
         settings = get_settings()
-        self._client = OpenAI(api_key=settings.openai_api_key)
+        self._client = galileo_openai.OpenAI(api_key=settings.openai_api_key)
         # Build prompt once at init with personas loaded from shared JSON
         self._prompt = SURPRISE_PROMPT_TEMPLATE.format(
             personas=_load_personas(), 
@@ -164,12 +165,16 @@ class SurpriseService:
         )
 
     async def _generate_config(self) -> str:
-        """Generate a battle configuration via LLM call."""
+        """Generate a battle configuration via LLM call; trace named for Galileo."""
+        user_msg = "Generate a fresh, creative battle configuration. Be inventive!"
+        logger = galileo_context.get_logger_instance()
+        logger.start_trace(name="Topic generation (LLM Wars)", input=user_msg)
+
         response = self._client.chat.completions.create(
             model="gpt-4o",
             messages=[
                 {"role": "system", "content": self._prompt},
-                {"role": "user", "content": "Generate a fresh, creative battle configuration. Be inventive!"},
+                {"role": "user", "content": user_msg},
             ],
             max_tokens=300,
             temperature=1.0,  # High creativity
@@ -177,8 +182,7 @@ class SurpriseService:
         )
 
         content = response.choices[0].message.content or "{}"
-        
-        # Return the raw JSON string - Agent Control will evaluate this
+        logger.conclude(output=content)
         return content
 
     def _format_response(self, json_str: str) -> dict:

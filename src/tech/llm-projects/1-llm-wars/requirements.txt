@@ -10,6 +10,9 @@ anthropic>=0.8.0
 # Install from local path: pip install -e /path/to/galileo/agent-control/sdks/python
 # Or if published: agent-control-sdk>=1.0.0
 
+# Observability (optional – set GALILEO_API_KEY to enable)
+galileo[openai]>=0.14.0
+
 # Utilities
 python-dotenv>=1.0.0
 pydantic>=2.0.0
