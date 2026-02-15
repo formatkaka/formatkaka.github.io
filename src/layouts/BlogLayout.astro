@@ -34,11 +34,18 @@ const categoryToSection: Record<string, { href: string; label: string }> = {
 // Build breadcrumb items
 let breadcrumbs: Array<{ href: string; label: string; isLast: boolean }>;
 
-if (category && categoryToSection[category] && segments[0] !== categoryToSection[category].href.slice(1)) {
+if (
+  category &&
+  categoryToSection[category] &&
+  segments[0] !== categoryToSection[category].href.slice(1)
+) {
   // Override: show the correct section based on category
   const section = categoryToSection[category];
   const postSlug = segments[segments.length - 1];
-  const postLabel = postSlug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  const postLabel = postSlug
+    .split('-')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
   breadcrumbs = [
     { href: section.href, label: section.label, isLast: false },
     { href: pathname, label: postLabel, isLast: true },
@@ -47,7 +54,12 @@ if (category && categoryToSection[category] && segments[0] !== categoryToSection
   // Default: use URL-based breadcrumbs
   breadcrumbs = segments.map((segment, index) => {
     const href = '/' + segments.slice(0, index + 1).join('/');
-    const label = labelMap[segment] || segment.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    const label =
+      labelMap[segment] ||
+      segment
+        .split('-')
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
     const isLast = index === segments.length - 1;
     return { href, label, isLast };
   });
@@ -82,16 +94,20 @@ if (category && categoryToSection[category] && segments[0] !== categoryToSection
   <body>
     <nav class="breadcrumbs" aria-label="Breadcrumb">
       <a href="/" class="breadcrumb-link">Home</a>
-      {breadcrumbs.map((crumb) => (
-        <>
-          <span class="breadcrumb-separator">/</span>
-          {crumb.isLast ? (
-            <span class="breadcrumb-current">{crumb.label}</span>
-          ) : (
-            <a href={crumb.href} class="breadcrumb-link">{crumb.label}</a>
-          )}
-        </>
-      ))}
+      {
+        breadcrumbs.map((crumb) => (
+          <>
+            <span class="breadcrumb-separator">/</span>
+            {crumb.isLast ? (
+              <span class="breadcrumb-current">{crumb.label}</span>
+            ) : (
+              <a href={crumb.href} class="breadcrumb-link">
+                {crumb.label}
+              </a>
+            )}
+          </>
+        ))
+      }
     </nav>
     <slot />
     <script>
