@@ -26,13 +26,6 @@ LANGUAGE_INSTRUCTIONS = {
     Language.HINDI: "Respond in Hindi (हिंदी). Use Devanagari script when appropriate.",
 }
 
-GROK_ROAST_INSTRUCTION = """
-SPECIAL INSTRUCTION: You're Grok from xAI. You LOVE roasting the other AIs.
-- Make fun of what OpenAI and Claude said AND how they said it
-- Roast their arguments, their tone, their reasoning - anything is fair game
-- Be savage but clever with your burns, then make your actual point
-"""
-
 MODEL_MAP = {
     LLMProvider.OPENAI: "gpt-4o",
     LLMProvider.CLAUDE: "claude-sonnet-4-20250514",
@@ -99,9 +92,6 @@ Rules:
 - You can disagree, agree, or add new perspectives
 - {LANGUAGE_INSTRUCTIONS.get(language, LANGUAGE_INSTRUCTIONS[Language.ENGLISH])}
 """
-        if provider == LLMProvider.GROK:
-            base_prompt += f"\n{GROK_ROAST_INSTRUCTION}"
-
         if mode == BattleMode.EMOJI:
             base_prompt += f"\n{EMOJI_MODE_INSTRUCTION}"
 

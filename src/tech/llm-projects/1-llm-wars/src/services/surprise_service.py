@@ -73,7 +73,6 @@ GOOD TOPICS:
 BAD TOPICS (DO NOT USE):
 - Fantasy, animals, imaginary objects
 - Sentient objects or magical creatures
-- Abstract philosophy or metaphors
 - Long or complex sentences
 - Anything involving unicorns, penguins, dragons, socks, chairs, time paradoxes
 
@@ -104,7 +103,7 @@ PERSONA CONSTRAINTS
 - Each persona description: 5–10 words only
 - Simple language, easy to understand
 - At least ONE persona should be clearly unrelated to the topic
-- Avoid cute, whimsical, or "try-hard funny" personas
+- Avoid  whimsical, or "try-hard funny" personas
 
 BAD PERSONAS (DO NOT USE):
 - Anxious animals
