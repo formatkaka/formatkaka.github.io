@@ -1,0 +1,69 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { TwitterFinder as TwitterFinderApp } from '../../components/react/twitter-finder';
+---
+
+<Layout
+  title="Twitter Finder"
+  description="Find the right Twitter/X handles to tag for local civic complaints"
+>
+  <div class="page">
+    <div class="container">
+      <section class="hero">
+        <h1 class="title">Twitter Finder</h1>
+        <p class="subtitle">
+          Describe your issue and city, and we&apos;ll help you discover the most relevant accounts
+          and hashtags to tag when you speak up on Twitter/X.
+        </p>
+      </section>
+
+      <section class="app">
+        <TwitterFinderApp client:load />
+      </section>
+    </div>
+  </div>
+
+  <style>
+    .page {
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      margin-bottom: 2rem;
+    }
+
+    .title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.75rem;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: rgba(27, 32, 33, 0.8);
+      max-width: 40rem;
+    }
+
+    .app {
+      margin-top: 1.5rem;
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding-top: 1.5rem;
+      }
+
+      .title {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</Layout>
