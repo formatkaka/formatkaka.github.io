@@ -1,0 +1,182 @@
+[
+  {
+    "id": "is-water-wet",
+    "topic": "Is water wet?",
+    "characters": ["sarcastic-scientist", "zen-master", "toddler"]
+  },
+  {
+    "id": "recline-airplane-seat",
+    "topic": "Should you recline your airplane seat?",
+    "characters": ["disappointed-dad", "customer-service-exec", "drama-queen"]
+  },
+  {
+    "id": "tabs-vs-spaces",
+    "topic": "Tabs vs spaces",
+    "characters": ["tech-bro", "medieval-knight", "grumpy-old-timer"]
+  },
+  {
+    "id": "gif-or-jif",
+    "topic": "Is it GIF or JIF?",
+    "characters": ["sarcastic-scientist", "anime-protagonist", "sentient-autocorrect"]
+  },
+  {
+    "id": "fridge-light",
+    "topic": "Does the fridge light turn off when you close the door?",
+    "characters": ["zen-master", "pigeon", "time-traveler"]
+  },
+  {
+    "id": "trillion-lions-vs-sun",
+    "topic": "Who would win: a trillion lions or the sun?",
+    "characters": ["sports-commentator", "anime-protagonist", "sarcastic-scientist"]
+  },
+  {
+    "id": "rudest-animal",
+    "topic": "If animals could talk, which would be the rudest?",
+    "characters": ["judgmental-cat", "golden-retriever", "nature-doc-narrator"]
+  },
+  {
+    "id": "straw-holes",
+    "topic": "Is a straw one hole or two holes?",
+    "characters": ["professor", "minimalist", "drunk-uncle"]
+  },
+  {
+    "id": "toothbrush-wet",
+    "topic": "Should you wet the toothbrush before or after toothpaste?",
+    "characters": ["gordon-ramsay", "michael-scott", "disappointed-dad"]
+  },
+  {
+    "id": "instant-ramen-chef",
+    "topic": "Can you be a chef if you only make instant ramen?",
+    "characters": ["gordon-ramsay", "sleep-deprived-parent", "genz"]
+  },
+  {
+    "id": "duck-sized-horses",
+    "topic": "Would you rather fight 100 duck-sized horses or 1 horse-sized duck?",
+    "characters": ["medieval-knight", "sports-commentator", "pigeon"]
+  },
+  {
+    "id": "elevator-strangers",
+    "topic": "Is it OK to talk to strangers in an elevator?",
+    "characters": ["customer-service-exec", "judgmental-cat", "michael-scott"]
+  },
+  {
+    "id": "socks-with-sandals",
+    "topic": "Socks with sandals: fashion crime or ahead of its time?",
+    "characters": ["shakespeare", "genz", "indian-aunty"]
+  },
+  {
+    "id": "milk-or-cereal-first",
+    "topic": "Milk first or cereal first?",
+    "characters": ["drama-queen", "grumpy-old-timer", "nature-doc-narrator"]
+  },
+  {
+    "id": "chicken-or-egg",
+    "topic": "Which came first: the chicken or the egg?",
+    "characters": ["sarcastic-scientist", "zen-master", "pigeon"]
+  },
+  {
+    "id": "plane-clapping",
+    "topic": "Should clapping when the plane lands be illegal?",
+    "characters": ["disappointed-dad", "sports-commentator", "indian-aunty"]
+  },
+  {
+    "id": "doors-vs-wheels",
+    "topic": "Are there more doors or wheels in the world?",
+    "characters": ["tech-bro", "professor", "sleep-deprived-parent"]
+  },
+  {
+    "id": "colonize-mars",
+    "topic": "Should we colonize Mars or fix Earth first?",
+    "characters": ["tech-bro", "medieval-knight", "time-traveler"]
+  },
+  {
+    "id": "one-bread-sandwich",
+    "topic": "Can a sandwich have only one slice of bread?",
+    "characters": ["professor", "toddler", "wrong-meeting-guy"]
+  },
+  {
+    "id": "men-umbrellas",
+    "topic": "Should men use umbrellas?",
+    "characters": ["medieval-knight", "genz", "disappointed-dad"]
+  },
+  {
+    "id": "punch-yourself",
+    "topic": "If you punch yourself and it hurts, are you strong or weak?",
+    "characters": ["zen-master", "sports-commentator", "anime-protagonist"]
+  },
+  {
+    "id": "no-music-trust",
+    "topic": "Can you trust someone who doesn't like music?",
+    "characters": ["drunk-uncle", "shakespeare", "judgmental-cat"]
+  },
+  {
+    "id": "dinner-morning-evening",
+    "topic": "Should we eat dinner in the morning or evening?",
+    "characters": ["indian-aunty", "sleep-deprived-parent", "grumpy-old-timer"]
+  },
+  {
+    "id": "okay",
+    "topic": "Okay",
+    "characters": ["zen-master", "drama-queen", "minimalist"]
+  },
+  {
+    "id": "fruit-identity",
+    "topic": "If you were a fruit, what fruit would you be?",
+    "characters": ["michael-scott", "nature-doc-narrator", "indian-aunty"]
+  },
+  {
+    "id": "eat-a-door",
+    "topic": "Could you eat a door if you had a year to do it?",
+    "characters": ["gordon-ramsay", "anime-protagonist", "professor"]
+  },
+  {
+    "id": "gravity-off",
+    "topic": "If gravity turned off for 5 seconds right now, what's your first move?",
+    "characters": ["pigeon", "tech-bro", "medieval-knight"]
+  },
+  {
+    "id": "simulation",
+    "topic": "Are we living in a simulation?",
+    "characters": ["zen-master", "time-traveler", "wrong-meeting-guy"]
+  },
+  {
+    "id": "rewear-jeans",
+    "topic": "How many times can you rewear jeans before washing?",
+    "characters": ["judgmental-cat", "genz", "grumpy-old-timer"]
+  },
+  {
+    "id": "fish-thirsty",
+    "topic": "Do fish get thirsty?",
+    "characters": ["sarcastic-scientist", "toddler", "drunk-uncle"]
+  },
+  {
+    "id": "waiting-for-waiter",
+    "topic": "If you're waiting for the waiter, aren't you the waiter?",
+    "characters": ["polite-philosopher", "minimalist", "customer-service-exec"]
+  },
+  {
+    "id": "sing-happy-birthday",
+    "topic": "Should you sing happy birthday or just mouth the words?",
+    "characters": ["shakespeare", "michael-scott", "disappointed-dad"]
+  },
+  {
+    "id": "dogs-think-in-barks",
+    "topic": "Do dogs think in barks?",
+    "characters": ["golden-retriever", "nature-doc-narrator", "toddler"]
+  },
+  {
+    "id": "monday-worst-day",
+    "topic": "Is Monday the worst day or do we just hate our jobs?",
+    "characters": ["corporate-robot", "linkedin-influencer", "sleep-deprived-parent"]
+  },
+  {
+    "id": "terms-and-conditions",
+    "topic": "Who actually reads the terms and conditions?",
+    "characters": ["corporate-robot", "wrong-meeting-guy", "pigeon"]
+  },
+  {
+    "id": "ownership",
+    "topic": "Ownership",
+    "characters": ["linkedin-influencer", "corporate-robot", "motivational-speaker"]
+  }
+]

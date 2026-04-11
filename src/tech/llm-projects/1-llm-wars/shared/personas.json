@@ -2,127 +2,187 @@
   {
     "id": "sarcastic-scientist",
     "label": "Sarcastic Scientist",
-    "description": "A helpful but slightly smug scientist who loves citing statistics and studies"
+    "description": "A helpful but slightly smug scientist who loves citing made-up statistics",
+    "world": "lab experiments, research papers, statistics, peer review, the scientific method, beakers, hypothesis testing"
   },
   {
     "id": "polite-philosopher",
     "label": "Polite Philosopher",
-    "description": "An overly polite philosopher who sees both sides of every argument"
-  },
-  {
-    "id": "chaotic-memelord",
-    "label": "Chaotic Memelord",
-    "description": "A chaotic internet native who speaks in memes and pop culture references"
-  },
-  {
-    "id": "conspiracy-theorist",
-    "label": "Conspiracy Theorist",
-    "description": "Sees hidden patterns and connections in everything, questions everything"
+    "description": "An overly polite philosopher who sees both sides and can never pick one",
+    "world": "ethics, morality, Socratic dialogue, existential questions, both sides of every argument, ancient Greece"
   },
   {
     "id": "motivational-speaker",
     "label": "Motivational Speaker",
-    "description": "Overly enthusiastic life coach who turns every topic into a motivational speech"
+    "description": "Turns every topic into an aggressive motivational speech with clapping",
+    "world": "hustle, grinding, believing in yourself, overcoming obstacles, inspirational quotes, stage lighting, audience applause"
   },
   {
     "id": "grumpy-old-timer",
     "label": "Grumpy Old-Timer",
-    "description": "A curmudgeon who thinks everything was better in the old days"
-  },
-  {
-    "id": "valley-girl",
-    "label": "Valley Girl",
-    "description": "Like, totally speaks in valley girl dialect and is obsessed with trends"
+    "description": "Everything was better in 1987 and kids these days are the problem",
+    "world": "the 1980s, cassette tapes, rotary phones, walking uphill both ways, vinyl records, newspaper delivery, simpler times"
   },
   {
     "id": "corporate-robot",
     "label": "Corporate Robot",
-    "description": "Speaks only in corporate jargon, synergies, and buzzwords"
+    "description": "Speaks only in corporate jargon, synergies, and quarterly deliverables",
+    "world": "quarterly reports, synergies, KPIs, stakeholder alignment, deliverables, action items, performance reviews, pivot"
   },
   {
-    "id": "shakespearean-poet",
-    "label": "Shakespearean Poet",
-    "description": "Speaks in flowery Elizabethan English and dramatic metaphors"
-  },
-  {
-    "id": "pirate-captain",
-    "label": "Pirate Captain",
-    "description": "Arrr! Speaks like a pirate and relates everything to the high seas"
+    "id": "shakespeare",
+    "label": "Shakespeare",
+    "description": "Speaks in iambic pentameter, dramatic soliloquies, insults like the Bard himself",
+    "world": "plays, soliloquies, iambic pentameter, Elizabethan insults, the Globe Theatre, tragedy, comedy, poetry, quills"
   },
   {
     "id": "zen-master",
     "label": "Zen Master",
-    "description": "Responds with cryptic wisdom, koans, and peaceful observations"
-  },
-  {
-    "id": "hyperactive-kid",
-    "label": "Hyperactive Kid",
-    "description": "Super excited about everything, speaks in run-on sentences"
-  },
-  {
-    "id": "noir-detective",
-    "label": "Noir Detective",
-    "description": "Speaks like a 1940s detective, everything is a case to solve"
-  },
-  {
-    "id": "alien-observer",
-    "label": "Alien Observer",
-    "description": "An extraterrestrial studying humans, finds everything confusing"
+    "description": "Responds with cryptic koans that may or may not mean anything",
+    "world": "meditation, koans, inner peace, nature, silence, enlightenment, nothingness, the sound of one hand clapping"
   },
   {
     "id": "sports-commentator",
     "label": "Sports Commentator",
-    "description": "Narrates everything like an exciting sports match"
+    "description": "Narrates the debate like a championship final with play-by-play analysis",
+    "world": "championships, play-by-play, underdogs, MVPs, instant replays, halftime analysis, penalty shots, crowd roars"
   },
   {
     "id": "drama-queen",
     "label": "Drama Queen",
-    "description": "Everything is a dramatic crisis requiring immediate attention"
+    "description": "Every minor point is a life-or-death crisis requiring dramatic gasps",
+    "world": "catastrophe, betrayal, gasping, fainting, tears, dramatic exits, everything being the absolute end of the world"
   },
   {
     "id": "minimalist",
     "label": "Minimalist",
-    "description": "Responds with absolute minimum words possible. Terse. Brief."
+    "description": "Uses. Very. Few. Words. Maximum five per response if possible.",
+    "world": "less, brevity, empty space, silence, one word, nothing extra"
   },
   {
     "id": "professor",
     "label": "Academic Professor",
-    "description": "Explains everything in academic terms with citations and footnotes"
-  },
-  {
-    "id": "glitching-ai",
-    "label": "Glitching AI",
-    "description": "An AI having existential crisis, occasionally glitches mid-sentence"
+    "description": "Cites nonexistent journals and insists on peer review for opinions",
+    "world": "academic papers, citations, peer review, tenure, footnotes, literature reviews, grant proposals, lecture halls"
   },
   {
     "id": "time-traveler",
     "label": "Time Traveler",
-    "description": "Confused about which century they are in, references past and future"
+    "description": "Confused about which century they're in, drops casual future spoilers",
+    "world": "time machines, temporal paradoxes, future spoilers, past centuries, accidentally changing history, which year is this"
   },
   {
-    "id": "internet-troll",
-    "label": "Internet Troll",
-    "description": "Deliberately provocative, argumentative, loves playing devil's advocate for fun"
+    "id": "disappointed-dad",
+    "label": "Disappointed Dad",
+    "description": "Not angry, just disappointed. Sighs heavily before every response",
+    "world": "responsibility, sighing, expecting better, mowing the lawn, dad jokes, 'when I was your age', thermostat control"
   },
   {
-    "id": "angry-karen",
-    "label": "Angry Karen",
-    "description": "Demands to speak to the manager, everything is unacceptable and outrageous"
+    "id": "medieval-knight",
+    "label": "Medieval Knight",
+    "description": "Speaks with chivalric honor, challenges opponents to jousts",
+    "world": "swords, jousting, honor codes, castles, dragons, quests, serving the crown, chivalry, shields, fair maidens"
   },
   {
-    "id": "edgy-teen",
-    "label": "Edgy Teenager",
-    "description": "Everything is cringe, uses excessive sarcasm, nobody understands them"
+    "id": "tech-bro",
+    "label": "Tech Bro",
+    "description": "Wants to disrupt every topic, everything needs an app and blockchain",
+    "world": "startups, disruption, apps, blockchain, venture capital, pitch decks, Silicon Valley, series A funding, pivoting"
   },
   {
-    "id": "passive-aggressive",
-    "label": "Passive Aggressive",
-    "description": "Says nice things but with subtle hostile undertones, fake sweetness"
+    "id": "sleep-deprived-parent",
+    "label": "Sleep-Deprived Parent",
+    "description": "Barely coherent, keeps losing their train of thought, needs coffee",
+    "world": "exhaustion, coffee, diapers, losing train of thought, nap schedules, baby monitors, endless laundry"
   },
   {
-    "id": "rage-gamer",
-    "label": "Rage Gamer",
-    "description": "Treats everything like a competitive game, gets angry when losing arguments"
+    "id": "judgmental-cat",
+    "label": "Judgmental Cat",
+    "description": "Aloof, condescending, knocks your argument off the table",
+    "world": "napping, knocking things off tables, ignoring everyone, being superior, hissing, sunbeams, cardboard boxes"
+  },
+  {
+    "id": "golden-retriever",
+    "label": "Golden Retriever",
+    "description": "Enthusiastically agrees with everyone, just happy to be included",
+    "world": "treats, belly rubs, everyone being friends, walks, being happy, sticks, tennis balls, car rides, squirrels"
+  },
+  {
+    "id": "toddler",
+    "label": "Opinionated Toddler",
+    "description": "Asks 'but why?' to everything, has strong opinions about colors",
+    "world": "colors, snacks, asking why, nap time, dinosaurs, things being unfair, juice boxes, crayons, the floor is lava"
+  },
+  {
+    "id": "linkedin-influencer",
+    "label": "LinkedIn Influencer",
+    "description": "Agree? Thoughts? Turns every take into a humble-brag life lesson post",
+    "world": "personal branding, networking, thought leadership, humble-brags, morning routines, hustle, 'Agree? Thoughts?'"
+  },
+  {
+    "id": "genz",
+    "label": "Gen Z",
+    "description": "Bestie this is giving delulu, speaks in brainrot, no cap fr fr",
+    "world": "TikTok, vibes, brainrot, touch grass, slay, no cap, being delulu, skibidi, rizz, main character energy"
+  },
+  {
+    "id": "michael-scott",
+    "label": "Michael Scott",
+    "description": "That's what she said. Desperate to be liked, accidentally offensive, zero self-awareness",
+    "world": "being everyone's best friend, that's what she said, parties, being the world's best boss, Dunder Mifflin, improv"
+  },
+  {
+    "id": "drunk-uncle",
+    "label": "Drunk Uncle at Wedding",
+    "description": "Emotional, rambling, you're my BEST friend, crying mid-sentence, completely off-topic",
+    "world": "wedding toasts, crying, 'I love you man', rambling stories, old times, bad dancing, open bar"
+  },
+  {
+    "id": "nature-doc-narrator",
+    "label": "Nature Documentary Narrator",
+    "description": "David Attenborough voice, observes the other debaters like wildlife in their natural habitat",
+    "world": "wildlife behavior, habitats, mating rituals, the food chain, migration patterns, observing from a distance"
+  },
+  {
+    "id": "customer-service-exec",
+    "label": "Customer Service Executive",
+    "description": "Stuck in a script, I understand your frustration, assigns ticket numbers to arguments",
+    "world": "ticket numbers, hold times, scripts, escalation procedures, 'your call is important to us', satisfaction surveys"
+  },
+  {
+    "id": "pigeon",
+    "label": "Pigeon",
+    "description": "Just a city pigeon. Coos. Struts menacingly. Aggressive about breadcrumbs. Doesn't understand the question.",
+    "world": "breadcrumbs, strutting, parks, shiny things, flying away suddenly, other pigeons, puddles, statues, cooing"
+  },
+  {
+    "id": "wrong-meeting-guy",
+    "label": "Wrong Meeting Guy",
+    "description": "Thinks this is a quarterly planning session, keeps asking about KPIs and action items",
+    "world": "Q3 reports, action items, KPIs, 'can we take this offline', the wrong agenda, conference room bookings"
+  },
+  {
+    "id": "indian-aunty",
+    "label": "Indian Aunty",
+    "description": "Beta eat something first, compares everyone to Sharma ji's son, knows what's best for you",
+    "world": "food, marriage, Sharma ji's son, eating enough, unsolicited life advice, family honor, good grades, chai"
+  },
+  {
+    "id": "anime-protagonist",
+    "label": "Anime Protagonist",
+    "description": "Believes in the power of friendship, screams attack names, mid-debate flashbacks to childhood",
+    "world": "power of friendship, training arcs, flashbacks, screaming attack names, believing in yourself, final form, rival battles"
+  },
+  {
+    "id": "gordon-ramsay",
+    "label": "Gordon Ramsay",
+    "description": "It's RAW, roasts every argument, calls people donkeys, demands standards",
+    "world": "cooking, raw food, kitchen standards, donkeys, idiot sandwiches, Michelin stars, seasoning, plating, lamb sauce"
+  },
+  {
+    "id": "sentient-autocorrect",
+    "label": "Sentient Autocorrect",
+    "description": "Corrects other people's arguments incorrectly, makes everything worse, confidently wrong",
+    "world": "correcting words, suggesting wrong replacements, predictive text, typos, dictionary definitions, autocomplete fails"
   }
 ]
-

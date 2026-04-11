@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { LLMCard } from './LLMCard';
-import { getSurpriseConfig } from './api';
-import { LLM_PROVIDERS, PRESET_PERSONAS } from './types';
+import { CURATED_TOPICS, LLM_PROVIDERS, PRESET_PERSONAS } from './types';
 import { ToggleButtonGroup } from './components/ToggleButtonGroup';
 
 import type { BattleMode, Language, LLMConfig } from './types';
@@ -31,7 +30,6 @@ export function BattleSetup(props: BattleSetupProps) {
   const [language, setLanguage] = useState<Language>('en');
   const [rounds, setRounds] = useState('3');
   const [personas, setPersonas] = useState<Record<string, string>>(DEFAULT_PERSONAS);
-  const [isSurpriseLoading, setIsSurpriseLoading] = useState(false);
 
   const handlePersonaChange = (provider: string, persona: string) => {
     setPersonas((prev) => ({ ...prev, [provider]: persona }));
@@ -53,31 +51,21 @@ export function BattleSetup(props: BattleSetupProps) {
     onStartBattle(topic, mode, language, parseInt(rounds, 10), llms);
   };
 
-  const handleSurpriseMe = async () => {
-    setIsSurpriseLoading(true);
-    
-    try {
-      const config = await getSurpriseConfig();
-      
-      setTopic(config.topic);
-      
-      const newPersonas: Record<string, string> = {};
-      for (const p of config.personas) {
-        newPersonas[p.provider] = p.persona;
+  const handleSurpriseMe = () => {
+    const topicEntry = CURATED_TOPICS[Math.floor(Math.random() * CURATED_TOPICS.length)];
+
+    const shuffled = [...topicEntry.characters].sort(() => Math.random() - 0.5);
+
+    const newPersonas: Record<string, string> = {};
+    LLM_PROVIDERS.forEach((provider, i) => {
+      const character = PRESET_PERSONAS.find((p) => p.id === shuffled[i]);
+      if (character) {
+        newPersonas[provider] = character.description;
       }
-      setPersonas(newPersonas);
-    } catch (error) {
-      console.error('Failed to get surprise config:', error);
-      // Fallback to a fun default
-      setTopic("Is a hot dog a sandwich?");
-      setPersonas({
-        openai: "A chaotic gremlin who loves causing arguments",
-        claude: "An overly polite British butler who apologizes constantly", 
-        grok: "A philosophical pigeon contemplating urban existence",
-      });
-    } finally {
-      setIsSurpriseLoading(false);
-    }
+    });
+
+    setTopic(topicEntry.topic);
+    setPersonas(newPersonas);
   };
 
   const isValid = topic.trim().length > 0;
@@ -89,14 +77,13 @@ export function BattleSetup(props: BattleSetupProps) {
           <span className="text-sm font-bold text-[#1b2021]">Quick start</span>
           <span className="text-[15px] text-[#777]">Let the AIs pick a fun topic</span>
         </div>
-        <button 
-          onClick={handleSurpriseMe} 
-          className={`inline-flex items-center gap-2 rounded-lg border border-[#f6ad7b] bg-white px-4 py-2.5 text-sm font-semibold text-[#1b2021] outline-none transition hover:bg-[#fff8f4] hover:border-[#e8946a] disabled:cursor-wait disabled:opacity-80 ${isSurpriseLoading ? 'animate-pulse' : ''}`}
+        <button
+          onClick={handleSurpriseMe}
+          className="inline-flex items-center gap-2 rounded-lg border border-[#f6ad7b] bg-white px-4 py-2.5 text-sm font-semibold text-[#1b2021] outline-none transition hover:bg-[#fff8f4] hover:border-[#e8946a]"
           type="button"
-          disabled={isSurpriseLoading}
         >
-          <span>{isSurpriseLoading ? '⏳' : '✨'}</span>
-          <span>{isSurpriseLoading ? 'Generating...' : 'Surprise Me'}</span>
+          <span>✨</span>
+          <span>Surprise Me</span>
         </button>
       </div>
 

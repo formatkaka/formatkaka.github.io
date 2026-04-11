@@ -49,22 +49,22 @@ class BattleService:
         # Check memory first (for active battles)
         if battle_id in self._battles:
             return self._battles[battle_id]
-        
+
         # Check database if session available
         if self._db_session:
             db_battle = self._db_session.query(Battle).filter(Battle.id == battle_id).first()
             if db_battle:
                 return self._battle_from_db(db_battle)
-        
+
         return None
-    
+
     def _battle_from_db(self, db_battle: Battle) -> BattleState:
         """Convert database Battle to BattleState"""
         config_dict = db_battle.config
         config = BattleConfig(**config_dict)
-        
+
         messages = [BattleMessage(**msg) for msg in db_battle.messages]
-        
+
         state = BattleState(
             id=db_battle.id,
             config=config,
@@ -74,15 +74,15 @@ class BattleService:
             error_message=db_battle.error_message,
         )
         return state
-    
+
     def save_battle(self, state: BattleState) -> None:
         """Save battle to database"""
         if not self._db_session:
             return
-        
+
         try:
             db_battle = self._db_session.query(Battle).filter(Battle.id == state.id).first()
-            
+
             battle_data = {
                 "id": state.id,
                 "config": state.config.model_dump(),
@@ -91,7 +91,7 @@ class BattleService:
                 "current_round": str(state.current_round),
                 "error_message": state.error_message,
             }
-            
+
             if db_battle:
                 # Update existing
                 for key, value in battle_data.items():
@@ -100,17 +100,17 @@ class BattleService:
                 # Create new
                 db_battle = Battle(**battle_data)
                 self._db_session.add(db_battle)
-            
+
             self._db_session.commit()
         except Exception as e:
             self._db_session.rollback()
             print(f"Error saving battle to database: {e}")
-    
+
     def get_battle_config(self, battle_id: str) -> BattleConfig | None:
         """Get battle config for replay (from database)"""
         if not self._db_session:
             return None
-        
+
         db_battle = self._db_session.query(Battle).filter(Battle.id == battle_id).first()
         if db_battle:
             return BattleConfig(**db_battle.config)
@@ -176,13 +176,13 @@ class BattleService:
                 for llm_config in state.config.llms:
                     print(f"🤖 [Round {round_num}] Generating response for {llm_config.provider}...")
                     print(f"   Current state: round={state.current_round}, messages_count={len(state.messages)}")
-                    
+
                     response = await self._generate_llm_response(state, llm_config, round_num)
                     print(f"✅ [Round {round_num}] Got response from {llm_config.provider}: {response[:50]}...")
 
                     message = self._create_message(llm_config, response, round_num)
                     print(f"   Created message: provider={message.provider}, round={message.round_number}")
-                    
+
                     state.messages.append(message)
                     print(f"📤 [Round {round_num}] Yielding message from {llm_config.provider} (round_number={message.round_number})...")
                     yield message
@@ -225,6 +225,7 @@ class BattleService:
             language=state.config.language,
             conversation_history=conversation_history,
             current_round=round_num,
+            total_rounds=state.config.rounds,
         )
 
     async def _run_round(self, state: BattleState, round_num: int) -> None:
@@ -241,12 +242,12 @@ class BattleService:
     def clear_battles(self) -> None:
         """Clear all battles (for testing)"""
         self._battles.clear()
-    
+
     def save_vote(self, battle_id: str, provider: str) -> None:
         """Save a vote for a battle"""
         if not self._db_session:
             return
-        
+
         try:
             vote = Vote(battle_id=battle_id, provider=provider)
             self._db_session.add(vote)
@@ -255,14 +256,14 @@ class BattleService:
             self._db_session.rollback()
             print(f"Error saving vote to database: {e}")
             raise
-    
+
     def get_vote_counts(self, battle_id: str) -> dict[str, int]:
         """Get vote counts for a battle by provider"""
         default_counts = {"openai": 0, "claude": 0, "grok": 0}
-        
+
         if not self._db_session:
             return default_counts
-        
+
         try:
             votes = self._db_session.query(Vote).filter(Vote.battle_id == battle_id).all()
             counts = Counter(vote.provider for vote in votes)

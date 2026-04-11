@@ -1,38 +1,13 @@
-// Import personas from shared JSON (single source of truth for frontend + backend)
+// Import personas and topics from shared JSON (single source of truth for frontend + backend)
 import sharedPersonas from '../../../tech/llm-projects/1-llm-wars/shared/personas.json';
+import sharedTopics from '../../../tech/llm-projects/1-llm-wars/shared/topics.json';
 
 export const LLM_PROVIDERS = ['openai', 'claude', 'grok'] as const;
 export const BATTLE_MODES = ['text', 'emoji'] as const;
 export const LANGUAGES = ['en', 'hi'] as const;
 export const BATTLE_STATUSES = ['pending', 'in_progress', 'completed', 'error'] as const;
 
-export const PRESET_TOPICS = [
-  { id: 'pineapple-pizza', label: 'Pineapple on pizza: Yes or No?' },
-  { id: 'hotdog-sandwich', label: 'Is a hot dog a sandwich?' },
-  { id: 'tabs-spaces', label: 'Tabs vs Spaces' },
-  { id: 'ios-android', label: 'iOS vs Android' },
-  { id: 'star-wars-trek', label: 'Star Wars vs Star Trek' },
-  { id: 'ai-programmers', label: 'Should AI replace programmers?' },
-  { id: 'cereal-soup', label: 'Is cereal a soup?' },
-  { id: 'best-language', label: 'Best programming language' },
-  { id: 'cats-dogs', label: 'Cats vs Dogs' },
-  { id: 'marvel-dc', label: 'Marvel vs DC' },
-  { id: 'coffee-tea', label: 'Coffee vs Tea' },
-  { id: 'remote-office', label: 'Remote work vs Office' },
-  { id: 'bitcoin-gold', label: 'Bitcoin vs Gold' },
-  { id: 'mac-pc', label: 'Mac vs PC' },
-  { id: 'vim-emacs', label: 'Vim vs Emacs' },
-  { id: 'light-dark-mode', label: 'Light mode vs Dark mode' },
-  { id: 'chocolate-vanilla', label: 'Chocolate vs Vanilla' },
-  { id: 'summer-winter', label: 'Summer vs Winter' },
-  { id: 'books-movies', label: 'Books vs Movies' },
-  { id: 'beach-mountains', label: 'Beach vs Mountains' },
-  { id: 'morning-night', label: 'Morning person vs Night owl' },
-  { id: 'pizza-burger', label: 'Pizza vs Burgers' },
-  { id: 'gif-jif', label: 'Is it GIF or JIF?' },
-  { id: 'toilet-paper', label: 'Toilet paper: Over or Under?' },
-  { id: 'water-wet', label: 'Is water wet?' },
-] as const;
+export const CURATED_TOPICS = sharedTopics as readonly CuratedTopic[];
 
 export const BATTLE_TITLE_TEMPLATES = [
   'The Great {topic} War',
@@ -48,9 +23,9 @@ export const BATTLE_TITLE_TEMPLATES = [
 ] as const;
 
 export const LLM_COLORS: Record<LLMProvider, string> = {
-  openai: '#5ba37f',  // Soft green
-  claude: '#d4896a',  // Soft coral (matches blog accent)
-  grok: '#7b9fc4',    // Soft blue
+  openai: '#5ba37f', // Soft green
+  claude: '#d4896a', // Soft coral (matches blog accent)
+  grok: '#7b9fc4', // Soft blue
 };
 
 export const LLM_LABELS: Record<LLMProvider, string> = {
@@ -64,9 +39,16 @@ export const PRESET_PERSONAS = sharedPersonas as readonly {
   id: string;
   label: string;
   description: string;
+  world: string;
 }[];
 
 export const CUSTOM_PERSONA_ID = 'custom';
+
+export type CuratedTopic = {
+  id: string;
+  topic: string;
+  characters: [string, string, string];
+};
 
 export type LLMProvider = (typeof LLM_PROVIDERS)[number];
 export type BattleMode = (typeof BATTLE_MODES)[number];
@@ -104,9 +86,8 @@ export type BattleResponse = {
 };
 
 export const generateBattleTitle = (topic: string): string => {
-  const template = BATTLE_TITLE_TEMPLATES[
-    Math.floor(Math.random() * BATTLE_TITLE_TEMPLATES.length)
-  ];
+  const template =
+    BATTLE_TITLE_TEMPLATES[Math.floor(Math.random() * BATTLE_TITLE_TEMPLATES.length)];
   const shortTopic = topic.length > 30 ? topic.slice(0, 30) + '...' : topic;
   return template.replace('{topic}', shortTopic);
 };

@@ -1,4 +1,12 @@
-import type { BattleResponse, BattleConfig, LLMConfig, BattleMode, Language, BattleMessage, LLMProvider } from './types';
+import type {
+  BattleResponse,
+  BattleConfig,
+  LLMConfig,
+  BattleMode,
+  Language,
+  BattleMessage,
+  LLMProvider,
+} from './types';
 
 const API_BASE = import.meta.env.PUBLIC_LLM_WARS_API || 'http://localhost:5123';
 
@@ -54,7 +62,7 @@ export function streamBattle(
 ): () => void {
   const url = `${API_BASE}/api/battle/${battleId}/stream`;
   console.log('🔌 Connecting to stream:', url);
-  
+
   const eventSource = new EventSource(url);
 
   eventSource.onopen = () => {
@@ -97,19 +105,6 @@ export function streamBattle(
     console.log('🔌 Closing EventSource');
     eventSource.close();
   };
-}
-
-export type SurpriseConfig = {
-  topic: string;
-  personas: Array<{
-    provider: string;
-    persona: string;
-    name: string;
-  }>;
-};
-
-export async function getSurpriseConfig(): Promise<SurpriseConfig> {
-  return apiRequest<SurpriseConfig>('/api/battle/surprise');
 }
 
 export async function voteForBattle(battleId: string, provider: LLMProvider): Promise<void> {
