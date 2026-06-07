@@ -1,0 +1,42 @@
+{
+  "name": "@formatkaka/postcard",
+  "version": "0.6.0",
+  "description": "Interactive 3D flippable postcard React component with multiple themes",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "solid": "./src/index.tsx",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "peerDependencies": {
+    "solid-js": ">=1.8.0"
+  },
+  "devDependencies": {
+    "solid-js": "^1.8.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "postcard",
+    "solidjs",
+    "solid",
+    "component",
+    "3d",
+    "flip",
+    "tailwind"
+  ],
+  "author": "formatkaka",
+  "license": "MIT"
+}

@@ -6,6 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 
 import react from '@astrojs/react';
+import solidJs from '@astrojs/solid-js';
 
 // https://astro.build/config
 export default defineConfig({
@@ -23,6 +24,11 @@ export default defineConfig({
       babel: {
         plugins: ['babel-plugin-react-compiler'],
       },
+      include: ['**/*.tsx', '**/*.jsx'],
+      exclude: ['**/postcard/**'],
+    }),
+    solidJs({
+      include: ['**/postcard/**/*.tsx', '**/postcard/**/*.jsx'],
     }),
   ],
 });

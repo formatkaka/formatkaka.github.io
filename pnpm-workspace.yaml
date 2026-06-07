@@ -1,0 +1,7 @@
+packages:
+  - 'packages/*'
+
+allowBuilds:
+  '@tailwindcss/oxide': false
+  esbuild: false
+  sharp: false

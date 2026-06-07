@@ -1,0 +1,27 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Postcard } from '../../../packages/postcard/src/postcard';
+---
+
+<Layout
+  title="Postcard"
+  description="Design, write, and mail a virtual 3D flipping postcard"
+>
+  <div class="postcard-page">
+    <div class="container">
+      <Postcard client:load />
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .postcard-page {
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+</style>
