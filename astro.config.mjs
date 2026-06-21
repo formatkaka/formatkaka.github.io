@@ -16,11 +16,6 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     envDir: './env',
-    build: {
-      rollupOptions: {
-        external: ['@langchain/langgraph', '@langchain/openai'],
-      },
-    },
   },
 
   integrations: [
