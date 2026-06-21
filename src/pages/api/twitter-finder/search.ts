@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { MockTwitterClient } from '../../../tech/llm-projects/twitter-finder/twitterClient';
+import { runTwitterFinder } from '../../../tech/llm-projects/twitter-finder/graph';
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -16,13 +17,6 @@ export const POST: APIRoute = async ({ request }) => {
         }
       );
     }
-
-    // Lazy import so LangChain is never required at module-load time.
-    // Static generation only imports this module — it never calls POST —
-    // so this branch is never reached during the build.
-    const { runTwitterFinder } = await import(
-      /* @vite-ignore */ '../../../tech/llm-projects/twitter-finder/graph'
-    );
 
     const twitterClient = new MockTwitterClient();
 
