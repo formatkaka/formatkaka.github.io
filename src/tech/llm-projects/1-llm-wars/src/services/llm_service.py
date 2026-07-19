@@ -30,7 +30,7 @@ LANGUAGE_INSTRUCTIONS = {
 
 MODEL_MAP = {
     LLMProvider.OPENAI: "gpt-4o",
-    LLMProvider.CLAUDE: "claude-sonnet-4-20250514",
+    LLMProvider.CLAUDE: "claude-sonnet-5",
     LLMProvider.GROK: "grok-3-latest",
 }
 
@@ -211,7 +211,10 @@ RULES:
             system=system_prompt,
             messages=messages,
         )
-        output_text = response.content[0].text if response.content else ""
+        output_text = next(
+            (block.text for block in response.content if hasattr(block, "text")),
+            "",
+        )
 
         logged_messages = [{"role": "system", "content": system_prompt}] + messages
         duration_ns = int(datetime.now().timestamp() * 1_000_000_000) - start_time_ns
