@@ -1,7 +1,7 @@
 ---
 title: 'Book Review: Salt Sugar Fat'
 description: "A review of Michael Moss's exposé on how the food industry engineered our cravings"
-pubDate: 2026-08-01
+pubDate: 2026-04-12
 category: 'books'
 ---
 
