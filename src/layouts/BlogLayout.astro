@@ -221,6 +221,8 @@ if (
 
       img {
         max-width: 100%;
+        display: block;
+        margin: 0 auto;
       }
 
       /* Footnotes */
@@ -314,6 +316,42 @@ if (
         .link::after {
           width: 0%;
         }
+      }
+
+      .dialogues {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        margin: 8px 0;
+      }
+
+      .dialogue-line {
+        background-color: var(--text-color-primary);
+        color: var(--color-primary);
+        padding: 14px 20px;
+        font-style: italic;
+        font-size: 20px;
+        line-height: 1.5;
+        margin: 0;
+        position: relative;
+      }
+
+      .dialogue-line::before {
+        content: '\201C';
+        font-size: 48px;
+        line-height: 0;
+        vertical-align: -18px;
+        margin-right: 6px;
+        opacity: 0.25;
+        font-style: normal;
+      }
+
+      .dialogue-line:first-child {
+        border-radius: 2px 2px 0 0;
+      }
+
+      .dialogue-line:last-child {
+        border-radius: 0 0 2px 2px;
       }
 
       .spoiler {
