@@ -6,6 +6,7 @@ import { createBattle, streamBattle, getBattle, getBattleConfig } from './api';
 import { generateBattleTitle } from './types';
 import { saveBattleToIndexedDB } from './indexedDB';
 import { isOwnedBattleId, saveOwnedBattleId } from './battleOwnership';
+import { ThemeSelector } from './components/ThemeSelector';
 
 import type { BattleMode, Language, BattleMessage, BattleStatus, LLMConfig, BattleConfig } from './types';
 
@@ -36,6 +37,14 @@ function clearBattleFromUrl() {
   const url = new URL(window.location.href);
   url.searchParams.delete('battle');
   window.history.replaceState({}, '', url);
+}
+
+function pushBattleToUrl(battleId: string) {
+  const url = new URL(window.location.href);
+  if (url.searchParams.get('battle') === battleId) return;
+
+  url.searchParams.set('battle', battleId);
+  window.history.pushState({ battleId }, '', url);
 }
 
 type BattleState = {
@@ -73,12 +82,32 @@ export function LLMWars() {
 
   useEffect(() => stopActiveStream, [stopActiveStream]);
 
+  useEffect(() => {
+    const handlePopState = () => {
+      const battleId = new URLSearchParams(window.location.search).get('battle');
+      if (!battleId) {
+        stopActiveStream();
+        setBattle(null);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [stopActiveStream]);
+
   // Check for shared battle in URL on mount
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const battleId = params.get('battle');
     
     if (battleId && !battle) {
+      if (window.history.state?.battleId !== battleId) {
+        const battleUrl = new URL(window.location.href);
+        const homeUrl = new URL(window.location.href);
+        homeUrl.searchParams.delete('battle');
+        window.history.replaceState({ llmWarsHome: true }, '', homeUrl);
+        window.history.pushState({ battleId }, '', battleUrl);
+      }
       loadSharedBattle(battleId);
     }
   }, []);
@@ -166,6 +195,7 @@ export function LLMWars() {
 
       console.log('Battle created, response:', response);
       const battleState = createBattleState(response.id, config, [], 1, 'in_progress');
+      pushBattleToUrl(response.id);
       setBattle(battleState);
       activeBattleIdRef.current = response.id;
 
@@ -263,8 +293,7 @@ export function LLMWars() {
         battleResponse.status,
         battleResponse.error_message
       ));
-      
-      clearBattleFromUrl();
+      pushBattleToUrl(battleResponse.id);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to load battle';
       alert(message);
@@ -274,26 +303,27 @@ export function LLMWars() {
   };
 
   return (
-    <div className="font-['Source Sans Pro'] text-[#1b2021]">
-      <header className="relative mb-0 flex items-center justify-center border-b border-[#cfe1e8] bg-[#f7fcff] px-5 py-4 text-center sm:mb-8 sm:block sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
-        <h1 className="mb-0 text-2xl font-bold no-underline sm:mb-2 sm:text-4xl sm:underline sm:decoration-[#f6ad7b] sm:underline-offset-4">
-          LLM Wars
+    <div data-yel-lms-root className="relative font-['Source Sans Pro'] text-[#1b2021] dark:text-[#eef0f6]">
+      <div className="absolute right-4 top-4 z-20 sm:right-6 sm:top-6">
+        <ThemeSelector />
+      </div>
+
+      <header className={`relative mb-0 flex items-center justify-center border-b border-[#cfe1e8] bg-[#f7fcff] px-5 py-4 text-center dark:border-[#2a3341] dark:bg-[#111620] sm:hidden ${battle ? '' : 'hidden'}`}>
+        <h1 className="mb-0 text-2xl font-bold text-[#1b2021] no-underline dark:text-[#f4f5f8]">
+          Yel-lms
         </h1>
         {battle && (
           <button
-            className="absolute right-5 min-h-10 rounded-md bg-[#1b2021] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#333] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1b2021] focus-visible:ring-offset-2 sm:hidden"
+            className="absolute right-16 min-h-10 rounded-md bg-[#1b2021] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#333] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1b2021] focus-visible:ring-offset-2 dark:bg-[#f0f2f7] dark:text-[#151821] dark:hover:bg-white sm:hidden"
             onClick={handleReset}
             type="button"
           >
             New
           </button>
         )}
-        <p className="mx-auto hidden max-w-md text-base text-[#555] sm:block sm:max-w-none sm:text-lg">
-          Watch 3 AI models debate any topic with custom personas
-        </p>
       </header>
 
-      <main className="bg-[#eff8fc] sm:rounded-xl sm:bg-[#f2eee5] sm:p-8 sm:shadow-lg">
+      <main className="min-h-screen bg-[#eff8fc] transition-colors dark:bg-[#0f131c] sm:bg-[#f7f8ff] sm:p-12">
         {!battle ? (
           <div className="p-4 sm:p-0">
             <BattleSetup onStartBattle={handleStartBattle} isLoading={isLoading} />

@@ -18,8 +18,8 @@ export function VoteCard({ llm, isSelected, percentage, hasVoted, onVote, disabl
     <button
       onClick={onVote}
       disabled={disabled}
-      className={`relative border-2 border-transparent bg-[#fafafa] px-4 py-5 outline-none transition ${
-        isSelected ? 'border-[#f6ad7b] bg-[#fff5ef]' : ''
+      className={`relative border-2 border-transparent bg-[#fafafa] px-4 py-5 outline-none transition dark:bg-[#202633] ${
+        isSelected ? 'border-[#f6ad7b] bg-[#fff5ef] dark:bg-[#33271f]' : ''
       } ${hasVoted && !isSelected ? 'opacity-50' : ''}`}
       type="button"
     >
@@ -29,18 +29,18 @@ export function VoteCard({ llm, isSelected, percentage, hasVoted, onVote, disabl
       >
         {llm.provider.charAt(0).toUpperCase()}
       </div>
-      <div className="text-sm font-semibold text-[#1b2021]">{LLM_LABELS[llm.provider]}</div>
-      <div className="mt-1 text-xs text-[#888]">{personaLabel}</div>
+      <div className="text-sm font-semibold text-[#1b2021] dark:text-[#eef0f6]">{LLM_LABELS[llm.provider]}</div>
+      <div className="mt-1 text-xs text-[#888] dark:text-[#a0a8b6]">{personaLabel}</div>
 
       {hasVoted && (
         <div className="mt-3">
-          <div className="mb-1 h-1.5 overflow-hidden bg-[#e5e5e5]">
+          <div className="mb-1 h-1.5 overflow-hidden bg-[#e5e5e5] dark:bg-[#3a4250]">
             <div 
               style={{ width: `${percentage}%`, backgroundColor: color }}
               className="h-full"
             />
           </div>
-          <span className="text-xs font-semibold text-[#666]">{percentage}%</span>
+          <span className="text-xs font-semibold text-[#666] dark:text-[#b8bfca]">{percentage}%</span>
         </div>
       )}
 

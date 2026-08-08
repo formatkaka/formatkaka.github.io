@@ -1,182 +1,252 @@
 [
   {
-    "id": "is-water-wet",
-    "topic": "Is water wet?",
-    "characters": ["sarcastic-scientist", "zen-master", "toddler"]
-  },
-  {
-    "id": "recline-airplane-seat",
-    "topic": "Should you recline your airplane seat?",
+    "id": "recline-airplane-crisis",
+    "topic": "The guy in front of us just aggressively reclined his seat, crushing my laptop and pinning my knees. How do we retaliate?",
     "characters": ["disappointed-dad", "customer-service-exec", "drama-queen"]
   },
   {
-    "id": "tabs-vs-spaces",
-    "topic": "Tabs vs spaces",
+    "id": "tabs-vs-spaces-crash",
+    "topic": "The production database just crashed, losing millions, because someone used a tab instead of a space in the config file. Confess!",
     "characters": ["tech-bro", "medieval-knight", "grumpy-old-timer"]
   },
   {
-    "id": "gif-or-jif",
-    "topic": "Is it GIF or JIF?",
+    "id": "gif-or-jif-bomb",
+    "topic": "The bomb defusal manual says to 'cut the wire labeled like the image format.' Do they mean hard G or soft G?! WE HAVE 5 SECONDS.",
     "characters": ["sarcastic-scientist", "anime-protagonist", "sentient-autocorrect"]
   },
   {
-    "id": "fridge-light",
-    "topic": "Does the fridge light turn off when you close the door?",
+    "id": "fridge-light-trapped",
+    "topic": "I've been locked inside the refrigerator for three hours. The light DOES NOT turn off when the door closes and I am losing my mind.",
     "characters": ["zen-master", "pigeon", "time-traveler"]
   },
   {
-    "id": "trillion-lions-vs-sun",
-    "topic": "Who would win: a trillion lions or the sun?",
-    "characters": ["sports-commentator", "anime-protagonist", "sarcastic-scientist"]
+    "id": "toothbrush-police",
+    "topic": "My roommate just put a bone-dry, paste-covered toothbrush into his mouth and started violently scrubbing. Do I call the police?",
+    "characters": ["gordon-ramsay", "michael-scott", "polite-philosopher"]
   },
   {
-    "id": "rudest-animal",
-    "topic": "If animals could talk, which would be the rudest?",
-    "characters": ["judgmental-cat", "golden-retriever", "nature-doc-narrator"]
-  },
-  {
-    "id": "straw-holes",
-    "topic": "Is a straw one hole or two holes?",
-    "characters": ["professor", "minimalist", "drunk-uncle"]
-  },
-  {
-    "id": "toothbrush-wet",
-    "topic": "Should you wet the toothbrush before or after toothpaste?",
-    "characters": ["gordon-ramsay", "michael-scott", "disappointed-dad"]
-  },
-  {
-    "id": "instant-ramen-chef",
-    "topic": "Can you be a chef if you only make instant ramen?",
+    "id": "instant-ramen-michelin",
+    "topic": "The Michelin inspector is at table 4, and the head chef just quit. All we have in the pantry is 500 packs of instant ramen. Go.",
     "characters": ["gordon-ramsay", "sleep-deprived-parent", "genz"]
   },
   {
-    "id": "duck-sized-horses",
-    "topic": "Would you rather fight 100 duck-sized horses or 1 horse-sized duck?",
-    "characters": ["medieval-knight", "sports-commentator", "pigeon"]
-  },
-  {
-    "id": "elevator-strangers",
-    "topic": "Is it OK to talk to strangers in an elevator?",
+    "id": "elevator-strangers-stuck",
+    "topic": "We've been stuck in this elevator for 12 hours. Someone just asked, 'So, crazy weather we're having, huh?' Who snaps first?",
     "characters": ["customer-service-exec", "judgmental-cat", "michael-scott"]
   },
   {
-    "id": "socks-with-sandals",
-    "topic": "Socks with sandals: fashion crime or ahead of its time?",
-    "characters": ["shakespeare", "genz", "indian-aunty"]
-  },
-  {
-    "id": "milk-or-cereal-first",
-    "topic": "Milk first or cereal first?",
+    "id": "milk-first-escape",
+    "topic": "I just witnessed my date pour milk into the bowl first, then sprinkle dry cereal on top. How do I escape this restaurant without them noticing?",
     "characters": ["drama-queen", "grumpy-old-timer", "nature-doc-narrator"]
   },
   {
-    "id": "chicken-or-egg",
-    "topic": "Which came first: the chicken or the egg?",
-    "characters": ["sarcastic-scientist", "zen-master", "pigeon"]
-  },
-  {
-    "id": "plane-clapping",
-    "topic": "Should clapping when the plane lands be illegal?",
+    "id": "plane-clapping-intervention",
+    "topic": "The plane just landed perfectly normally, but the guy next to me stood up and started giving a tearful standing ovation. We need to stop him.",
     "characters": ["disappointed-dad", "sports-commentator", "indian-aunty"]
   },
   {
-    "id": "doors-vs-wheels",
-    "topic": "Are there more doors or wheels in the world?",
-    "characters": ["tech-bro", "professor", "sleep-deprived-parent"]
-  },
-  {
-    "id": "colonize-mars",
-    "topic": "Should we colonize Mars or fix Earth first?",
+    "id": "colonize-mars-teenager",
+    "topic": "Earth explodes in 10 minutes, but the only rocket to Mars is being flown by a 16-year-old with a learner's permit. Do we get on?",
     "characters": ["tech-bro", "medieval-knight", "time-traveler"]
   },
   {
-    "id": "one-bread-sandwich",
-    "topic": "Can a sandwich have only one slice of bread?",
+    "id": "one-bread-scam",
+    "topic": "I ordered a $30 artisanal sandwich and they just handed me a single piece of bread with a piece of ham glued to it. What is our next move?",
     "characters": ["professor", "toddler", "wrong-meeting-guy"]
   },
   {
-    "id": "men-umbrellas",
-    "topic": "Should men use umbrellas?",
-    "characters": ["medieval-knight", "genz", "disappointed-dad"]
-  },
-  {
-    "id": "punch-yourself",
-    "topic": "If you punch yourself and it hurts, are you strong or weak?",
+    "id": "punch-yourself-knockout",
+    "topic": "Our heavyweight boxing champion just knocked himself out cold while stretching in the locker room. The title fight is in two minutes.",
     "characters": ["zen-master", "sports-commentator", "anime-protagonist"]
   },
   {
-    "id": "no-music-trust",
-    "topic": "Can you trust someone who doesn't like music?",
-    "characters": ["drunk-uncle", "shakespeare", "judgmental-cat"]
+    "id": "rudest-animal-confrontation",
+    "topic": "The family dog just looked me dead in the eye, sighed, and said, 'Your cooking is garbage.' How do we handle this?",
+    "characters": ["judgmental-cat", "golden-retriever", "nature-doc-narrator"]
   },
   {
-    "id": "dinner-morning-evening",
-    "topic": "Should we eat dinner in the morning or evening?",
-    "characters": ["indian-aunty", "sleep-deprived-parent", "grumpy-old-timer"]
+    "id": "eat-a-door-survival",
+    "topic": "We are locked in a vault. We will starve unless we eat this solid oak door. Who starts chewing first?",
+    "characters": ["gordon-ramsay", "professor", "medieval-knight"]
   },
   {
-    "id": "okay",
-    "topic": "Okay",
-    "characters": ["zen-master", "drama-queen", "minimalist"]
+    "id": "wrong-cremation",
+    "topic": "We just accidentally cremated the wrong guy, how do we tell the widow?",
+    "characters": ["corporate-robot", "michael-scott", "motivational-speaker"]
   },
   {
-    "id": "fruit-identity",
-    "topic": "If you were a fruit, what fruit would you be?",
-    "characters": ["michael-scott", "nature-doc-narrator", "indian-aunty"]
+    "id": "slack-disaster",
+    "topic": "Someone accidentally posted a spicy 'u up?' text in the #company-wide Slack and the CEO is typing...",
+    "characters": ["genz", "wrong-meeting-guy", "sentient-autocorrect"]
   },
   {
-    "id": "eat-a-door",
-    "topic": "Could you eat a door if you had a year to do it?",
-    "characters": ["gordon-ramsay", "anime-protagonist", "professor"]
+    "id": "bank-robbery-gps",
+    "topic": "We are driving the getaway car from a bank heist, but the GPS just rerouted us into a Wendy's drive-thru.",
+    "characters": ["customer-service-exec", "toddler", "shakespeare"]
   },
   {
-    "id": "gravity-off",
-    "topic": "If gravity turned off for 5 seconds right now, what's your first move?",
-    "characters": ["pigeon", "tech-bro", "medieval-knight"]
+    "id": "bomb-wire",
+    "topic": "The timer is at 0:10. Do we cut the red wire or the blue wire?!",
+    "characters": ["sarcastic-scientist", "zen-master", "toddler"]
   },
   {
-    "id": "simulation",
-    "topic": "Are we living in a simulation?",
-    "characters": ["zen-master", "time-traveler", "wrong-meeting-guy"]
+    "id": "wifi-down",
+    "topic": "The Wi-Fi just went down and won't be back for 48 hours.",
+    "characters": ["genz", "time-traveler", "grumpy-old-timer"]
   },
   {
-    "id": "rewear-jeans",
-    "topic": "How many times can you rewear jeans before washing?",
-    "characters": ["judgmental-cat", "genz", "grumpy-old-timer"]
+    "id": "we-need-to-talk",
+    "topic": "We need to talk.",
+    "characters": ["michael-scott", "drama-queen", "disappointed-dad"]
   },
   {
-    "id": "fish-thirsty",
-    "topic": "Do fish get thirsty?",
-    "characters": ["sarcastic-scientist", "toddler", "drunk-uncle"]
+    "id": "sup",
+    "topic": "Sup",
+    "characters": ["grumpy-old-timer", "medieval-knight", "corporate-robot"]
   },
   {
-    "id": "waiting-for-waiter",
-    "topic": "If you're waiting for the waiter, aren't you the waiter?",
-    "characters": ["polite-philosopher", "minimalist", "customer-service-exec"]
+    "id": "k-period",
+    "topic": "k.",
+    "characters": ["drama-queen", "shakespeare", "disappointed-dad"]
   },
   {
-    "id": "sing-happy-birthday",
-    "topic": "Should you sing happy birthday or just mouth the words?",
-    "characters": ["shakespeare", "michael-scott", "disappointed-dad"]
+    "id": "card-declined",
+    "topic": "Your card was declined at the grocery store checkout and there's a huge line behind you.",
+    "characters": ["medieval-knight", "tech-bro", "judgmental-cat"]
   },
   {
-    "id": "dogs-think-in-barks",
-    "topic": "Do dogs think in barks?",
-    "characters": ["golden-retriever", "nature-doc-narrator", "toddler"]
+    "id": "reply-all",
+    "topic": "Who keeps hitting 'Reply All' to the company newsletter?",
+    "characters": ["wrong-meeting-guy", "grumpy-old-timer", "tech-bro"]
   },
   {
-    "id": "monday-worst-day",
-    "topic": "Is Monday the worst day or do we just hate our jobs?",
-    "characters": ["corporate-robot", "linkedin-influencer", "sleep-deprived-parent"]
+    "id": "toilet-paper-emergency",
+    "topic": "We are completely out of toilet paper and I am currently in the bathroom. Help.",
+    "characters": ["minimalist", "tech-bro", "sleep-deprived-parent"]
   },
   {
-    "id": "terms-and-conditions",
-    "topic": "Who actually reads the terms and conditions?",
-    "characters": ["corporate-robot", "wrong-meeting-guy", "pigeon"]
+    "id": "pepsi-okay",
+    "topic": "Is Pepsi okay?",
+    "characters": ["gordon-ramsay", "disappointed-dad", "polite-philosopher"]
   },
   {
-    "id": "ownership",
-    "topic": "Ownership",
-    "characters": ["linkedin-influencer", "corporate-robot", "motivational-speaker"]
+    "id": "land-a-plane",
+    "topic": "Does anyone know how to land a Boeing 747? Asking for a friend.",
+    "characters": ["linkedin-influencer", "pigeon", "sports-commentator"]
+  },
+  {
+    "id": "mom-i-threw-up",
+    "topic": "Mom, I threw up.",
+    "characters": ["sleep-deprived-parent", "gordon-ramsay", "shakespeare"]
+  },
+  {
+    "id": "liked-ex-photo",
+    "topic": "I just accidentally liked my ex's Instagram photo from 2012. What do I do?",
+    "characters": ["genz", "nature-doc-narrator", "drunk-uncle"]
+  },
+  {
+    "id": "circle-back",
+    "topic": "Just wanted to circle back on this.",
+    "characters": ["corporate-robot", "medieval-knight", "pigeon"]
+  },
+  {
+    "id": "unsubscribe",
+    "topic": "UNSUBSCRIBE",
+    "characters": ["customer-service-exec", "drama-queen", "sentient-autocorrect"]
+  },
+  {
+    "id": "dog-ate-homework",
+    "topic": "My dog actually ate my homework. How do I explain this?",
+    "characters": ["professor", "golden-retriever", "sarcastic-scientist"]
+  },
+  {
+    "id": "dot-dot-dot",
+    "topic": "...",
+    "characters": ["judgmental-cat", "zen-master", "motivational-speaker"]
+  },
+  {
+    "id": "stolen-yogurt",
+    "topic": "Who ate my labeled yogurt from the communal fridge?!",
+    "characters": ["wrong-meeting-guy", "medieval-knight", "judgmental-cat"]
+  },
+  {
+    "id": "u-awake",
+    "topic": "u awake?",
+    "characters": ["sleep-deprived-parent", "indian-aunty", "michael-scott"]
+  },
+  {
+    "id": "password-reset",
+    "topic": "Password must contain a capital letter, a number, a special character, and a hieroglyph.",
+    "characters": ["grumpy-old-timer", "tech-bro", "toddler"]
+  },
+  {
+    "id": "wedding-ruined",
+    "topic": "The priest fainted at the altar and the wedding rings just fell down a sewer grate. Salvage this wedding.",
+    "characters": ["drunk-uncle", "linkedin-influencer", "sports-commentator"]
+  },
+  {
+    "id": "zombie-bite",
+    "topic": "One of us was just bitten by a zombie, but they are aggressively swearing it's just a mosquito bite.",
+    "characters": ["grumpy-old-timer", "disappointed-dad", "golden-retriever"]
+  },
+  {
+    "id": "terms-and-conditions-demon",
+    "topic": "We just found out the new software Terms & Conditions actually signs our souls over to a demon. How do we void the contract?",
+    "characters": ["polite-philosopher", "zen-master", "drama-queen"]
+  },
+  {
+    "id": "hr-fish-microwave",
+    "topic": "HR called us in because someone has been microwaving fish in the breakroom for a month straight. Defend yourselves.",
+    "characters": ["judgmental-cat", "indian-aunty", "nature-doc-narrator"]
+  },
+  {
+    "id": "alien-abduction",
+    "topic": "We've been abducted by aliens and they're about to dissect us. Who talks them out of it?",
+    "characters": ["tech-bro", "sleep-deprived-parent", "anime-protagonist"]
+  },
+  {
+    "id": "gravity-off-space",
+    "topic": "Gravity permanently turned off five minutes ago and we are drifting helplessly out of the window into the sky. What's the plan?",
+    "characters": ["pigeon", "time-traveler", "minimalist"]
+  },
+  {
+    "id": "landlord-trex",
+    "topic": "We successfully cloned a T-Rex in the apartment, but it just ate the landlord. How do we get our security deposit back?",
+    "characters": ["sarcastic-scientist", "minimalist", "anime-protagonist"]
+  },
+  {
+    "id": "dark-magic-substitute",
+    "topic": "You are substitute teachers covering a class on Dark Magic. How do you keep the 11-year-olds from summoning demons?",
+    "characters": ["disappointed-dad", "indian-aunty", "golden-retriever"]
+  },
+  {
+    "id": "testing-123",
+    "topic": "Testing, 1, 2, 3...",
+    "characters": ["sarcastic-scientist", "sentient-autocorrect", "time-traveler"]
+  },
+  {
+    "id": "left-on-read",
+    "topic": "*Read at 9:42 PM*",
+    "characters": ["linkedin-influencer", "genz", "judgmental-cat"]
+  },
+  {
+    "id": "youre-on-mute",
+    "topic": "You're on mute.",
+    "characters": ["wrong-meeting-guy", "zen-master", "motivational-speaker"]
+  },
+  {
+    "id": "lol",
+    "topic": "lol",
+    "characters": ["professor", "michael-scott", "polite-philosopher"]
+  },
+  {
+    "id": "whoops",
+    "topic": "Whoops.",
+    "characters": ["gordon-ramsay", "customer-service-exec", "toddler"]
+  },
+  {
+    "id": "new-phone",
+    "topic": "New phone, who dis?",
+    "characters": ["indian-aunty", "corporate-robot", "nature-doc-narrator"]
   }
 ]

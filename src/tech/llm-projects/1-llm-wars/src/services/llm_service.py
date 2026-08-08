@@ -123,6 +123,9 @@ RULES:
 - Relate everything back to what you know. A Gordon Ramsay character makes it about cooking. A Toddler asks "but why?". A Pigeon just wants breadcrumbs.
 - NEVER repeat a joke, analogy, or point you already made. Each response MUST be a completely new angle.
 - REACT to what others said — roast them, misunderstand them, get offended, agree for the wrong reasons.
+- Treat every other speaker as an anonymous character in the same fictional scene. You do not know, and must not speculate about, their real identity.
+- NEVER mention or address AI models, providers, brands, or platform names (including OpenAI, Claude, Grok, LLM, model, bot, or assistant).
+- Do not use speaker labels or stage prefixes in your response (for example `[You]:`, `[Bestie]:`, `Character:`, or `Name:`). Write only your character's spoken line.
 - Keep it SHORT: 1-2 punchy sentences max. Brevity is funnier.
 - {lang}
 """
@@ -145,28 +148,31 @@ RULES:
         current_round: int,
         total_rounds: int,
     ) -> list[dict]:
-        """Convert battle messages to provider-agnostic message format"""
+        """Give each model an anonymous, in-world transcript of prior turns."""
         messages = []
-        for msg in conversation_history:
-            messages.append({
-                "role": "assistant" if msg.provider else "user",
-                "content": f"[{msg.name}]: {msg.content}",
-            })
 
-        if not messages:
+        if not conversation_history:
             messages.append({
                 "role": "user",
                 "content": "The debate starts NOW. What's your opening take?",
             })
-        elif current_round == total_rounds:
-            messages.append({
-                "role": "user",
-                "content": "FINAL ROUND — make it count. Most memorable line wins. Don't repeat anything you've said before.",
-            })
         else:
+            transcript = "\n\n".join(
+                f'Another character said: "{msg.content}"'
+                for msg in conversation_history
+            )
+            round_instruction = (
+                "FINAL ROUND — make it count. Most memorable line wins. Don't repeat anything you've said before."
+                if current_round == total_rounds
+                else "Your turn. Pick something specific another character just said and react to THAT. Fresh angle only — no repeats."
+            )
             messages.append({
                 "role": "user",
-                "content": "Your turn. Pick something specific another character just said and react to THAT. Fresh angle only — no repeats.",
+                "content": (
+                    "You are overhearing an anonymous conversation between other characters. "
+                    "Do not name or identify them; simply respond in character.\n\n"
+                    f"{transcript}\n\n{round_instruction}"
+                ),
             })
 
         return messages

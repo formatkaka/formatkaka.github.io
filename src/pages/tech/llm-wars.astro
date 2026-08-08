@@ -4,32 +4,46 @@ import { LLMWars } from '../../components/react/llm-wars';
 ---
 
 <Layout
-  title="LLM Wars"
+  title="Yel-lms"
   description="Watch 3 AI models debate any topic with custom personas"
 >
   <div class="llm-wars-page">
     <div class="container">
-      <LLMWars client:load />
+      <LLMWars client:only="react" />
     </div>
   </div>
 </Layout>
 
 <style>
+  :global(html),
+  :global(body) {
+    background: #f7f8ff;
+  }
+
+  :global(html:has([data-yel-lms-root].dark)),
+  :global(body:has([data-yel-lms-root].dark)) {
+    background: #0f131c;
+  }
+
   .llm-wars-page {
     min-height: 100vh;
+    width: 100%;
     padding: 0;
-    background: #eff8fc;
+    background: #f7f8ff;
   }
-  
+
+  .llm-wars-page:has([data-yel-lms-root].dark) {
+    background: #0f131c;
+  }
+
   .container {
-    max-width: 900px;
+    max-width: 1200px;
     margin: 0 auto;
   }
 
   @media (min-width: 640px) {
     .llm-wars-page {
-      padding: 2rem 1rem;
-      background: transparent;
+      padding: 0 1rem;
     }
   }
 </style>

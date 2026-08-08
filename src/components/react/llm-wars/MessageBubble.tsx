@@ -59,7 +59,7 @@ export function MessageBubble(props: MessageBubbleProps) {
   }, [animate, message.content]);
 
   return (
-    <div className="mb-3 flex gap-3 rounded-sm border border-[#dce3e5] bg-white px-3 py-3 shadow-sm sm:mb-0 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-4 sm:shadow-none sm:hover:bg-[#fafafa]">
+    <div className="mb-3 flex gap-3 rounded-sm border border-[#dce3e5] bg-white px-3 py-3 shadow-sm dark:border-[#30394a] dark:bg-[#191f2b] dark:shadow-black/20 sm:mb-0 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-4 sm:shadow-none sm:hover:bg-[#fafafa] sm:dark:bg-transparent sm:dark:hover:bg-[#1b202c]">
       <div
         className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
         style={{ backgroundColor: color }}
@@ -71,12 +71,12 @@ export function MessageBubble(props: MessageBubbleProps) {
           <span className="text-sm font-semibold" style={{ color }}>
             {message.name}
           </span>
-          <span className="text-sm text-[#999]"> — {personaDisplay}</span>
+          <span className="text-sm text-[#999] dark:text-[#9da5b3]"> — {personaDisplay}</span>
         </div>
-        <p className="text-[15px] leading-relaxed text-[#333] whitespace-pre-wrap break-words">
+        <p className="text-[15px] leading-relaxed text-[#333] whitespace-pre-wrap break-words dark:text-[#dce1e9]">
           {displayText}
           {isAnimating && (
-            <span className="ml-1 inline-block text-[#999] animate-pulse">▍</span>
+            <span className="ml-1 inline-block text-[#999] animate-pulse dark:text-[#aab2bf]">▍</span>
           )}
         </p>
       </div>
@@ -105,9 +105,9 @@ export function TypingIndicator(props: TypingIndicatorProps) {
           {name}
         </span>
         <div className="flex gap-1">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#ccc] animate-bounce" style={{ animationDelay: '0s' }} />
-          <span className="h-1.5 w-1.5 rounded-full bg-[#ccc] animate-bounce" style={{ animationDelay: '0.16s' }} />
-          <span className="h-1.5 w-1.5 rounded-full bg-[#ccc] animate-bounce" style={{ animationDelay: '0.32s' }} />
+          <span className="h-1.5 w-1.5 rounded-full bg-[#ccc] animate-bounce dark:bg-[#697386]" style={{ animationDelay: '0s' }} />
+          <span className="h-1.5 w-1.5 rounded-full bg-[#ccc] animate-bounce dark:bg-[#697386]" style={{ animationDelay: '0.16s' }} />
+          <span className="h-1.5 w-1.5 rounded-full bg-[#ccc] animate-bounce dark:bg-[#697386]" style={{ animationDelay: '0.32s' }} />
         </div>
       </div>
     </div>

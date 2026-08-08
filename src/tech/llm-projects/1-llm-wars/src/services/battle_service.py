@@ -107,7 +107,11 @@ class BattleService:
             print(f"Error saving battle to database: {e}")
 
     def get_battle_config(self, battle_id: str) -> BattleConfig | None:
-        """Get battle config for replay (from database)"""
+        """Get battle config for replay, checking active memory before the database."""
+        state = self._battles.get(battle_id)
+        if state:
+            return state.config
+
         if not self._db_session:
             return None
 

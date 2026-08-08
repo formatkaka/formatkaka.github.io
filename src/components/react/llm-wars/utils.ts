@@ -15,10 +15,10 @@ export function getPersonaDisplay(llmConfig: LLMConfig | undefined): string {
 
 export function getStatusBadgeConfig(status: string) {
   const configs = {
-    in_progress: { bg: 'bg-[#e8f5e9]', text: 'text-[#2e7d32]', label: '● In Progress' },
-    completed: { bg: 'bg-[#e3f2fd]', text: 'text-[#1565c0]', label: '✓ Completed' },
-    error: { bg: 'bg-[#ffebee]', text: 'text-[#c62828]', label: '✕ Error' },
-    pending: { bg: 'bg-[#f5f5f5]', text: 'text-[#666]', label: '○ Pending' },
+    in_progress: { bg: 'bg-[#e8f5e9] dark:bg-[#173525]', text: 'text-[#2e7d32] dark:text-[#7bd69d]', label: '● In Progress' },
+    completed: { bg: 'bg-[#e3f2fd] dark:bg-[#172d49]', text: 'text-[#1565c0] dark:text-[#86b9f5]', label: '✓ Completed' },
+    error: { bg: 'bg-[#ffebee] dark:bg-[#3a1d22]', text: 'text-[#c62828] dark:text-[#ff9da8]', label: '✕ Error' },
+    pending: { bg: 'bg-[#f5f5f5] dark:bg-[#292f3b]', text: 'text-[#666] dark:text-[#aeb6c4]', label: '○ Pending' },
   } as const;
   
   return configs[status as keyof typeof configs] || configs.pending;

@@ -148,12 +148,12 @@ export function BattleArena(props: BattleArenaProps) {
       {/* Header */}
       <div className="hidden mb-4 sm:flex sm:items-start sm:justify-between sm:gap-4">
         <div className="min-w-0">
-          <h2 className="mb-1 text-xl font-bold text-[#1b2021] text-pretty">{title}</h2>
-          <p className="text-sm text-[#666] break-words">{topic}</p>
+          <h2 className="mb-1 text-xl font-bold text-[#1b2021] text-pretty dark:text-[#f1f3f7]">{title}</h2>
+          <p className="text-sm text-[#666] break-words dark:text-[#a0a8b6]">{topic}</p>
         </div>
         <button
           onClick={onReset}
-          className="min-h-11 rounded-md border-0 bg-white px-4 py-2 text-sm font-semibold text-[#555] transition hover:bg-[#fff8f4] hover:text-[#1b2021] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f6ad7b]"
+          className="min-h-11 rounded-md border-0 bg-white px-4 py-2 text-sm font-semibold text-[#555] transition hover:bg-[#fff8f4] hover:text-[#1b2021] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f6ad7b] dark:bg-[#1b212d] dark:text-[#c8ced8] dark:hover:bg-[#252c39] dark:hover:text-white sm:mr-28"
           type="button"
         >
           New Battle
@@ -161,32 +161,32 @@ export function BattleArena(props: BattleArenaProps) {
       </div>
 
       {/* Status Bar */}
-      <div className="mb-0 flex min-h-12 items-center justify-between gap-3 border-y border-[#cfe1e8] bg-[#e6f4fb] px-4 py-2 sm:mb-4 sm:min-h-0 sm:rounded-lg sm:border-0 sm:bg-white sm:px-4 sm:py-3">
-        <p className="min-w-0 truncate text-base font-semibold text-[#1b2021] sm:hidden">{topic}</p>
-        <div className="hidden text-sm text-[#666] sm:block">
-          Round <span className="font-bold text-[#1b2021]">{currentRound}</span> of {totalRounds}
+      <div className="mb-0 flex min-h-12 items-center justify-between gap-3 border-y border-[#cfe1e8] bg-[#e6f4fb] px-4 py-2 dark:border-[#2a3341] dark:bg-[#171e29] sm:mb-4 sm:min-h-0 sm:rounded-lg sm:border-0 sm:bg-white sm:px-4 sm:py-3 sm:dark:bg-[#191f2b]">
+        <p className="min-w-0 truncate text-base font-semibold text-[#1b2021] dark:text-[#eef0f6] sm:hidden">{topic}</p>
+        <div className="hidden text-sm text-[#666] dark:text-[#a0a8b6] sm:block">
+          Round <span className="font-bold text-[#1b2021] dark:text-[#eef0f6]">{currentRound}</span> of {totalRounds}
         </div>
-        <div className="shrink-0 rounded-sm bg-[#d3eaf5] px-2 py-1 text-sm font-semibold text-[#164484] sm:bg-transparent sm:px-0 sm:py-0 sm:text-inherit">
+        <div className="shrink-0 rounded-sm bg-[#d3eaf5] px-2 py-1 text-sm font-semibold text-[#164484] dark:bg-[#263852] dark:text-[#8eb8f4] sm:bg-transparent sm:px-0 sm:py-0 sm:text-inherit sm:dark:bg-transparent">
           <span className="sm:hidden">Round {currentRound}/{totalRounds}</span>
           <div className="hidden sm:block"><StatusBadge status={status} /></div>
         </div>
       </div>
 
       {errorMessage && (
-        <div className="mb-4 rounded-lg bg-[#ffebee] px-4 py-3 text-sm text-[#c62828]">
+        <div className="mb-4 rounded-lg bg-[#ffebee] px-4 py-3 text-sm text-[#c62828] dark:bg-[#3a1d22] dark:text-[#ff9da8]">
           {errorMessage}
         </div>
       )}
 
       {/* Messages */}
       <div
-        className="relative min-h-0 max-h-none overflow-visible bg-transparent pb-0 sm:min-h-[300px] sm:max-h-[500px] sm:overflow-y-auto sm:rounded-xl sm:bg-white sm:pb-10"
+        className="relative min-h-0 max-h-none overflow-visible bg-transparent pb-0 sm:min-h-[300px] sm:max-h-[500px] sm:overflow-y-auto sm:rounded-xl sm:bg-white sm:pb-10 sm:dark:bg-[#151a24]"
         ref={messagesContainerRef}
         onScroll={handleScroll}
       >
         {Object.entries(messagesByRound).map(([round, roundMessages]) => (
-          <div key={round} className="border-b border-[#d9e5e8] sm:border-[#f0f0f0]">
-            <div className="bg-[#edf7fb] px-4 py-2 text-[11px] font-semibold uppercase tracking-wide text-[#66747a] sm:sticky sm:top-0 sm:border-b sm:border-[#f0f0f0] sm:bg-[#fafafa] sm:text-[#888]">
+          <div key={round} className="border-b border-[#d9e5e8] dark:border-[#2a3341] sm:border-[#f0f0f0] sm:dark:border-[#282f3c]">
+            <div className="bg-[#edf7fb] px-4 py-2 text-[11px] font-semibold uppercase tracking-wide text-[#66747a] dark:bg-[#151c27] dark:text-[#929baa] sm:sticky sm:top-0 sm:border-b sm:border-[#f0f0f0] sm:bg-[#fafafa] sm:text-[#888] sm:dark:border-[#282f3c] sm:dark:bg-[#1a202b] sm:dark:text-[#929baa]">
               Round {round}
             </div>
             <div className="px-4 py-3 sm:px-0 sm:py-2">
@@ -203,7 +203,7 @@ export function BattleArena(props: BattleArenaProps) {
         ))}
 
         {typingLLM && (
-          <div className="border-t border-[#d9e5e8] bg-white px-4 py-3 sm:border-[#f0f0f0] sm:py-2">
+          <div className="border-t border-[#d9e5e8] bg-white px-4 py-3 dark:border-[#2a3341] dark:bg-[#191f2b] sm:border-[#f0f0f0] sm:py-2 sm:dark:border-[#282f3c] sm:dark:bg-[#151a24]">
             <TypingIndicator
               name={typingLLM.name}
               color={LLM_COLORS[typingLLM.provider]}
@@ -219,7 +219,7 @@ export function BattleArena(props: BattleArenaProps) {
           }`}
         >
           <button
-            className="pointer-events-auto inline-flex min-h-10 items-center gap-1 rounded-full border border-[#f6ad7b] bg-[#fff8f4] px-3 py-1.5 text-xs font-semibold text-[#1b2021] shadow-md transition hover:border-[#e8946a] hover:bg-[#ffe9dd] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f6ad7b]"
+            className="pointer-events-auto inline-flex min-h-10 items-center gap-1 rounded-full border border-[#f6ad7b] bg-[#fff8f4] px-3 py-1.5 text-xs font-semibold text-[#1b2021] shadow-md transition hover:border-[#e8946a] hover:bg-[#ffe9dd] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f6ad7b] dark:border-[#915937] dark:bg-[#2c211b] dark:text-[#f3d7c7] dark:hover:bg-[#3a291f]"
             type="button"
             onClick={scrollToBottom}
           >
@@ -236,7 +236,7 @@ export function BattleArena(props: BattleArenaProps) {
             className={`inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-[#f6ad7b] px-4 py-2 text-sm font-semibold text-[#1b2021] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f6ad7b] sm:w-auto ${
               shareCopied
                 ? 'bg-[#e8f5e9] border-[#4caf50] text-[#2e7d32]'
-                : 'bg-[#fff8f4] hover:bg-[#ffe9dd] hover:border-[#e8946a]'
+                : 'bg-[#fff8f4] hover:bg-[#ffe9dd] hover:border-[#e8946a] dark:bg-[#2c211b] dark:text-[#f3d7c7] dark:hover:bg-[#3a291f]'
             }`}
             type="button"
           >
@@ -247,8 +247,8 @@ export function BattleArena(props: BattleArenaProps) {
 
       {/* Victory Section */}
       {status === 'completed' && (
-        <div className="mt-0 border-t border-[#d9e5e8] bg-white p-4 text-center sm:mt-6 sm:rounded-xl sm:border-0 sm:p-6">
-          <h3 className="mb-5 text-lg font-semibold text-[#1b2021]">Who won this debate?</h3>
+        <div className="mt-0 border-t border-[#d9e5e8] bg-white p-4 text-center dark:border-[#2a3341] dark:bg-[#151a24] sm:mt-6 sm:rounded-xl sm:border-0 sm:p-6">
+          <h3 className="mb-5 text-lg font-semibold text-[#1b2021] dark:text-[#eef0f6]">Who won this debate?</h3>
           
           <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
             {llms.map((llm) => (
@@ -266,7 +266,7 @@ export function BattleArena(props: BattleArenaProps) {
 
           <button
             onClick={onReset}
-            className="min-h-12 w-full rounded-lg border-0 bg-[#1b2021] px-8 py-3 text-base font-semibold text-white transition hover:bg-[#333] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1b2021] focus-visible:ring-offset-2 sm:w-auto"
+            className="min-h-12 w-full rounded-lg border-0 bg-[#1b2021] px-8 py-3 text-base font-semibold text-white transition hover:bg-[#333] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1b2021] focus-visible:ring-offset-2 dark:bg-[#f0f2f7] dark:text-[#151821] dark:hover:bg-white sm:w-auto"
             type="button"
           >
             Start New Battle
