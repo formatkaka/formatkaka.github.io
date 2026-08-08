@@ -136,16 +136,41 @@ class BattleService:
         galileo_context.start_session(name=f"Battle {battle_id}")
         try:
             state.status = BattleStatus.IN_PROGRESS
+            self._record_battle_event(
+                state,
+                event_name="Battle started",
+                input_text=state.config.topic,
+                metadata={"total_rounds": state.config.rounds},
+            )
             for round_num in range(1, state.config.rounds + 1):
                 state.current_round = round_num
+                self._record_battle_event(
+                    state,
+                    event_name="Round started",
+                    input_text=f"Starting round {round_num}.",
+                    metadata={"round": round_num},
+                )
                 await self._run_round(state, round_num)
 
             state.status = BattleStatus.COMPLETED
             self.save_battle(state)
+            self._record_battle_event(
+                state,
+                event_name="Battle completed",
+                output_text=f"Generated {len(state.messages)} responses.",
+                metadata={"message_count": len(state.messages)},
+            )
         except Exception as e:
             state.status = BattleStatus.ERROR
             state.error_message = str(e)
             self.save_battle(state)
+            self._record_battle_event(
+                state,
+                event_name="Battle failed",
+                output_text=str(e),
+                metadata={"message_count": len(state.messages)},
+                status_code=500,
+            )
         finally:
             galileo_context.clear_session()
 
@@ -167,11 +192,23 @@ class BattleService:
             state.status = BattleStatus.IN_PROGRESS
             state.current_round = 0
             state.error_message = None
-            print(f"📊 Battle status set to IN_PROGRESS, cleared messages")
+            print("📊 Battle status set to IN_PROGRESS, cleared messages")
+            self._record_battle_event(
+                state,
+                event_name="Battle started",
+                input_text=state.config.topic,
+                metadata={"total_rounds": state.config.rounds},
+            )
 
             for round_num in range(1, state.config.rounds + 1):
                 print(f"🔄 Starting round {round_num}/{state.config.rounds}")
                 state.current_round = round_num
+                self._record_battle_event(
+                    state,
+                    event_name="Round started",
+                    input_text=f"Starting round {round_num}.",
+                    metadata={"round": round_num},
+                )
 
                 for llm_config in state.config.llms:
                     print(f"🤖 [Round {round_num}] Generating response for {llm_config.provider}...")
@@ -184,6 +221,17 @@ class BattleService:
                     print(f"   Created message: provider={message.provider}, round={message.round_number}")
 
                     state.messages.append(message)
+                    self._record_battle_event(
+                        state,
+                        event_name="LLM response received",
+                        input_text=f"{llm_config.name} responding in round {round_num}.",
+                        output_text=response,
+                        metadata={
+                            "round": round_num,
+                            "provider": llm_config.provider.value,
+                            "llm_name": llm_config.name,
+                        },
+                    )
                     print(f"📤 [Round {round_num}] Yielding message from {llm_config.provider} (round_number={message.round_number})...")
                     yield message
 
@@ -191,10 +239,23 @@ class BattleService:
 
             state.status = BattleStatus.COMPLETED
             self.save_battle(state)
+            self._record_battle_event(
+                state,
+                event_name="Battle completed",
+                output_text=f"Generated {len(state.messages)} responses.",
+                metadata={"message_count": len(state.messages)},
+            )
         except Exception as e:
             state.status = BattleStatus.ERROR
             state.error_message = str(e)
             self.save_battle(state)
+            self._record_battle_event(
+                state,
+                event_name="Battle failed",
+                output_text=str(e),
+                metadata={"message_count": len(state.messages)},
+                status_code=500,
+            )
             raise
         finally:
             galileo_context.clear_session()
@@ -234,6 +295,47 @@ class BattleService:
             response = await self._generate_llm_response(state, llm_config, round_num)
             message = self._create_message(llm_config, response, round_num)
             state.messages.append(message)
+            self._record_battle_event(
+                state,
+                event_name="LLM response received",
+                input_text=f"{llm_config.name} responding in round {round_num}.",
+                output_text=response,
+                metadata={
+                    "round": round_num,
+                    "provider": llm_config.provider.value,
+                    "llm_name": llm_config.name,
+                },
+            )
+
+    @staticmethod
+    def _record_battle_event(
+        state: BattleState,
+        event_name: str,
+        metadata: dict[str, str | int] | None = None,
+        input_text: str = "",
+        output_text: str = "",
+        status_code: int = 200,
+    ) -> None:
+        """Publish a lifecycle event immediately without affecting the battle itself."""
+        try:
+            event_metadata = {
+                "battle_id": state.id,
+                "event_type": event_name.lower().replace(" ", "_"),
+                "current_round": state.current_round,
+                **(metadata or {}),
+            }
+            logger = galileo_context.get_logger_instance()
+            logger.start_trace(
+                name=f"LLM Wars: {event_name}",
+                input=input_text or event_name,
+                metadata=event_metadata,
+                tags=["llm-wars", "battle-lifecycle"],
+            )
+            logger.conclude(output=output_text or event_name, status_code=status_code)
+            logger.flush()
+        except Exception as exc:
+            # Observability must never interrupt a user's battle.
+            print(f"⚠️ Failed to send Galileo event '{event_name}': {exc}")
 
     def get_all_battles(self) -> list[BattleResponse]:
         """Get all battles as responses"""

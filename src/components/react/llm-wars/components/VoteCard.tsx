@@ -18,7 +18,7 @@ export function VoteCard({ llm, isSelected, percentage, hasVoted, onVote, disabl
     <button
       onClick={onVote}
       disabled={disabled}
-      className={`relative rounded-xl border-2 border-transparent bg-[#fafafa] px-4 py-5 outline-none transition ${
+      className={`relative border-2 border-transparent bg-[#fafafa] px-4 py-5 outline-none transition ${
         isSelected ? 'border-[#f6ad7b] bg-[#fff5ef]' : ''
       } ${hasVoted && !isSelected ? 'opacity-50' : ''}`}
       type="button"
@@ -34,7 +34,7 @@ export function VoteCard({ llm, isSelected, percentage, hasVoted, onVote, disabl
 
       {hasVoted && (
         <div className="mt-3">
-          <div className="mb-1 h-1.5 overflow-hidden rounded bg-[#e5e5e5]">
+          <div className="mb-1 h-1.5 overflow-hidden bg-[#e5e5e5]">
             <div 
               style={{ width: `${percentage}%`, backgroundColor: color }}
               className="h-full"
@@ -45,7 +45,7 @@ export function VoteCard({ llm, isSelected, percentage, hasVoted, onVote, disabl
       )}
 
       {isSelected && (
-        <div className="absolute -top-2 -right-2 rounded-full bg-[#f6ad7b] px-2 py-1 text-[10px] font-semibold text-white">
+        <div className="absolute -top-2 -right-2 bg-[#f6ad7b] px-2 py-1 text-[10px] font-semibold text-white">
           Your pick!
         </div>
       )}

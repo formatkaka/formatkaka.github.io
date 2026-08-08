@@ -71,37 +71,45 @@ export function BattleSetup(props: BattleSetupProps) {
   const isValid = topic.trim().length > 0;
 
   return (
-    <div className="space-y-5">
-      <div className="flex items-center justify-between gap-4 rounded-lg border border-[#eee1d6] bg-white px-5 py-4 shadow-sm">
-        <div className="flex flex-col gap-1">
-          <span className="text-sm font-bold text-[#1b2021]">Quick start</span>
-          <span className="text-[15px] text-[#777]">Let the AIs pick a fun topic</span>
+    <div className="space-y-6 sm:space-y-5">
+      <p className="px-1 text-[17px] leading-snug text-[#4d5964] sm:hidden">
+        Watch 3 AI models debate any topic with custom personas
+      </p>
+
+      <div className="rounded-xl border border-[#c7e3f1] bg-white p-4 shadow-sm sm:border-[#eee1d6] sm:px-5">
+        <div className="mb-3 flex items-center justify-between gap-3 sm:mb-0 sm:flex-1">
+          <label className="text-sm font-bold uppercase tracking-wide text-[#17313b]" htmlFor="battle-topic">Battle topic</label>
+          <button
+            onClick={handleSurpriseMe}
+            className="inline-flex min-h-9 items-center gap-1 text-sm font-semibold text-[#07539b] transition hover:text-[#0b3d76] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5b9bd5] focus-visible:ring-offset-2 sm:hidden"
+            type="button"
+          >
+            <span aria-hidden="true">✦</span>
+            Surprise Me
+          </button>
         </div>
         <button
           onClick={handleSurpriseMe}
-          className="inline-flex items-center gap-2 rounded-lg border border-[#f6ad7b] bg-white px-4 py-2.5 text-sm font-semibold text-[#1b2021] outline-none transition hover:bg-[#fff8f4] hover:border-[#e8946a]"
+          className="hidden min-h-11 items-center justify-center gap-2 rounded-lg border border-[#f6ad7b] bg-white px-4 py-2.5 text-sm font-semibold text-[#1b2021] transition hover:border-[#e8946a] hover:bg-[#fff8f4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f6ad7b] focus-visible:ring-offset-2 sm:inline-flex"
           type="button"
         >
           <span>✨</span>
           <span>Surprise Me</span>
         </button>
-      </div>
-
-      {/* Topic Section */}
-      <div className="space-y-2.5">
-        <label className="text-sm font-bold text-[#1b2021]">Battle topic</label>
         <textarea
+          id="battle-topic"
+          name="battle-topic"
           placeholder="e.g., Who would win: a trillion lions or the sun?"
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
-          className="mx-auto block w-full max-w-[880px] rounded-lg border border-[#d8d0c5] bg-white px-4 py-3 text-[16px] text-[#1b2021] shadow-sm transition focus:border-[#f6ad7b] focus:outline-none focus:ring-2 focus:ring-[#f6ad7b]/20"
+          className="block w-full resize-none border-0 bg-transparent p-0 text-[17px] leading-relaxed text-[#1b2021] placeholder:text-[#42515d] focus-visible:outline-none sm:max-w-[880px] sm:rounded-lg sm:border sm:border-[#d8d0c5] sm:bg-white sm:px-4 sm:py-3 sm:shadow-sm sm:focus-visible:border-[#f6ad7b] sm:focus-visible:ring-2 sm:focus-visible:ring-[#f6ad7b]/20"
           rows={2}
         />
       </div>
 
       {/* Fighters Section */}
-      <div className="space-y-2">
-        <label className="text-sm font-bold text-[#1b2021]">Choose personas</label>
+      <div className="space-y-2.5">
+        <h2 className="px-1 text-sm font-bold uppercase tracking-wide text-[#17313b]">Choose personas</h2>
         <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
           {LLM_PROVIDERS.map((provider) => (
             <LLMCard
@@ -115,7 +123,7 @@ export function BattleSetup(props: BattleSetupProps) {
       </div>
 
       {/* Settings Row */}
-      <div className="flex flex-wrap items-end gap-4 rounded-lg border border-[#eee] bg-[#fafafa] px-5 py-4 shadow-sm">
+      <div className="grid grid-cols-1 gap-3 rounded-xl border border-[#c7e3f1] bg-white px-4 py-4 shadow-sm sm:grid-cols-3 sm:gap-4 sm:rounded-lg sm:border-[#eee] sm:bg-[#fafafa] sm:px-5">
         <ToggleButtonGroup
           label="Mode"
           options={[
@@ -148,7 +156,7 @@ export function BattleSetup(props: BattleSetupProps) {
       <button
         onClick={handleSubmit}
         disabled={!isValid || isLoading}
-        className="w-full rounded-lg border-0 bg-[#f6ad7b] px-6 py-4 text-lg font-semibold text-white outline-none shadow-md transition hover:bg-[#e8946a] hover:shadow-lg disabled:cursor-not-allowed disabled:bg-[#e0d8cf] disabled:text-[#9a9a9a] disabled:shadow-none"
+        className="min-h-14 w-full rounded-xl border-0 bg-[#e77943] px-6 py-4 text-lg font-semibold text-white shadow-sm transition hover:bg-[#d96831] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e77943] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-[#c7cad6] disabled:text-[#263842] disabled:shadow-none sm:min-h-12 sm:rounded-lg sm:bg-[#f6ad7b] sm:hover:bg-[#e8946a]"
         type="button"
       >
         {isLoading ? 'Starting...' : 'Start Battle'}

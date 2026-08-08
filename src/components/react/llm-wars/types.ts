@@ -29,9 +29,9 @@ export const LLM_COLORS: Record<LLMProvider, string> = {
 };
 
 export const LLM_LABELS: Record<LLMProvider, string> = {
-  openai: 'OpenAI (GPT-4o)',
-  claude: 'Claude (Sonnet)',
-  grok: 'Grok (xAI)',
+  openai: 'OpenAI',
+  claude: 'Claude',
+  grok: 'Grok',
 };
 
 // Personas loaded from shared JSON - single source of truth for frontend + backend

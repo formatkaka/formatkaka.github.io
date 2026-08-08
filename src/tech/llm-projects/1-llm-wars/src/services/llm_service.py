@@ -29,9 +29,9 @@ LANGUAGE_INSTRUCTIONS = {
 }
 
 MODEL_MAP = {
-    LLMProvider.OPENAI: "gpt-4o",
-    LLMProvider.CLAUDE: "claude-sonnet-5",
-    LLMProvider.GROK: "grok-3-latest",
+    LLMProvider.OPENAI: "gpt-5-nano",
+    LLMProvider.CLAUDE: "claude-haiku-4-5",
+    LLMProvider.GROK: "grok-4.3",
 }
 
 
@@ -187,10 +187,14 @@ RULES:
                 {"role": "system", "content": system_prompt},
                 *messages,
             ],
-            max_tokens=100,
-            temperature=0.9,
+            max_completion_tokens=1000,
+            reasoning_effort="low",
         )
+        print(f"response: {response}")
         output = response.choices[0].message.content or ""
+        print(f"output: {output}")
+        if not output.strip():
+            raise RuntimeError("OpenAI returned an empty response")
         logger.conclude(output=output)
         return output
 

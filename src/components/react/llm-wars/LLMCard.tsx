@@ -58,41 +58,39 @@ export function LLMCard(props: LLMCardProps) {
   };
 
   return (
-    <div className="rounded-lg border border-[#eee] bg-white px-3 py-3 text-center shadow-sm transition hover:border-[#f6ad7b] hover:shadow-md">
+    <div className="grid grid-cols-[2.5rem_5.5rem_minmax(0,1fr)] items-center gap-3 rounded-lg border border-[#c7e3f1] bg-white px-3 py-3 text-left shadow-sm transition hover:shadow-md sm:block sm:border-[#eee] sm:text-center sm:hover:border-[#f6ad7b]">
       {/* Avatar */}
-      <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full text-base font-bold text-white" style={{ backgroundColor: color }}>
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-base font-bold text-white sm:mx-auto sm:mb-2" style={{ backgroundColor: color }}>
         {provider.charAt(0).toUpperCase()}
       </div>
 
       {/* Name */}
-      <div className="mb-2 text-[13px] font-semibold text-[#1b2021]">{label}</div>
-
-      {/* Persona Selector */}
-      <div className="mb-2">
-        <select
-          className="w-full rounded-md border border-[#e5e5e5] bg-[#f8f8f8] px-2 py-2 text-xs text-[#1b2021] transition hover:border-[#d0d0d0]"
-          value={selectedPreset}
-          onChange={(e) => handlePresetChange(e.target.value)}
-        >
-          {PRESET_PERSONAS.map((preset) => (
-            <option key={preset.id} value={preset.id}>
-              {preset.label}
-            </option>
-          ))}
-          <option value={CUSTOM_PERSONA_ID}>Custom</option>
-        </select>
-      </div>
+      <div className="min-w-0 text-base font-semibold text-[#1b2021] sm:mb-2 sm:text-[13px]">{label}</div>
+      <select
+        aria-label={`${label} persona`}
+        className="min-h-11 min-w-0 rounded-md border border-[#c7e3f1] bg-[#f4fbff] px-2 py-2 text-base text-[#1b2021] transition hover:border-[#8dc7e5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5b9bd5]/40 sm:w-full sm:text-xs"
+        value={selectedPreset}
+        onChange={(e) => handlePresetChange(e.target.value)}
+      >
+        {PRESET_PERSONAS.map((preset) => (
+          <option key={preset.id} value={preset.id}>
+            {preset.label}
+          </option>
+        ))}
+        <option value={CUSTOM_PERSONA_ID}>Custom</option>
+      </select>
 
       {selectedPreset === CUSTOM_PERSONA_ID ? (
         <textarea
           placeholder="Describe the persona..."
+          aria-label={`${label} custom persona`}
           value={customPersona}
           onChange={(e) => handleCustomChange(e.target.value)}
-          className="mt-1 w-full rounded-md border border-[#e5e5e5] bg-white px-2 py-2 text-xs text-[#1b2021] transition focus:border-[#f6ad7b] focus:outline-none"
+          className="col-span-full mt-1 w-full rounded-md border border-[#e5e5e5] bg-white px-2 py-2 text-xs text-[#1b2021] transition focus-visible:border-[#f6ad7b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f6ad7b]/20"
           rows={2}
         />
       ) : (
-        <p className="mt-1 line-clamp-2 text-[11px] text-[#888]">
+        <p className="col-span-full mt-1 hidden line-clamp-2 text-[11px] text-[#888] sm:block">
           {PRESET_PERSONAS.find((p) => p.id === selectedPreset)?.description}
         </p>
       )}

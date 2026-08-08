@@ -170,12 +170,12 @@ class SurpriseService:
         logger.start_trace(name="Topic generation (LLM Wars)", input=user_msg)
 
         response = self._client.chat.completions.create(
-            model="gpt-4o",
+            model="gpt-5-nano",
             messages=[
                 {"role": "system", "content": self._prompt},
                 {"role": "user", "content": user_msg},
             ],
-            max_tokens=300,
+            max_completion_tokens=300,
             temperature=1.0,  # High creativity
             response_format={"type": "json_object"},
         )

@@ -17,11 +17,19 @@ import { LLMWars } from '../../components/react/llm-wars';
 <style>
   .llm-wars-page {
     min-height: 100vh;
-    padding: 2rem 1rem;
+    padding: 0;
+    background: #eff8fc;
   }
   
   .container {
     max-width: 900px;
     margin: 0 auto;
+  }
+
+  @media (min-width: 640px) {
+    .llm-wars-page {
+      padding: 2rem 1rem;
+      background: transparent;
+    }
   }
 </style>

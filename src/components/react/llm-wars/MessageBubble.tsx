@@ -7,10 +7,11 @@ import type { BattleMessage, LLMConfig } from './types';
 type MessageBubbleProps = {
   message: BattleMessage;
   llms: LLMConfig[];
+  animate: boolean;
 };
 
 export function MessageBubble(props: MessageBubbleProps) {
-  const { message, llms } = props;
+  const { message, llms, animate } = props;
 
   const color = LLM_COLORS[message.provider];
   const llmConfig = llms.find((llm) => llm.provider === message.provider);
@@ -23,6 +24,12 @@ export function MessageBubble(props: MessageBubbleProps) {
     const content = message.content || '';
     if (!content) {
       setDisplayText('');
+      setIsAnimating(false);
+      return;
+    }
+
+    if (!animate) {
+      setDisplayText(content);
       setIsAnimating(false);
       return;
     }
@@ -49,10 +56,10 @@ export function MessageBubble(props: MessageBubbleProps) {
     }, useWords ? 90 : 40);
 
     return () => clearInterval(interval);
-  }, [message.content]);
+  }, [animate, message.content]);
 
   return (
-    <div className="flex gap-3 px-4 py-3 hover:bg-[#fafafa]">
+    <div className="mb-3 flex gap-3 rounded-sm border border-[#dce3e5] bg-white px-3 py-3 shadow-sm sm:mb-0 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-4 sm:shadow-none sm:hover:bg-[#fafafa]">
       <div
         className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
         style={{ backgroundColor: color }}
@@ -64,7 +71,7 @@ export function MessageBubble(props: MessageBubbleProps) {
           <span className="text-sm font-semibold" style={{ color }}>
             {message.name}
           </span>
-          <span className="text-sm text-[#999]"> - {personaDisplay}</span>
+          <span className="text-sm text-[#999]"> — {personaDisplay}</span>
         </div>
         <p className="text-[15px] leading-relaxed text-[#333] whitespace-pre-wrap break-words">
           {displayText}

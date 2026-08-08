@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getBattlesFromIndexedDB } from './indexedDB';
 import { getBattle } from './api';
-import { formatRelativeTime, getStatusBadgeConfig } from './utils';
-import { StatusBadge } from './components/StatusBadge';
-
-import type { BattleResponse } from './types';
+import { formatRelativeTime } from './utils';
 
 type PastBattlesProps = {
   onLoadBattle: (battleId: string) => void;
@@ -23,6 +20,7 @@ export function PastBattles(props: PastBattlesProps) {
   const [battles, setBattles] = useState<BattleRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
+  const [copiedBattleId, setCopiedBattleId] = useState<string | null>(null);
 
   useEffect(() => {
     loadBattles();
@@ -50,6 +48,17 @@ export function PastBattles(props: PastBattlesProps) {
     }
   };
 
+  const handleCopyLink = async (battleId: string) => {
+    const shareUrl = `${window.location.origin}${window.location.pathname}?battle=${battleId}`;
+
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopiedBattleId(battleId);
+      window.setTimeout(() => setCopiedBattleId(null), 2_000);
+    } catch (error) {
+      console.error('Failed to copy battle link:', error);
+    }
+  };
 
   if (loading) {
     return (
@@ -71,14 +80,14 @@ export function PastBattles(props: PastBattlesProps) {
   const visibleBattles = showAll ? battles : battles.slice(0, 3);
 
   return (
-    <div className="mt-8 border-t border-[#e6e2da] pt-6">
+    <div className="mt-10 border-t-0 pt-0 sm:mt-8 sm:border-t sm:border-[#e6e2da] sm:pt-6">
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-xs font-bold uppercase tracking-wider text-[#1b2021]">
           Recent Battles
         </h3>
         {battles.length > 3 && (
           <button
-            className="text-sm font-semibold text-[#f6ad7b] outline-none transition hover:text-[#e8946a]"
+            className="text-sm font-semibold text-[#c95012] transition hover:text-[#a63e0a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e77943] sm:text-[#f6ad7b] sm:hover:text-[#e8946a]"
             type="button"
             onClick={() => setShowAll((prev) => !prev)}
           >
@@ -88,23 +97,31 @@ export function PastBattles(props: PastBattlesProps) {
       </div>
       <div className="flex flex-col gap-2.5">
         {visibleBattles.map((battle) => (
-          <button
+          <div
             key={battle.id}
-            onClick={() => handleLoadBattle(battle.id)}
-            className="flex items-center justify-between gap-4 rounded-lg border border-[#e6e2da] bg-white px-4 py-3 text-left outline-none transition-all hover:border-[#f6ad7b] hover:bg-[#fff8f4] hover:shadow-sm"
-            type="button"
+            className="flex items-center justify-between gap-4 rounded-lg border border-[#c7e3f1] bg-white px-4 py-3 text-left transition hover:border-[#8dc7e5] sm:border-[#e6e2da] sm:hover:border-[#f6ad7b] sm:hover:bg-[#fff8f4] sm:hover:shadow-sm"
           >
-            <div className="min-w-0 flex-1">
+            <button
+              className="min-w-0 flex-1 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5b9bd5]"
+              onClick={() => handleLoadBattle(battle.id)}
+              type="button"
+            >
               <div className="truncate text-sm font-semibold text-[#1b2021]">
                 {battle.title}
               </div>
               <div className="truncate text-xs text-[#777]">{battle.topic}</div>
-            </div>
+            </button>
             <div className="flex shrink-0 flex-col items-end gap-1.5">
               <span className="text-[11px] text-[#999]">{formatRelativeTime(battle.createdAt)}</span>
-              <StatusBadge status={battle.status} size="small" />
+              <button
+                className="text-xs font-semibold text-[#c95012] transition hover:text-[#a63e0a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e77943] sm:text-[#f6ad7b] sm:hover:text-[#e8946a]"
+                onClick={() => handleCopyLink(battle.id)}
+                type="button"
+              >
+                {copiedBattleId === battle.id ? 'Copied!' : 'Copy link'}
+              </button>
             </div>
-          </button>
+          </div>
         ))}
       </div>
     </div>
