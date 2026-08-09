@@ -6,17 +6,12 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-from anthropic import Anthropic
+from anthropic import AsyncAnthropic
 from galileo import galileo_context
 from galileo.openai import openai as galileo_openai
 
 from ..config import get_settings
 from ..models.battle import BattleMessage, BattleMode, Language, LLMProvider
-
-
-def _openai_client(api_key: str, base_url: str | None = None):
-    """OpenAI client: Galileo-wrapped for tracing (GALILEO_API_KEY assumed set)."""
-    return galileo_openai.OpenAI(api_key=api_key, base_url=base_url)
 
 EMOJI_MODE_INSTRUCTION = """
 IMPORTANT: You must respond using ONLY emojis. No text, no punctuation, no numbers.
@@ -35,15 +30,30 @@ MODEL_MAP = {
 }
 
 
-def _load_persona_worlds() -> dict[str, str]:
-    """Load persona worlds from shared JSON. Maps description -> world."""
+def _load_personas() -> dict[str, dict[str, str]]:
+    """
+    Load personas from shared JSON.
+    Returns a dictionary mapping each persona ID, label, and description to its metadata.
+    """
     personas_path = Path(__file__).parent.parent.parent / "shared" / "personas.json"
+    persona_map = {}
     try:
-        with open(personas_path) as f:
+        with open(personas_path, encoding="utf-8") as f:
             personas = json.load(f)
-        return {p["description"]: p.get("world", "") for p in personas}
+            for p in personas:
+                data = {
+                    "label": p.get("label", ""),
+                    "description": p.get("description", ""),
+                    "world": p.get("world", ""),
+                    "is_animal": p.get("is_animal", False),
+                }
+                # The frontend sends the description; keep every stable representation valid.
+                persona_map[p.get("id", "")] = data
+                persona_map[p.get("label", "")] = data
+                persona_map[p.get("description", "")] = data
+        return persona_map
     except Exception as e:
-        print(f"⚠️  Could not load persona worlds: {e}")
+        print(f"⚠️ Could not load personas: {e}")
         return {}
 
 
@@ -52,18 +62,18 @@ class LLMService:
 
     def __init__(self) -> None:
         settings = get_settings()
-        self._openai_client = _openai_client(settings.openai_api_key)
-        self._anthropic_client = Anthropic(api_key=settings.anthropic_api_key)
-        self._grok_client = _openai_client(
-            settings.grok_api_key,
+        self._openai_client = galileo_openai.AsyncOpenAI(api_key=settings.openai_api_key)
+        self._anthropic_client = AsyncAnthropic(api_key=settings.anthropic_api_key)
+        self._grok_client = galileo_openai.AsyncOpenAI(
+            api_key=settings.grok_api_key,
             base_url="https://api.x.ai/v1",
         )
-        self._persona_worlds = _load_persona_worlds()
+        self._personas = _load_personas()
 
     async def generate_response(
         self,
         provider: LLMProvider,
-        persona: str,
+        persona: str,  # Can be ID or Label
         message: str,
         mode: BattleMode,
         language: Language,
@@ -72,11 +82,30 @@ class LLMService:
         total_rounds: int = 3,
     ) -> str:
         """Generate a response from the specified LLM provider"""
-        world = self._persona_worlds.get(persona, "")
+        persona_data = self._personas.get(persona, {})
+        persona_label = persona_data.get("label", persona)
+        persona_desc = persona_data.get("description", "")
+        persona_world = persona_data.get("world", "")
+        is_animal = persona_data.get("is_animal", False)
+
         system_prompt = self._build_system_prompt(
-            provider, persona, message, mode, language, current_round, total_rounds, world,
+            persona_label=persona_label,
+            persona_desc=persona_desc,
+            persona_world=persona_world,
+            is_animal=is_animal,
+            message=message,
+            mode=mode,
+            language=language,
+            current_round=current_round,
+            total_rounds=total_rounds,
         )
-        messages = self._build_messages(conversation_history, current_round, total_rounds)
+
+        messages = self._build_messages(
+            current_persona=persona_label,
+            conversation_history=conversation_history,
+            current_round=current_round,
+            total_rounds=total_rounds,
+        )
 
         if provider == LLMProvider.OPENAI:
             return await self._call_openai(system_prompt, messages)
@@ -89,89 +118,110 @@ class LLMService:
 
     def _build_system_prompt(
         self,
-        provider: LLMProvider,
-        persona: str,
+        persona_label: str,
+        persona_desc: str,
+        persona_world: str,
+        is_animal: bool,
         message: str,
         mode: BattleMode,
         language: Language,
         current_round: int,
         total_rounds: int,
-        world: str = "",
     ) -> str:
-        """Build the system prompt for the LLM"""
+        """Build the system prompt for the LLM with comedy guardrails and anti-repetition rules."""
         lang = LANGUAGE_INSTRUCTIONS.get(language, LANGUAGE_INSTRUCTIONS[Language.ENGLISH])
 
-        base_prompt = f"""You are a character in a comedy debate show. Three wildly different characters argue about a topic. The goal is to be FUNNY.
+        base_prompt = f"""You are performing as '{persona_label}' in a multi-character comedy debate.
+Goal: Be genuinely funny, opinionated, and unhinged while staying in character.
 
-Your character: {persona}
+CHARACTER PROFILE:
+- Role: {persona_label}
+- Behavior: {persona_desc}
+- Subject Matter / World: {persona_world}
+
+Topic of Debate: "{message}"
+
+COMEDY RULES & DYNAMICS:
+1. WORLD CONFUSION: Filter the entire debate topic through your narrow worldview ({persona_world}). You have zero actual knowledge outside your world.
+2. ABSOLUTE NO-REPEAT RULE:
+   - NEVER repeat a joke, keyword, catchphrase, or analogy you already used in previous rounds.
+   - Example: If you already mentioned 'diapers' or 'coffee' in Round 1, you are STRICTLY FORBIDDEN from mentioning them again. Find a new angle from your world!
+3. DYNAMIC REACTION: React to the last speaker—mock their logic, misinterpret their words, or get randomly offended.
+4. BREVITY IS KING: Keep it short (1-2 punchy sentences maximum).
+5. FORMATTING: Output ONLY spoken dialogue. No names, stage directions, or prefixes like '[You]:'.
+6. ANONYMITY: Do NOT mention AI names, providers, or platform terms (e.g. Claude, GPT, OpenAI, LLM, model).
+7. {lang}
 """
 
-        if world:
-            base_prompt += f"""
-YOUR ENTIRE WORLD: {world}
-You ONLY know about these things. You have ZERO knowledge of anything outside your world.
-If the topic is outside your world, you are genuinely confused by it and drag the conversation back to what you know.
-Example: A Medieval Knight debating "Tabs vs Spaces" has no idea what code is. They might say "I know not these 'tabs' — but I once chose a sword over a shield, and that's the only choice a knight needs!"
-Example: A Pigeon debating anything just coos about breadcrumbs and struts around confused.
+        if is_animal:
+            base_prompt += """
+
+ANIMAL PERFORMANCE RULES (OVERRIDE ALL NORMAL SPEECH RULES):
+- You are an actual animal, not a human speaking as an animal. Never write English sentences, arguments, names, or direct replies.
+- Output only species-appropriate sounds and optional emoji. No English words, including action captions.
+- Examples: cat: "Meow. 😾"; dog: "Woof woof! 🐾"; pigeon: "Coo coo. 🐦".
+- Keep each response to one or two tiny sound beats. The comedy comes from animal behavior, not translated dialogue.
 """
 
-        base_prompt += f"""
-Topic: {message}
-
-RULES:
-- STAY IN YOUR WORLD. Do NOT suddenly become knowledgeable about the topic. Your character's ignorance IS the comedy.
-- Relate everything back to what you know. A Gordon Ramsay character makes it about cooking. A Toddler asks "but why?". A Pigeon just wants breadcrumbs.
-- NEVER repeat a joke, analogy, or point you already made. Each response MUST be a completely new angle.
-- REACT to what others said — roast them, misunderstand them, get offended, agree for the wrong reasons.
-- Treat every other speaker as an anonymous character in the same fictional scene. You do not know, and must not speculate about, their real identity.
-- NEVER mention or address AI models, providers, brands, or platform names (including OpenAI, Claude, Grok, LLM, model, bot, or assistant).
-- Do not use speaker labels or stage prefixes in your response (for example `[You]:`, `[Bestie]:`, `Character:`, or `Name:`). Write only your character's spoken line.
-- Keep it SHORT: 1-2 punchy sentences max. Brevity is funnier.
-- {lang}
-"""
-
+        # Round-specific instructions to drive narrative progression
         if current_round == 1:
-            base_prompt += "\nThis is the OPENING. Give your character's confused, opinionated, or clueless first take on this topic.\n"
+            base_prompt += "\nROUND 1 (OPENING): Deliver a bizarre, opinionated, or totally confused opening take on the topic."
         elif current_round == total_rounds:
-            base_prompt += "\nFINAL ROUND. Go completely unhinged. Most dramatic, absurd, over-the-top closing statement your character can muster.\n"
+            base_prompt += "\nROUND 3 (FINAL): Peak escalation! Go completely dramatic or absurd. Deliver a memorable mic-drop closing statement."
         else:
-            base_prompt += "\nMIDDLE ROUND. You MUST directly respond to something another character said. Take a completely new angle. Escalate the absurdity.\n"
+            base_prompt += "\nROUND 2 (MIDDLE): Escalate! Pick one specific thing another character said, roast it, and take the topic to a weirder place."
 
         if mode == BattleMode.EMOJI:
             base_prompt += f"\n{EMOJI_MODE_INSTRUCTION}"
+
+        if is_animal:
+            base_prompt += "\nFINAL ANIMAL OUTPUT CHECK: Reply only with animal sounds and optional emoji—zero English words."
 
         return base_prompt
 
     def _build_messages(
         self,
+        current_persona: str,
         conversation_history: list[BattleMessage],
         current_round: int,
         total_rounds: int,
     ) -> list[dict]:
-        """Give each model an anonymous, in-world transcript of prior turns."""
+        """
+        Builds conversation context distinguishing between:
+        - What THIS character previously said (My Previous Output)
+        - What OTHER characters said (Opponent Output)
+        """
         messages = []
 
         if not conversation_history:
             messages.append({
                 "role": "user",
-                "content": "The debate starts NOW. What's your opening take?",
+                "content": "The debate starts NOW. Deliver your opening line!",
             })
         else:
-            transcript = "\n\n".join(
-                f'Another character said: "{msg.content}"'
-                for msg in conversation_history
-            )
+            formatted_turns = []
+            for msg in conversation_history:
+                # Differentiate self vs. opponents so the AI knows what it already said
+                speaker = getattr(msg, "persona", "") or getattr(msg, "speaker", "")
+                if speaker.lower() == current_persona.lower():
+                    formatted_turns.append(f'YOU SAID PREVIOUSLY: "{msg.content}"')
+                else:
+                    formatted_turns.append(f'ANOTHER DEBATER SAID: "{msg.content}"')
+
+            transcript = "\n\n".join(formatted_turns)
+
             round_instruction = (
-                "FINAL ROUND — make it count. Most memorable line wins. Don't repeat anything you've said before."
+                "FINAL ROUND — Deliver your grand finale. Do NOT repeat any topic or word you used previously!"
                 if current_round == total_rounds
-                else "Your turn. Pick something specific another character just said and react to THAT. Fresh angle only — no repeats."
+                else "YOUR TURN — Directly attack or respond to what someone else said. Use a completely new concept!"
             )
+
             messages.append({
                 "role": "user",
                 "content": (
-                    "You are overhearing an anonymous conversation between other characters. "
-                    "Do not name or identify them; simply respond in character.\n\n"
-                    f"{transcript}\n\n{round_instruction}"
+                    f"Here is what has been said in the debate so far:\n\n"
+                    f"{transcript}\n\n"
+                    f"INSTRUCTION: {round_instruction}"
                 ),
             })
 
@@ -182,12 +232,12 @@ RULES:
         system_prompt: str,
         messages: list[dict],
     ) -> str:
-        """Call OpenAI API; trace named for Galileo."""
+        """Call OpenAI API using async client."""
         logger = galileo_context.get_logger_instance()
         trace_input = messages[-1]["content"] if messages else ""
         logger.start_trace(name="OpenAI (LLM Wars)", input=trace_input)
 
-        response = self._openai_client.chat.completions.create(
+        response = await self._openai_client.chat.completions.create(
             model=MODEL_MAP[LLMProvider.OPENAI],
             messages=[
                 {"role": "system", "content": system_prompt},
@@ -196,28 +246,28 @@ RULES:
             max_completion_tokens=1000,
             reasoning_effort="low",
         )
-        print(f"response: {response}")
+
         output = response.choices[0].message.content or ""
-        print(f"output: {output}")
+        print(f"response: {output}")
         if not output.strip():
             raise RuntimeError("OpenAI returned an empty response")
         logger.conclude(output=output)
-        return output
+        return output.strip()
 
     async def _call_claude(
         self,
         system_prompt: str,
         messages: list[dict],
     ) -> str:
-        """Call Anthropic Claude API; logs to Galileo via manual Logger API."""
+        """Call Anthropic Claude API using async client."""
         logger = galileo_context.get_logger_instance()
         trace_input = messages[-1]["content"] if messages else ""
         logger.start_trace(name="Claude (LLM Wars)", input=trace_input)
         start_time_ns = int(datetime.now().timestamp() * 1_000_000_000)
 
-        response = self._anthropic_client.messages.create(
+        response = await self._anthropic_client.messages.create(
             model=MODEL_MAP[LLMProvider.CLAUDE],
-            max_tokens=100,
+            max_tokens=250,
             system=system_prompt,
             messages=messages,
         )
@@ -229,6 +279,7 @@ RULES:
         logged_messages = [{"role": "system", "content": system_prompt}] + messages
         duration_ns = int(datetime.now().timestamp() * 1_000_000_000) - start_time_ns
         usage = response.usage
+
         logger.add_llm_span(
             input=logged_messages,
             output=output_text,
@@ -241,27 +292,33 @@ RULES:
         logger.conclude(output=output_text)
         logger.flush()
 
-        return output_text
+        output = output_text.strip()
+        if not output:
+            raise RuntimeError("Claude returned an empty response")
+        return output
 
     async def _call_grok(
         self,
         system_prompt: str,
         messages: list[dict],
     ) -> str:
-        """Call xAI Grok API (OpenAI-compatible); trace named for Galileo."""
+        """Call xAI Grok API using async client."""
         logger = galileo_context.get_logger_instance()
         trace_input = messages[-1]["content"] if messages else ""
         logger.start_trace(name="Grok (LLM Wars)", input=trace_input)
 
-        response = self._grok_client.chat.completions.create(
+        response = await self._grok_client.chat.completions.create(
             model=MODEL_MAP[LLMProvider.GROK],
             messages=[
                 {"role": "system", "content": system_prompt},
                 *messages,
             ],
-            max_tokens=100,
+            max_tokens=250,
             temperature=0.9,
         )
         output = response.choices[0].message.content or ""
         logger.conclude(output=output)
+        output = output.strip()
+        if not output:
+            raise RuntimeError("Grok returned an empty response")
         return output

@@ -72,6 +72,7 @@ class BattleService:
             current_round=int(db_battle.current_round),
             status=BattleStatus(db_battle.status),
             error_message=db_battle.error_message,
+            galileo_trace_id=db_battle.galileo_trace_id,
         )
         return state
 
@@ -90,6 +91,7 @@ class BattleService:
                 "status": state.status.value,
                 "current_round": str(state.current_round),
                 "error_message": state.error_message,
+                "galileo_trace_id": state.galileo_trace_id,
             }
 
             if db_battle:
@@ -157,6 +159,7 @@ class BattleService:
                 await self._run_round(state, round_num)
 
             state.status = BattleStatus.COMPLETED
+            state.galileo_trace_id = self._record_battle_summary(state)
             self.save_battle(state)
             self._record_battle_event(
                 state,
@@ -242,6 +245,7 @@ class BattleService:
                     await asyncio.sleep(2.0)
 
             state.status = BattleStatus.COMPLETED
+            state.galileo_trace_id = self._record_battle_summary(state)
             self.save_battle(state)
             self._record_battle_event(
                 state,
@@ -310,6 +314,43 @@ class BattleService:
                     "llm_name": llm_config.name,
                 },
             )
+
+    @staticmethod
+    def _record_battle_summary(state: BattleState) -> str | None:
+        """Create the single Galileo trace that represents a completed battle."""
+        try:
+            logger = galileo_context.get_logger_instance()
+            trace = logger.start_trace(
+                name="LLM Wars: Battle completed",
+                input={
+                    "topic": state.config.topic,
+                    "rounds": state.config.rounds,
+                    "mode": state.config.mode.value,
+                    "language": state.config.language.value,
+                    "participants": [
+                        {"provider": llm.provider.value, "name": llm.name, "persona": llm.persona}
+                        for llm in state.config.llms
+                    ],
+                },
+                metadata={
+                    "battle_id": state.id,
+                    "event_type": "battle_summary",
+                    "message_count": len(state.messages),
+                },
+                tags=["llm-wars", "battle-summary"],
+                external_id=state.id,
+            )
+            logger.conclude(
+                output={
+                    "transcript": [message.model_dump() for message in state.messages],
+                }
+            )
+            logger.flush()
+            return str(trace.id)
+        except Exception as exc:
+            # A battle must still complete when observability is unavailable.
+            print(f"⚠️ Failed to send Galileo battle summary: {exc}")
+            return None
 
     @staticmethod
     def _record_battle_event(

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { MessageBubble, TypingIndicator } from './MessageBubble';
 import { LLM_COLORS } from './types';
-import { voteForBattle, getBattleVotes } from './api';
+import { voteForBattle, getBattleVotes, submitBattleFeedback } from './api';
 import { StatusBadge } from './components/StatusBadge';
 import { VoteCard } from './components/VoteCard';
 
@@ -57,6 +57,8 @@ export function BattleArena(props: BattleArenaProps) {
   });
   const [userVote, setUserVote] = useState<LLMProvider | null>(null);
   const [isVoting, setIsVoting] = useState(false);
+  const [feedbackChoice, setFeedbackChoice] = useState<boolean | null>(null);
+  const [feedbackState, setFeedbackState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
   // Load existing votes when battle is completed
   useEffect(() => {
@@ -92,6 +94,20 @@ export function BattleArena(props: BattleArenaProps) {
   const getVotePercentage = (provider: LLMProvider) => {
     if (totalVotes === 0) return 0;
     return Math.round((votes[provider] / totalVotes) * 100);
+  };
+
+  const submitFeedback = async (liked: boolean) => {
+    if (feedbackState === 'saving') return;
+
+    setFeedbackChoice(liked);
+    setFeedbackState('saving');
+    try {
+      await submitBattleFeedback(battleId, liked);
+      setFeedbackState('saved');
+    } catch (error) {
+      console.error('Failed to save feedback:', error);
+      setFeedbackState('error');
+    }
   };
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -271,6 +287,38 @@ export function BattleArena(props: BattleArenaProps) {
           >
             Start New Battle
           </button>
+
+          <div className="mx-auto mt-8 max-w-xl border-t border-[#e5e9f0] pt-6 text-left dark:border-[#2a3341]">
+            {feedbackState === 'saved' ? (
+              <p className="text-center text-sm font-semibold text-[#2e7d32] dark:text-[#7bd69d]">Thanks — your feedback was saved.</p>
+            ) : (
+              <>
+                <p className="text-center text-sm font-semibold text-[#1b2021] dark:text-[#eef0f6]">Was this battle worth watching?</p>
+                <div className="mt-3 flex justify-center gap-3">
+                  <button
+                    aria-pressed={feedbackChoice === true}
+                    className={`min-h-10 rounded-full px-4 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#386de0] ${feedbackChoice === true ? 'bg-[#dff3e6] text-[#246238] dark:bg-[#1f4830] dark:text-[#9ce2b3]' : 'bg-[#f1f4f8] text-[#4f5a69] hover:bg-[#e4ebf4] dark:bg-[#222a37] dark:text-[#c6ceda] dark:hover:bg-[#2d3747]'}`}
+                    disabled={feedbackState === 'saving'}
+                    onClick={() => submitFeedback(true)}
+                    type="button"
+                  >
+                    👍 Yes
+                  </button>
+                  <button
+                    aria-pressed={feedbackChoice === false}
+                    className={`min-h-10 rounded-full px-4 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#386de0] ${feedbackChoice === false ? 'bg-[#fde7e5] text-[#a33d35] dark:bg-[#4a2729] dark:text-[#ffaaa4]' : 'bg-[#f1f4f8] text-[#4f5a69] hover:bg-[#e4ebf4] dark:bg-[#222a37] dark:text-[#c6ceda] dark:hover:bg-[#2d3747]'}`}
+                    disabled={feedbackState === 'saving'}
+                    onClick={() => submitFeedback(false)}
+                    type="button"
+                  >
+                    👎 No
+                  </button>
+                </div>
+                {feedbackState === 'saving' && <p className="mt-3 text-center text-sm text-[#4f5a69] dark:text-[#c6ceda]">Saving…</p>}
+                {feedbackState === 'error' && <p className="mt-3 text-center text-sm text-[#c62828] dark:text-[#ff9da8]">Couldn’t save feedback. Please try again.</p>}
+              </>
+            )}
+          </div>
         </div>
       )}
 

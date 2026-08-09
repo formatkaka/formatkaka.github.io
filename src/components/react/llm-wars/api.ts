@@ -117,3 +117,13 @@ export async function voteForBattle(battleId: string, provider: LLMProvider): Pr
 export async function getBattleVotes(battleId: string): Promise<Record<LLMProvider, number>> {
   return apiRequest<Record<LLMProvider, number>>(`/api/battle/${battleId}/votes`);
 }
+
+export async function submitBattleFeedback(
+  battleId: string,
+  liked: boolean
+): Promise<void> {
+  await apiRequest(`/api/battle/${battleId}/feedback`, {
+    method: 'POST',
+    body: JSON.stringify({ liked }),
+  });
+}

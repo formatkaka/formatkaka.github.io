@@ -5,7 +5,7 @@ Database models for LLM Wars
 from datetime import datetime
 from uuid import uuid4
 
-from sqlalchemy import JSON, Column, DateTime, ForeignKey, String, create_engine
+from sqlalchemy import JSON, Column, DateTime, ForeignKey, String, create_engine, inspect, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -23,6 +23,7 @@ class Battle(Base):
     status = Column(String, nullable=False)
     current_round = Column(String, default="0")  # Stored as string for JSON compatibility
     error_message = Column(String, nullable=True)
+    galileo_trace_id = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
@@ -51,3 +52,10 @@ def get_session_factory(engine):
 def init_db(engine):
     """Initialize database tables"""
     Base.metadata.create_all(bind=engine)
+
+    # This project has no migration framework; make the new feedback-trace column
+    # available for existing local and deployed databases as well.
+    columns = {column["name"] for column in inspect(engine).get_columns("battles")}
+    if "galileo_trace_id" not in columns:
+        with engine.begin() as connection:
+            connection.execute(text("ALTER TABLE battles ADD COLUMN galileo_trace_id VARCHAR"))

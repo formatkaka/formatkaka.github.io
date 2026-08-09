@@ -9,8 +9,9 @@ import traceback
 from fastapi import APIRouter, BackgroundTasks, HTTPException
 from fastapi.responses import StreamingResponse
 
-from ..models.battle import BattleConfig, BattleRequest, BattleResponse, BattleStatus
+from ..models.battle import BattleConfig, BattleFeedbackRequest, BattleRequest, BattleResponse, BattleStatus
 from ..services.battle_service import BattleService
+from ..services.feedback_service import GalileoFeedbackError, GalileoFeedbackService
 from ..services.surprise_service import SurpriseService
 
 router = APIRouter(prefix="/api/battle", tags=["battle"])
@@ -18,6 +19,7 @@ router = APIRouter(prefix="/api/battle", tags=["battle"])
 # BattleService will be initialized in main.py with DB session
 battle_service: BattleService | None = None
 surprise_service = SurpriseService()
+feedback_service = GalileoFeedbackService()
 
 
 def set_battle_service(service: BattleService) -> None:
@@ -194,6 +196,30 @@ async def get_battle_config(battle_id: str) -> BattleConfig:
         raise HTTPException(status_code=404, detail="Battle not found")
 
     return config
+
+
+@router.post("/{battle_id}/feedback")
+async def submit_feedback(battle_id: str, request: BattleFeedbackRequest) -> dict:
+    """Save a user's battle reaction as a Galileo annotation."""
+    if not battle_service:
+        raise HTTPException(status_code=500, detail="Battle service not initialized")
+
+    state = battle_service.get_battle(battle_id)
+    if not state:
+        raise HTTPException(status_code=404, detail="Battle not found")
+    if not state.galileo_trace_id:
+        raise HTTPException(status_code=409, detail="This battle does not have a Galileo summary trace yet")
+
+    try:
+        await asyncio.to_thread(
+            feedback_service.submit,
+            trace_id=state.galileo_trace_id,
+            liked=request.liked,
+        )
+    except GalileoFeedbackError as error:
+        raise HTTPException(status_code=503, detail=str(error)) from error
+
+    return {"success": True}
 
 
 @router.post("/{battle_id}/vote")

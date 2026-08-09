@@ -109,6 +109,7 @@ class BattleState(BaseModel):
     current_round: int = Field(default=0)
     status: BattleStatus = Field(default=BattleStatus.PENDING)
     error_message: str | None = None
+    galileo_trace_id: str | None = None
 
 
 class BattleRequest(BaseModel):
@@ -119,6 +120,10 @@ class BattleRequest(BaseModel):
     language: Language = Field(default=Language.ENGLISH)
     rounds: int = Field(default=3, ge=1, le=10)
     llms: list[LLMConfig]
+
+
+class BattleFeedbackRequest(BaseModel):
+    liked: bool
 
 
 class BattleResponse(BaseModel):
