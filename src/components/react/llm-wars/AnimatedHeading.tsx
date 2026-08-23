@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 type AnimatedHeadingProps = {
   text: string;
   className?: string;
@@ -11,7 +13,7 @@ export function AnimatedHeading({ text, className = '' }: AnimatedHeadingProps) 
   );
 }
 
-const HERO_TITLES = ['Clash of the Tokens', 'Generative Petty Transformers'] as const;
+const HERO_TITLES = ['Three AI Personas. One Question.', 'Clash of the Tokens'] as const;
 
 export function RotatingHeroHeading({ className = '' }: { className?: string }) {
   const [titleIndex, setTitleIndex] = useState(0);
@@ -32,4 +34,3 @@ export function RotatingHeroHeading({ className = '' }: { className?: string }) 
     </span>
   );
 }
-import { useEffect, useState } from 'react';

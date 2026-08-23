@@ -42,3 +42,5 @@ ENV/
 *.pkl
 chroma_db/
 vector_store/
+
+.impeccable

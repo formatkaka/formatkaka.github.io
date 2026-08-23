@@ -8,19 +8,29 @@ const clearance = document.querySelector<HTMLElement>('[data-name-wall-clearance
 const journey = document.querySelector<HTMLElement>('[data-name-wall-journey]');
 const sceneElements = Array.from(document.querySelectorAll<HTMLElement>('[data-name-wall-scene]'));
 const wallNames = Array.from(document.querySelectorAll<HTMLElement>('[data-wall-name]'));
+const chakraSpokes = Array.from(document.querySelectorAll<HTMLElement>('[data-spoke-index]'));
 const sceneNumber = document.querySelector<HTMLElement>('[data-scene-number]');
+const dialogSceneNumber = document.querySelector<HTMLElement>('[data-dialog-scene-number]');
 const sceneKicker = document.querySelector<HTMLElement>('[data-scene-kicker]');
+const dialogSceneKicker = document.querySelector<HTMLElement>('[data-dialog-scene-kicker]');
 const sceneTitle = document.querySelector<HTMLElement>('[data-scene-title]');
+const dialogSceneTitle = document.querySelector<HTMLElement>('[data-dialog-scene-title]');
 const sceneDetail = document.querySelector<HTMLElement>('[data-scene-detail]');
 const sceneNames = document.querySelector<HTMLElement>('[data-scene-names]');
+const sceneSummaryNames = document.querySelector<HTMLElement>('[data-scene-summary-names]');
 const sceneImages = document.querySelector<HTMLElement>('[data-scene-images]');
-const context = document.querySelector<HTMLElement>('.name-wall-experiment__context');
+const sceneAnnouncement = document.querySelector<HTMLElement>('[data-scene-announcement]');
+const sectorCaption = document.querySelector<HTMLElement>('[data-sector-caption]');
+const sectorMarkers = Array.from(document.querySelectorAll<HTMLElement>('[data-sector-marker]'));
 const sceneBattle = document.querySelector<HTMLElement>('[data-scene-battle]');
 const familyStory = document.querySelector<HTMLElement>('[data-family-story]');
 const familyToggle = document.querySelector<HTMLButtonElement>('[data-family-toggle]');
 const familyToggleLabel = document.querySelector<HTMLElement>('[data-family-toggle-label]');
 const familyToggleArrow = document.querySelector<HTMLElement>('[data-family-toggle-arrow]');
 const readMoreLink = document.querySelector<HTMLAnchorElement>('[data-scene-read-more]');
+const chapterDialog = document.querySelector<HTMLDialogElement>('[data-chapter-dialog]');
+const chapterBody = document.querySelector<HTMLElement>('.name-wall-experiment__chapter-body');
+const chapterOpen = document.querySelector<HTMLButtonElement>('[data-chapter-open]');
 const lightbox = document.querySelector<HTMLDialogElement>('[data-image-lightbox]');
 const lightboxImage = document.querySelector<HTMLImageElement>('[data-lightbox-image]');
 const lightboxCaption = document.querySelector<HTMLElement>('[data-lightbox-caption]');
@@ -31,6 +41,7 @@ const lightboxPrevious = document.querySelector<HTMLButtonElement>('[data-lightb
 const lightboxNext = document.querySelector<HTMLButtonElement>('[data-lightbox-next]');
 const previousButton = document.querySelector<HTMLButtonElement>('[data-scene-previous]');
 const nextButton = document.querySelector<HTMLButtonElement>('[data-scene-next]');
+const experiment = document.querySelector<HTMLElement>('.name-wall-experiment');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 let activeSceneIndex = 0;
@@ -53,21 +64,78 @@ const updateSceneContent = (scene: (typeof battleScenes)[number], index: number)
   sceneElements.forEach((element, sceneIndex) =>
     element.toggleAttribute('data-active', sceneIndex === index)
   );
-  if (sceneNumber) sceneNumber.textContent = `${index + 1}`.padStart(2, '0');
+  const number = `${index + 1}`.padStart(2, '0');
+  if (sceneNumber) sceneNumber.textContent = number;
+  if (dialogSceneNumber) dialogSceneNumber.textContent = number;
   if (sceneKicker) sceneKicker.textContent = scene.kicker;
+  if (dialogSceneKicker) dialogSceneKicker.textContent = scene.kicker;
   if (sceneTitle) sceneTitle.textContent = scene.title;
+  if (dialogSceneTitle) dialogSceneTitle.textContent = scene.title;
   if (sceneDetail) sceneDetail.textContent = scene.detail;
   if (previousButton) previousButton.disabled = index === 0;
   if (nextButton) nextButton.disabled = index === battleScenes.length - 1;
   setContextMode('battle');
   if (familyToggle) familyToggle.hidden = index !== 0;
   replaceSceneNames(scene.soldierIndices);
+  updateChakraProgress(index);
+  updateSectorLocator(scene, index);
+  announceScene(scene, index);
   replaceSceneArchive(index);
 };
 
+const updateSectorLocator = (scene: (typeof battleScenes)[number], sceneIndex: number) => {
+  const visited = new Set(
+    battleScenes.slice(0, sceneIndex + 1).flatMap((visitedScene) => visitedScene.sectors)
+  );
+  const current = new Set(scene.sectors);
+  if (sectorCaption) {
+    sectorCaption.textContent =
+      scene.theatreLabel ?? scene.sectors.map(formatSectorName).join(' + ');
+  }
+  sectorMarkers.forEach((marker) => {
+    const sector = marker.dataset.sectorMarker;
+    const isCurrent = sector ? current.has(sector as (typeof scene.sectors)[number]) : false;
+    const isVisited = sector ? visited.has(sector as (typeof scene.sectors)[number]) : false;
+    marker.toggleAttribute('data-current', isCurrent);
+    marker.toggleAttribute('data-visited', isVisited);
+    if (isCurrent) marker.setAttribute('aria-current', 'location');
+    else marker.removeAttribute('aria-current');
+  });
+};
+
+const formatSectorName = (sector: string) => `${sector.charAt(0).toUpperCase()}${sector.slice(1)}`;
+
+const getRevealedCount = (sceneIndex: number) =>
+  battleScenes
+    .slice(0, sceneIndex + 1)
+    .reduce((total, scene) => total + scene.soldierIndices.length, 0);
+
+const updateChakraProgress = (sceneIndex: number) => {
+  const totalRevealed = getRevealedCount(sceneIndex);
+  const previouslyRevealed = sceneIndex > 0 ? getRevealedCount(sceneIndex - 1) : 0;
+  chakraSpokes.forEach((spoke, spokeIndex) => {
+    const isRevealed = spokeIndex < totalRevealed;
+    const isNewlyRevealed = spokeIndex >= previouslyRevealed && isRevealed;
+    const staggerIndex = Math.max(0, spokeIndex - previouslyRevealed);
+    spoke.toggleAttribute('data-revealed', isRevealed);
+    spoke.style.setProperty(
+      '--spoke-delay',
+      reducedMotion || !isNewlyRevealed ? '0ms' : `${Math.min(staggerIndex * 70, 350)}ms`
+    );
+  });
+};
+
 const replaceSceneNames = (indices: number[]) => {
-  if (!sceneNames) return;
-  sceneNames.replaceChildren(...indices.map((index) => createListItem(index)));
+  sceneNames?.replaceChildren(...indices.map((index) => createListItem(index)));
+  sceneSummaryNames?.replaceChildren(...indices.map((index) => createListItem(index)));
+};
+
+const announceScene = (scene: (typeof battleScenes)[number], index: number) => {
+  if (!sceneAnnouncement) return;
+  const names = scene.soldierIndices
+    .map((soldierIndex) => martyrs[soldierIndex]?.fullName)
+    .join(', ');
+  sceneAnnouncement.textContent = `Chapter ${index + 1} of ${battleScenes.length}: ${scene.title}. ${getRevealedCount(index)} of 24 selected names revealed. Names brought forward: ${names}.`;
 };
 
 const createListItem = (index: number) => {
@@ -171,11 +239,11 @@ const setContextMode = (mode: 'battle' | 'family') => {
   if (familyToggle) familyToggle.ariaExpanded = `${showFamily}`;
   if (familyToggleLabel) {
     familyToggleLabel.textContent = showFamily
-      ? 'Return to the patrol'
-      : 'Continue · What remained';
+      ? 'Return to the battle chapter'
+      : 'Captain Saurabh Kalia · The first cheque';
   }
   if (familyToggleArrow) familyToggleArrow.textContent = showFamily ? '←' : '→';
-  context?.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
+  chapterBody?.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
 };
 
 const toggleFamilyStory = () => {
@@ -185,6 +253,21 @@ const toggleFamilyStory = () => {
 
 const closeLightboxOnBackdrop = (event: MouseEvent) => {
   if (event.target === lightbox) lightbox?.close();
+};
+
+const openChapter = () => {
+  if (!chapterDialog) return;
+  setContextMode('battle');
+  document.documentElement.setAttribute('data-name-wall-dialog-open', '');
+  chapterDialog.showModal();
+};
+
+const closeChapterOnBackdrop = (event: MouseEvent) => {
+  if (event.target === chapterDialog) chapterDialog?.close();
+};
+
+const unlockPage = () => {
+  document.documentElement.removeAttribute('data-name-wall-dialog-open');
 };
 
 const navigateLightbox = (direction: number) => {
@@ -443,7 +526,10 @@ const initialise = () => {
 };
 
 document.fonts.ready.then(initialise).catch(initialise);
-context?.addEventListener('click', handleArchiveClick);
+experiment?.addEventListener('click', handleArchiveClick);
+chapterOpen?.addEventListener('click', openChapter);
+chapterDialog?.addEventListener('click', closeChapterOnBackdrop);
+chapterDialog?.addEventListener('close', unlockPage);
 familyToggle?.addEventListener('click', toggleFamilyStory);
 lightbox?.addEventListener('click', closeLightboxOnBackdrop);
 lightbox?.addEventListener('keydown', handleLightboxKeydown);

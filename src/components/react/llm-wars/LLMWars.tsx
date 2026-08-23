@@ -8,7 +8,14 @@ import { saveBattleToIndexedDB } from './indexedDB';
 import { isOwnedBattleId, saveOwnedBattleId } from './battleOwnership';
 import { ThemeSelector } from './components/ThemeSelector';
 
-import type { BattleMode, Language, BattleMessage, BattleStatus, LLMConfig, BattleConfig } from './types';
+import type {
+  BattleMode,
+  Language,
+  BattleMessage,
+  BattleStatus,
+  LLMConfig,
+  BattleConfig,
+} from './types';
 
 function createBattleState(
   id: string,
@@ -101,7 +108,7 @@ export function LLMWars() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const battleId = params.get('battle');
-    
+
     if (battleId && !battle) {
       if (window.history.state?.battleId !== battleId) {
         const battleUrl = new URL(window.location.href);
@@ -122,25 +129,21 @@ export function LLMWars() {
       ]);
 
       if (isOwnedBattleId(battleResponse.id)) {
-        setBattle(createBattleState(
-          battleResponse.id,
-          config,
-          battleResponse.messages,
-          battleResponse.current_round,
-          battleResponse.status,
-          battleResponse.error_message,
-          false
-        ));
+        setBattle(
+          createBattleState(
+            battleResponse.id,
+            config,
+            battleResponse.messages,
+            battleResponse.current_round,
+            battleResponse.status,
+            battleResponse.error_message,
+            false
+          )
+        );
         return;
       }
 
-      setBattle(createBattleState(
-        battleResponse.id,
-        config,
-        [],
-        0,
-        'in_progress'
-      ));
+      setBattle(createBattleState(battleResponse.id, config, [], 0, 'in_progress'));
 
       replayBattleIdRef.current = battleResponse.id;
       for (const message of battleResponse.messages) {
@@ -226,12 +229,7 @@ export function LLMWars() {
           setBattle((prev) => {
             if (!prev || prev.id !== response.id) return prev;
             // Save to IndexedDB when battle completes
-            saveBattleToIndexedDB(
-              prev.id,
-              prev.topic,
-              prev.title,
-              'completed'
-            );
+            saveBattleToIndexedDB(prev.id, prev.topic, prev.title, 'completed');
             saveOwnedBattleId(prev.id);
             return { ...prev, status: 'completed' };
           });
@@ -286,15 +284,17 @@ export function LLMWars() {
         getBattle(battleId),
         getBattleConfig(battleId),
       ]);
-      
-      setBattle(createBattleState(
-        battleResponse.id,
-        config,
-        battleResponse.messages,
-        battleResponse.current_round,
-        battleResponse.status,
-        battleResponse.error_message
-      ));
+
+      setBattle(
+        createBattleState(
+          battleResponse.id,
+          config,
+          battleResponse.messages,
+          battleResponse.current_round,
+          battleResponse.status,
+          battleResponse.error_message
+        )
+      );
       pushBattleToUrl(battleResponse.id);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to load battle';
@@ -305,12 +305,17 @@ export function LLMWars() {
   };
 
   return (
-    <div data-yel-lms-root className="relative font-['Source Sans Pro'] text-[#1b2021] dark:text-[#eef0f6]">
+    <div
+      data-yel-lms-root
+      className="relative font-['Source Sans Pro'] text-[#1b2021] dark:text-[#eef0f6]"
+    >
       <div className="absolute right-4 top-4 z-20 sm:right-6 sm:top-6">
         <ThemeSelector />
       </div>
 
-      <header className={`relative mb-0 flex items-center justify-center border-b border-[#cfe1e8] bg-[#f7fcff] px-5 py-4 text-center dark:border-[#2a3341] dark:bg-[#111620] sm:hidden ${battle ? '' : 'hidden'}`}>
+      <header
+        className={`relative mb-0 flex items-center justify-center border-b border-[#cfe1e8] bg-[#f7fcff] px-5 py-4 text-center dark:border-[#2a3341] dark:bg-[#111620] sm:hidden ${battle ? '' : 'hidden'}`}
+      >
         <h1 className="mb-0 text-2xl font-bold text-[#1b2021] no-underline dark:text-[#f4f5f8]">
           Yel-lms
         </h1>

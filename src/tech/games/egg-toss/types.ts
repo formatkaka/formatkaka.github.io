@@ -1,4 +1,4 @@
-export type GameState = 'START' | 'PLAYING' | 'ENDING' | 'GAME_OVER';
+export type GameState = 'START' | 'PLAYING' | 'PAUSED' | 'ENDING' | 'GAME_OVER';
 
 export type BasketBehavior = 'STEADY' | 'SWIFT' | 'PAUSE' | 'REVERSE';
 
@@ -8,6 +8,8 @@ export type PlayerData = {
   sprite: Phaser.Physics.Arcade.Image;
   isJumping: boolean;
   canJump: boolean;
+  flightElapsed: number;
+  tumbleDirection: number;
 };
 
 export type BasketData = {
@@ -15,13 +17,17 @@ export type BasketData = {
   foregroundSprite: Phaser.GameObjects.Image;
   behaviorText: Phaser.GameObjects.Text;
   behaviorVisual: Phaser.GameObjects.Image;
+  behaviorGuide: Phaser.GameObjects.Graphics;
+  behaviorWalls: [Phaser.GameObjects.Rectangle, Phaser.GameObjects.Rectangle];
   index: number;
   speed: number;
   currentSpeed: number;
   behavior: BasketBehavior;
   behaviorElapsed: number;
   behaviorPhase: ReceiverPhase;
-  behaviorCueX: number;
+  turnLaneLeft: number;
+  turnLaneRight: number;
+  restY: number;
 };
 
 export type GameStats = {
@@ -36,4 +42,10 @@ export type GameTexts = {
   progressText: Phaser.GameObjects.Text | null;
   messageText: Phaser.GameObjects.Text | null;
   audioText: Phaser.GameObjects.Text | null;
+  motionText: Phaser.GameObjects.Text | null;
+  rewardText: Phaser.GameObjects.Text | null;
+  statusText: Phaser.GameObjects.Text | null;
+  settingsText: Phaser.GameObjects.Text | null;
+  modeLeftText: Phaser.GameObjects.Text | null;
+  modeRightText: Phaser.GameObjects.Text | null;
 };

@@ -8,6 +8,12 @@ import './styles.css';
 const wallEntries = Array.from({ length: 5 }, (_, repetition) =>
   martyrs.map((martyr, soldierIndex) => ({ martyr, repetition, soldierIndex }))
 ).flat();
+const campaignSectors = [
+  { id: 'dras', label: 'Dras' },
+  { id: 'kaksar', label: 'Kaksar' },
+  { id: 'batalik', label: 'Batalik' },
+  { id: 'turtuk', label: 'Turtuk' },
+];
 ---
 
 <main class="name-wall-experiment">
@@ -15,8 +21,11 @@ const wallEntries = Array.from({ length: 5 }, (_, repetition) =>
     <p class="name-wall-experiment__eyebrow">In remembrance of the fallen · Kargil, 1999</p>
     <h1 id="name-wall-title">Names across<br />the heights.</h1>
     <p class="name-wall-experiment__lede">
-      Scroll through eight campaign chapters. The Chakra opens a path through the wall and brings
-      forward the names connected to each place.
+      Follow 24 selected names through eight campaign chapters. They form one narrative path through
+      a much larger roll of honour; the Chakra opens the wall around each group.
+    </p>
+    <p class="name-wall-experiment__scope">
+      This first edition also carries one family remembrance, beginning with Captain Saurabh Kalia.
     </p>
     <button type="button" data-experience-begin>
       Begin the remembrance <span aria-hidden="true">↓</span>
@@ -53,6 +62,106 @@ const wallEntries = Array.from({ length: 5 }, (_, repetition) =>
   </section>
 
   <section
+    id="campaign-geography"
+    class="name-wall-experiment__campaign-map"
+    aria-labelledby="campaign-map-title"
+    hidden
+  >
+    <div class="name-wall-experiment__map-copy">
+      <h2 id="campaign-map-title">The war unfolded across several fronts.</h2>
+      <p>
+        From Mushkoh and Dras through Kaksar and Batalik toward Turtuk, troops fought to recover
+        commanding heights. The Srinagar–Leh road below made those positions strategically vital.
+      </p>
+      <div class="name-wall-experiment__map-key" aria-label="Map key">
+        <span><i data-key="loc"></i> Line of Control</span>
+        <span><i data-key="road"></i> Srinagar–Leh road</span>
+        <span><i data-key="front"></i> Campaign fronts</span>
+      </div>
+      <p class="name-wall-experiment__map-note">
+        Schematic · not to scale. Geography based on the official Kargil Vijay Diwas campaign
+        diagram.
+      </p>
+      <div class="name-wall-experiment__map-actions">
+        <a href="#name-wall-journey">
+          Follow the campaign through the names <span aria-hidden="true">↓</span>
+        </a>
+        <a
+          href="https://static.pib.gov.in/WriteReadData/userfiles/Kargil%20Vijay%20Diwas%20PPT%20Col.%20Amit%20Dalvi%20July%2026%202020.pdf"
+          target="_blank"
+          rel="noreferrer">Official PIB campaign diagram ↗</a
+        >
+      </div>
+    </div>
+
+    <figure class="name-wall-experiment__map-figure">
+      <svg
+        viewBox="0 0 880 610"
+        role="img"
+        aria-labelledby="campaign-map-svg-title campaign-map-svg-description"
+      >
+        <title id="campaign-map-svg-title">Schematic of the Kargil campaign area</title>
+        <desc id="campaign-map-svg-description">
+          A west-to-east schematic showing Mushkoh, Dras, Kaksar, Kargil, Batalik and Turtuk, with
+          the Line of Control above the Srinagar–Leh road.
+        </desc>
+        <g class="name-wall-experiment__map-contours" aria-hidden="true">
+          <path d="M18 104C124 37 202 77 295 45s172 9 257-25 198 14 312-8"></path>
+          <path d="M-5 158c117-70 213-19 314-56s171 4 266-29 190 16 316-17"></path>
+          <path d="M-20 518c111-51 201-29 304-3s189 34 283 2 208-29 333 12"></path>
+          <path d="M4 567c118-44 211-3 311 13s171 1 268-20 194-12 303 22"></path>
+        </g>
+        <path
+          class="name-wall-experiment__map-loc"
+          d="M26 225C115 169 166 207 248 172s146-11 213-62 129-13 188-42 133-12 203-37"></path>
+        <text class="name-wall-experiment__map-line-label" x="38" y="196">LINE OF CONTROL</text>
+        <path
+          class="name-wall-experiment__map-road"
+          d="M18 445C133 407 208 426 300 394s189-36 285-19 173 3 277-41"></path>
+        <text class="name-wall-experiment__map-road-label" x="30" y="479">FROM SRINAGAR</text>
+        <text class="name-wall-experiment__map-road-label" x="742" y="369">TOWARD LEH</text>
+
+        <g class="name-wall-experiment__map-front" transform="translate(118 344)">
+          <circle r="11"></circle><circle r="25"></circle><text y="-42">MUSHKOH</text>
+        </g>
+        <g class="name-wall-experiment__map-front" transform="translate(248 326)">
+          <circle r="11"></circle><circle r="25"></circle><text y="-42">DRAS</text>
+        </g>
+        <g class="name-wall-experiment__map-height" transform="translate(208 242)">
+          <path d="m0-9 9 18H-9Z"></path><text x="-12" y="-19">TIGER HILL</text>
+        </g>
+        <g class="name-wall-experiment__map-height" transform="translate(278 258)">
+          <path d="m0-9 9 18H-9Z"></path><text x="12" y="4">TOLOLING</text>
+        </g>
+        <g class="name-wall-experiment__map-height" transform="translate(325 302)">
+          <path d="m0-9 9 18H-9Z"></path><text x="12" y="4">POINT 4875</text>
+        </g>
+        <g class="name-wall-experiment__map-front" transform="translate(410 298)">
+          <circle r="11"></circle><circle r="25"></circle><text y="-42">KAKSAR</text>
+        </g>
+        <g class="name-wall-experiment__map-town" transform="translate(508 350)">
+          <circle r="7"></circle><text y="30">KARGIL</text>
+        </g>
+        <g class="name-wall-experiment__map-front" transform="translate(650 269)">
+          <circle r="11"></circle><circle r="25"></circle><text y="-42">BATALIK</text>
+        </g>
+        <g class="name-wall-experiment__map-height" transform="translate(695 184)">
+          <path d="m0-9 9 18H-9Z"></path><text x="12" y="4">KHALUBAR</text>
+        </g>
+        <g class="name-wall-experiment__map-front" transform="translate(798 132)">
+          <circle r="11"></circle><circle r="25"></circle><text x="-9" y="-42">TURTUK</text>
+        </g>
+        <g class="name-wall-experiment__map-town" transform="translate(70 432)">
+          <circle r="7"></circle><text y="30">SONAMARG</text>
+        </g>
+      </svg>
+      <figcaption>
+        Several fronts. One road below. Heights recovered position by position.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section
     id="name-wall-journey"
     class="name-wall-experiment__journey"
     data-name-wall-journey
@@ -69,7 +178,7 @@ const wallEntries = Array.from({ length: 5 }, (_, repetition) =>
           </span>
           <span>Operation Vijay</span>
         </span>
-        <span>24 names · 8 chapters</span>
+        <span>24 selected names · 8 chapters</span>
         <span>Kargil, 1999</span>
       </header>
 
@@ -99,12 +208,21 @@ const wallEntries = Array.from({ length: 5 }, (_, repetition) =>
         <span class="name-wall-experiment__chakra-hub"></span>
         {
           Array.from({ length: 24 }, (_, index) => (
-            <span class="name-wall-experiment__spoke" style={`--spoke: ${index}`} />
+            <span
+              class="name-wall-experiment__spoke"
+              data-spoke-index={index}
+              style={`--spoke: ${index}`}
+            />
           ))
         }
       </div>
 
-      <aside class="name-wall-experiment__context" aria-live="polite">
+      <p class="name-wall-experiment__sr-only" aria-live="polite" data-scene-announcement>
+        Chapter 1 of {battleScenes.length}: {battleScenes[0].title}. Names brought forward:
+        {battleScenes[0].soldierIndices.map((index) => martyrs[index]?.fullName).join(', ')}.
+      </p>
+
+      <aside class="name-wall-experiment__context" aria-label="Current chapter">
         <div class="name-wall-experiment__context-count">
           <span data-scene-number>01</span>
           <span>/</span>
@@ -112,6 +230,85 @@ const wallEntries = Array.from({ length: 5 }, (_, repetition) =>
         </div>
         <p class="name-wall-experiment__eyebrow" data-scene-kicker>{battleScenes[0].kicker}</p>
         <h2 data-scene-title>{battleScenes[0].title}</h2>
+        <div class="name-wall-experiment__sector-locator" aria-label="Campaign sector locator">
+          <div>
+            <span>Sector locator</span>
+            <strong data-sector-caption>Kaksar</strong>
+          </div>
+          <ol>
+            {
+              campaignSectors.map((sector) => (
+                <li
+                  data-sector-marker={sector.id}
+                  data-current={sector.id === 'kaksar' ? '' : undefined}
+                  data-visited={sector.id === 'kaksar' ? '' : undefined}
+                >
+                  <i aria-hidden="true" />
+                  <span>{sector.label}</span>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+        <p class="name-wall-experiment__names-label">Names brought forward</p>
+        <ul data-scene-summary-names>
+          {battleScenes[0].soldierIndices.map((index) => <li>{martyrs[index]?.fullName}</li>)}
+        </ul>
+        <button
+          class="name-wall-experiment__chapter-open"
+          type="button"
+          data-chapter-open
+          aria-haspopup="dialog"
+        >
+          <span>Explore this chapter</span>
+          <span aria-hidden="true">→</span>
+        </button>
+        <div class="name-wall-experiment__controls">
+          <button type="button" data-scene-previous disabled aria-label="Previous chapter">←</button
+          >
+          <button type="button" data-scene-next aria-label="Next chapter">→</button>
+        </div>
+      </aside>
+    </div>
+
+    <ol class="name-wall-experiment__scenes">
+      {
+        battleScenes.map((scene, index) => (
+          <li
+            class="name-wall-experiment__scene"
+            data-name-wall-scene={index}
+            data-active={index === 0 ? '' : undefined}
+          >
+            <span>{String(index + 1).padStart(2, '0')}</span>
+            <strong>{scene.title}</strong>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <dialog
+    class="name-wall-experiment__chapter-dialog"
+    data-chapter-dialog
+    aria-labelledby="chapter-dialog-title"
+  >
+    <form method="dialog" class="name-wall-experiment__chapter-close">
+      <button type="submit" aria-label="Close chapter details">×</button>
+    </form>
+    <div class="name-wall-experiment__chapter-sheet">
+      <header class="name-wall-experiment__chapter-heading">
+        <div class="name-wall-experiment__context-count">
+          <span data-dialog-scene-number>01</span>
+          <span>/</span>
+          <span>{String(battleScenes.length).padStart(2, '0')}</span>
+        </div>
+        <p class="name-wall-experiment__eyebrow" data-dialog-scene-kicker>
+          {battleScenes[0].kicker}
+        </p>
+        <h2 id="chapter-dialog-title" data-dialog-scene-title>{battleScenes[0].title}</h2>
+      </header>
+
+      <div class="name-wall-experiment__chapter-body">
         <button
           class="name-wall-experiment__family-toggle"
           type="button"
@@ -119,14 +316,25 @@ const wallEntries = Array.from({ length: 5 }, (_, repetition) =>
           aria-controls="saurabh-family-story"
           aria-expanded="false"
         >
-          <span data-family-toggle-label>Continue · What remained</span>
+          <span>
+            <small>Family remembrance</small>
+            <strong data-family-toggle-label>Captain Saurabh Kalia · The first cheque</strong>
+          </span>
           <span aria-hidden="true" data-family-toggle-arrow>→</span>
         </button>
+
         <div data-scene-battle>
+          <p class="name-wall-experiment__chapter-detail" data-scene-detail>
+            {battleScenes[0].detail}
+          </p>
+          <p class="name-wall-experiment__names-label">Names brought forward</p>
+          <ul class="name-wall-experiment__chapter-names" data-scene-names>
+            {battleScenes[0].soldierIndices.map((index) => <li>{martyrs[index]?.fullName}</li>)}
+          </ul>
           <div class="name-wall-experiment__archive" data-image-gallery>
             <div class="name-wall-experiment__archive-heading">
               <strong>Chapter archive</strong>
-              <span>3 photographs · scroll →</span>
+              <span>3 photographs · select to enlarge</span>
             </div>
             <div class="name-wall-experiment__archive-grid" data-scene-images>
               {
@@ -163,10 +371,6 @@ const wallEntries = Array.from({ length: 5 }, (_, repetition) =>
               <span aria-hidden="true">↗</span>
             </a>
           </div>
-          <p data-scene-detail>{battleScenes[0].detail}</p>
-          <ul data-scene-names>
-            {battleScenes[0].soldierIndices.map((index) => <li>{martyrs[index]?.fullName}</li>)}
-          </ul>
         </div>
 
         <article
@@ -175,8 +379,12 @@ const wallEntries = Array.from({ length: 5 }, (_, repetition) =>
           data-family-story
           hidden
         >
-          <p class="name-wall-experiment__eyebrow">What remained · Palampur</p>
-          <h3>The first cheque</h3>
+          <p class="name-wall-experiment__eyebrow">One family, beyond the battle · Palampur</p>
+          <h3>Captain Saurabh Kalia: the first cheque</h3>
+          <p class="name-wall-experiment__family-introduction">
+            This first edition begins its family remembrance with the Kalia family. It is one human
+            thread within the larger loss, not a ranking of sacrifice.
+          </p>
           <div class="name-wall-experiment__family-gallery" data-image-gallery>
             <a
               href="#saurabh-family-story"
@@ -224,30 +432,9 @@ const wallEntries = Array.from({ length: 5 }, (_, repetition) =>
             <cite>Kargil: Untold Stories from the War</cite>.
           </footer>
         </article>
-
-        <div class="name-wall-experiment__controls">
-          <button type="button" data-scene-previous disabled aria-label="Previous chapter">←</button
-          >
-          <button type="button" data-scene-next aria-label="Next chapter">→</button>
-        </div>
-      </aside>
+      </div>
     </div>
-
-    <ol class="name-wall-experiment__scenes">
-      {
-        battleScenes.map((scene, index) => (
-          <li
-            class="name-wall-experiment__scene"
-            data-name-wall-scene={index}
-            data-active={index === 0 ? '' : undefined}
-          >
-            <span>{String(index + 1).padStart(2, '0')}</span>
-            <strong>{scene.title}</strong>
-          </li>
-        ))
-      }
-    </ol>
-  </section>
+  </dialog>
 
   <section
     class="name-wall-experiment__story name-wall-experiment__story--ending"
@@ -277,14 +464,14 @@ const wallEntries = Array.from({ length: 5 }, (_, repetition) =>
   </section>
 
   <section class="name-wall-experiment__closing">
-    <p class="name-wall-experiment__eyebrow">Two interpretations, one remembrance</p>
-    <h2>The wall holds every name in view.</h2>
+    <p class="name-wall-experiment__eyebrow">One path through a larger remembrance</p>
+    <h2>Twenty-four names, held within many more.</h2>
     <p>
-      This remains a narrative subset rather than a complete roll of honour. The sequence does not
-      rank sacrifice and remembers all who laid down their lives during Operation Vijay.
+      These 24 selected stories are not a complete roll of honour and do not rank sacrifice. They
+      stand within the larger remembrance of all who laid down their lives during Operation Vijay.
     </p>
     <div>
-      <a href="/tech/kargil-remembrance/">View the reflow study</a>
+      <a href="/tech/kargil-remembrance/">Explore the first remembrance study</a>
       <a href="https://kargilwarmemorial.com/" target="_blank" rel="noreferrer">
         Kargil War Memorial ↗
       </a>
@@ -300,7 +487,11 @@ const wallEntries = Array.from({ length: 5 }, (_, repetition) =>
       <button type="submit" aria-label="Close expanded photograph">×</button>
     </form>
     <div class="name-wall-experiment__lightbox-frame">
-      <img data-lightbox-image alt="" />
+      <img
+        data-lightbox-image
+        src={battleArchive[0]?.images[0]?.src}
+        alt={battleArchive[0]?.images[0]?.alt}
+      />
       <div class="name-wall-experiment__lightbox-navigation">
         <button type="button" data-lightbox-previous aria-label="Previous photograph">←</button>
         <button type="button" data-lightbox-next aria-label="Next photograph">→</button>

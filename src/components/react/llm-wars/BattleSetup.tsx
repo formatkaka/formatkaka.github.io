@@ -74,7 +74,9 @@ export function BattleSetup(props: BattleSetupProps) {
   return (
     <div className="space-y-6 pt-1 sm:space-y-10 sm:pt-0">
       <div className="text-center">
-        <p className="mb-4 text-sm font-bold uppercase tracking-[0.3em] text-[#4b4c57] dark:text-[#a9afbc] sm:mb-5 sm:text-xl sm:tracking-[0.35em]">YEL-LMS</p>
+        <p className="mb-4 text-sm font-bold uppercase tracking-[0.3em] text-[#4b4c57] dark:text-[#a9afbc] sm:mb-5 sm:text-xl sm:tracking-[0.35em]">
+          YEL-LMS
+        </p>
         <h1 className="min-h-[1.2em] whitespace-nowrap text-[clamp(1.125rem,5.7vw,3rem)] font-bold leading-tight tracking-tight text-[#11131a] dark:text-[#f4f5f8]">
           <RotatingHeroHeading />
         </h1>
@@ -82,14 +84,18 @@ export function BattleSetup(props: BattleSetupProps) {
 
       <div className="sm:flex sm:items-center sm:gap-5">
         <div className="mb-3 flex items-center justify-between gap-3 sm:hidden">
-          <label className="text-sm font-bold uppercase tracking-wide text-[#17313b] dark:text-[#d8dee9]" htmlFor="battle-topic">Battle topic</label>
+          <label
+            className="text-sm font-bold uppercase tracking-wide text-[#17313b] dark:text-[#d8dee9]"
+            htmlFor="battle-topic"
+          >
+            Battle topic
+          </label>
           <button
             onClick={handleSurpriseMe}
             className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-[#386de0] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#285bc8] active:bg-[#214da8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#386de0] focus-visible:ring-offset-2 sm:hidden"
             type="button"
           >
-            <span aria-hidden="true">✦</span>
-            Surprise Me
+            <span aria-hidden="true">✦</span>Surprise Me
           </button>
         </div>
         <textarea
@@ -111,9 +117,11 @@ export function BattleSetup(props: BattleSetupProps) {
         </button>
       </div>
 
-      {/* Fighters Section */}
       <div className="space-y-2.5 sm:space-y-0">
-        <h2 className="px-1 text-sm font-bold uppercase tracking-wide text-[#17313b] dark:text-[#d8dee9]"><span className="sm:hidden">Combatants</span><span className="hidden sm:inline">Choose personas</span></h2>
+        <h2 className="px-1 text-sm font-bold uppercase tracking-wide text-[#17313b] dark:text-[#d8dee9]">
+          <span className="sm:hidden">Combatants</span>
+          <span className="hidden sm:inline">Choose personas</span>
+        </h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-7">
           {LLM_PROVIDERS.map((provider) => (
             <LLMCard
@@ -126,16 +134,14 @@ export function BattleSetup(props: BattleSetupProps) {
         </div>
       </div>
 
-      {/* Settings Row */}
       <div className="grid grid-cols-2 gap-5 rounded-xl border border-[#c7e3f1] bg-white px-4 py-4 shadow-sm dark:border-[#30394a] dark:bg-[#171c27] sm:mx-auto sm:flex sm:w-fit sm:items-center sm:gap-6 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:shadow-none sm:dark:bg-transparent">
         <ToggleButtonGroup
           className="sm:hidden"
           label="Rounds"
-          options={[1, 3, 5].map((n) => ({ value: String(n), label: String(n) }))}
+          options={[1, 2, 3].map((n) => ({ value: String(n), label: String(n) }))}
           value={rounds}
           onChange={setRounds}
         />
-
         <ToggleButtonGroup
           className="sm:hidden"
           label="Mode"
@@ -146,7 +152,6 @@ export function BattleSetup(props: BattleSetupProps) {
           value={mode}
           onChange={(value) => setMode(value as BattleMode)}
         />
-
         <ToggleButtonGroup
           className="hidden sm:flex"
           label="Rounds"
@@ -154,7 +159,6 @@ export function BattleSetup(props: BattleSetupProps) {
           value={rounds}
           onChange={setRounds}
         />
-
         <ToggleButtonGroup
           className="hidden sm:flex"
           label="Mode"
@@ -165,7 +169,6 @@ export function BattleSetup(props: BattleSetupProps) {
           value={mode}
           onChange={(value) => setMode(value as BattleMode)}
         />
-
         <ToggleButtonGroup
           label="Language"
           options={[
@@ -174,11 +177,10 @@ export function BattleSetup(props: BattleSetupProps) {
           ]}
           value={language}
           onChange={(value) => setLanguage(value as Language)}
-          className="hidden sm:flex"
+          className="col-span-2 sm:col-auto"
         />
       </div>
 
-      {/* Start Button */}
       <button
         onClick={handleSubmit}
         disabled={!isValid || isLoading}
