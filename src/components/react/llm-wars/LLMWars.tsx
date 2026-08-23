@@ -29,6 +29,7 @@ function createBattleState(
     status,
     errorMessage,
     llms: config.llms,
+    mode: config.mode,
     animateMessages,
   };
 }
@@ -57,6 +58,7 @@ type BattleState = {
   status: BattleStatus;
   errorMessage: string | null;
   llms: LLMConfig[];
+  mode: BattleMode;
   animateMessages: boolean;
 };
 
@@ -342,6 +344,7 @@ export function LLMWars() {
             status={battle.status}
             errorMessage={battle.errorMessage}
             llms={battle.llms}
+            mode={battle.mode}
             animateMessages={battle.animateMessages}
             onReset={handleReset}
           />

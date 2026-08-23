@@ -1,0 +1,104 @@
+---
+import { martyrs } from './martyrs';
+import './styles.css';
+---
+
+<main class="remembrance">
+  <section class="remembrance__threshold" aria-labelledby="remembrance-title">
+    <div class="remembrance__flag-line" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </div>
+    <p class="remembrance__eyebrow">Operation Vijay · Kargil, 1999</p>
+    <h1 id="remembrance-title">At the heights,<br />they stood.</h1>
+    <p class="remembrance__lede">The freedom we celebrate was held at these heights.</p>
+    <a class="remembrance__begin" href="#roll-of-remembrance">
+      Begin the remembrance
+      <span aria-hidden="true">↓</span>
+    </a>
+  </section>
+
+  <section
+    id="roll-of-remembrance"
+    class="remembrance__journey"
+    data-memorial-journey
+    tabindex="-1"
+    aria-label="Twenty-four names in campaign order"
+  >
+    <div class="remembrance__stage" aria-hidden="true">
+      <canvas class="remembrance__canvas" data-memorial-canvas></canvas>
+      <div class="remembrance__mountains remembrance__mountains--far"></div>
+      <div class="remembrance__mountains remembrance__mountains--near"></div>
+      <div class="remembrance__stage-header">
+        <span>24 spokes</span>
+        <span>24 names</span>
+        <span>Kargil, 1999</span>
+      </div>
+      <div class="remembrance__progress">
+        <span data-memorial-current>01</span>
+        <span class="remembrance__progress-line"></span>
+        <span>24</span>
+      </div>
+      <div class="remembrance__focus" data-memorial-focus>
+        <p data-memorial-active-phase>The first patrol</p>
+        <strong data-memorial-active-name>Captain Saurabh Kalia</strong>
+        <span data-memorial-active-meta>4 JAT · Kaksar</span>
+      </div>
+    </div>
+
+    <ol class="remembrance__roll">
+      {
+        martyrs.map((martyr, index) => (
+          <li
+            class="remembrance__step"
+            data-memorial-step={index}
+            data-active={index === 0 ? '' : undefined}
+          >
+            <div class="remembrance__marker">
+              <span class="remembrance__marker-index">{String(index + 1).padStart(2, '0')}</span>
+              <span>
+                <span class="remembrance__phase">{martyr.phase}</span>
+                <strong>{martyr.fullName}</strong>
+                <small>
+                  {martyr.unit} · {martyr.location}
+                </small>
+              </span>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="remembrance__resolution-step" data-memorial-resolution>
+      <p class="remembrance__eyebrow">The names find their place</p>
+      <p>Every line returns to the mountain.</p>
+    </div>
+
+    <div class="remembrance__controls" aria-label="Remembrance navigation">
+      <button type="button" data-memorial-previous disabled>
+        <span aria-hidden="true">←</span>
+        Previous
+      </button>
+      <button type="button" data-memorial-next>
+        Next
+        <span aria-hidden="true">→</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="remembrance__closing" aria-labelledby="remembrance-closing-title">
+    <p class="remembrance__eyebrow">This wheel carries twenty-four names</p>
+    <h2 id="remembrance-closing-title">The nation remembers every one.</h2>
+    <p>
+      This sequence is a narrative subset, not a ranking or a complete roll of honour. It remembers
+      all who laid down their lives during Operation Vijay.
+    </p>
+    <a href="https://kargilwarmemorial.com/" target="_blank" rel="noreferrer">
+      Visit the Kargil War Memorial
+      <span aria-hidden="true">↗</span>
+    </a>
+  </section>
+</main>
+
+<script>
+  import './memorial';
+</script>

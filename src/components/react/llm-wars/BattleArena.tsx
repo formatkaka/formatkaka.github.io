@@ -5,7 +5,7 @@ import { voteForBattle, getBattleVotes, submitBattleFeedback } from './api';
 import { StatusBadge } from './components/StatusBadge';
 import { VoteCard } from './components/VoteCard';
 
-import type { BattleMessage, BattleStatus, LLMConfig, LLMProvider } from './types';
+import type { BattleMessage, BattleMode, BattleStatus, LLMConfig, LLMProvider } from './types';
 
 type BattleArenaProps = {
   battleId: string;
@@ -17,6 +17,7 @@ type BattleArenaProps = {
   status: BattleStatus;
   errorMessage: string | null;
   llms: LLMConfig[];
+  mode: BattleMode;
   animateMessages: boolean;
   onReset: () => void;
 };
@@ -32,6 +33,7 @@ export function BattleArena(props: BattleArenaProps) {
     status,
     errorMessage,
     llms,
+    mode,
     animateMessages,
     onReset,
   } = props;
@@ -212,6 +214,7 @@ export function BattleArena(props: BattleArenaProps) {
                   message={message}
                   llms={llms}
                   animate={animateMessages}
+                  mode={mode}
                 />
               ))}
             </div>

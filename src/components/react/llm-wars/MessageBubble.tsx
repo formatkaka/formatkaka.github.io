@@ -2,16 +2,17 @@ import { useEffect, useState } from 'react';
 import { LLM_COLORS } from './types';
 import { getPersonaDisplay } from './utils';
 
-import type { BattleMessage, LLMConfig } from './types';
+import type { BattleMessage, BattleMode, LLMConfig } from './types';
 
 type MessageBubbleProps = {
   message: BattleMessage;
   llms: LLMConfig[];
   animate: boolean;
+  mode: BattleMode;
 };
 
 export function MessageBubble(props: MessageBubbleProps) {
-  const { message, llms, animate } = props;
+  const { message, llms, animate, mode } = props;
 
   const color = LLM_COLORS[message.provider];
   const llmConfig = llms.find((llm) => llm.provider === message.provider);
@@ -73,7 +74,7 @@ export function MessageBubble(props: MessageBubbleProps) {
           </span>
           <span className="text-sm text-[#999] dark:text-[#9da5b3]"> — {personaDisplay}</span>
         </div>
-        <p className="text-[15px] leading-relaxed text-[#333] whitespace-pre-wrap break-words dark:text-[#dce1e9]">
+        <p className={`leading-relaxed text-[#333] whitespace-pre-wrap break-words dark:text-[#dce1e9] ${mode === 'emoji' ? 'text-[22.5px]' : 'text-[15px]'}`}>
           {displayText}
           {isAnimating && (
             <span className="ml-1 inline-block text-[#999] animate-pulse dark:text-[#aab2bf]">▍</span>

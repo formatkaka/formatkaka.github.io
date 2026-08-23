@@ -1,0 +1,465 @@
+.remembrance {
+  --stone: #ede7dc;
+  --stone-deep: #d8cdbd;
+  --ink: #111927;
+  --navy: #163b6d;
+  --saffron: #c76b27;
+  --green: #2f654d;
+  min-height: 100vh;
+  overflow: clip;
+  color: var(--ink);
+  background: var(--stone);
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+.remembrance__threshold,
+.remembrance__closing {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  min-height: 100svh;
+  padding: clamp(2rem, 5vw, 5rem);
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  background:
+    radial-gradient(circle at 80% 10%, rgb(199 107 39 / 10%), transparent 32%),
+    linear-gradient(180deg, #f3eee6 0%, var(--stone) 100%);
+}
+
+.remembrance__threshold::after {
+  position: absolute;
+  right: -8vw;
+  bottom: -12vw;
+  width: min(52vw, 760px);
+  aspect-ratio: 1;
+  border: clamp(20px, 4vw, 58px) solid rgb(22 59 109 / 5%);
+  border-radius: 50%;
+  content: '';
+}
+
+.remembrance__flag-line {
+  display: grid;
+  width: min(14rem, 48vw);
+  height: 3px;
+  margin-bottom: clamp(3rem, 10vh, 7rem);
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.remembrance__flag-line span:nth-child(1) {
+  background: var(--saffron);
+}
+.remembrance__flag-line span:nth-child(2) {
+  background: var(--navy);
+}
+.remembrance__flag-line span:nth-child(3) {
+  background: var(--green);
+}
+
+.remembrance__eyebrow,
+.remembrance__phase {
+  color: var(--navy);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+}
+
+.remembrance__threshold h1 {
+  max-width: 12ch;
+  margin-top: 0.9rem;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(4rem, 11vw, 10rem);
+  font-weight: 400;
+  letter-spacing: -0.07em;
+  line-height: 0.82;
+}
+
+.remembrance__lede {
+  max-width: 31rem;
+  margin-top: clamp(2rem, 5vh, 4rem);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.3rem, 2.4vw, 2rem);
+  line-height: 1.35;
+}
+
+.remembrance__begin,
+.remembrance__closing a {
+  display: inline-flex;
+  margin-top: 2.5rem;
+  padding-bottom: 0.35rem;
+  gap: 0.8rem;
+  align-items: center;
+  color: var(--ink);
+  border-bottom: 1px solid rgb(17 25 39 / 40%);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.remembrance__journey {
+  position: relative;
+  min-height: 1900vh;
+  background: var(--stone);
+  outline: none;
+}
+
+.remembrance__stage {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 100svh;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgb(255 255 255 / 28%), transparent 28%), var(--stone);
+}
+
+.remembrance__canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+}
+
+.remembrance__mountains {
+  position: absolute;
+  right: -10%;
+  bottom: 0;
+  left: -10%;
+  height: 34%;
+  pointer-events: none;
+  clip-path: polygon(
+    0 100%,
+    0 72%,
+    9% 56%,
+    18% 75%,
+    29% 42%,
+    39% 67%,
+    49% 22%,
+    58% 59%,
+    69% 34%,
+    81% 70%,
+    90% 48%,
+    100% 69%,
+    100% 100%
+  );
+}
+
+.remembrance__mountains--far {
+  z-index: 0;
+  background: rgb(22 59 109 / 8%);
+  transform: translateY(-10%);
+}
+
+.remembrance__mountains--near {
+  z-index: 1;
+  background: linear-gradient(180deg, rgb(17 25 39 / 8%), rgb(17 25 39 / 16%));
+  transform: scaleX(-1);
+}
+
+.remembrance__stage-header {
+  position: absolute;
+  top: clamp(1.25rem, 3vw, 2.5rem);
+  right: clamp(1.25rem, 4vw, 4rem);
+  left: clamp(1.25rem, 4vw, 4rem);
+  z-index: 4;
+  display: flex;
+  padding-top: 0.8rem;
+  justify-content: space-between;
+  border-top: 1px solid rgb(17 25 39 / 28%);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.remembrance__progress {
+  position: absolute;
+  bottom: clamp(1.25rem, 3vw, 2.5rem);
+  left: clamp(1.25rem, 4vw, 4rem);
+  z-index: 4;
+  display: flex;
+  width: min(17rem, 42vw);
+  gap: 0.8rem;
+  align-items: center;
+  color: var(--navy);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.remembrance__progress-line {
+  height: 1px;
+  flex: 1;
+  background: rgb(22 59 109 / 32%);
+}
+
+.remembrance__focus {
+  position: absolute;
+  top: var(--focus-y, 50%);
+  left: var(--focus-x, 32%);
+  z-index: 4;
+  width: min(20rem, 30vw);
+  color: var(--navy);
+  text-align: center;
+  text-shadow:
+    0 1px 18px var(--stone),
+    0 1px 30px var(--stone);
+  transform: translate(-50%, -50%);
+  transition: opacity 250ms ease;
+}
+
+.remembrance__focus p {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.remembrance__focus strong {
+  display: block;
+  margin-top: 0.45rem;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.35rem, 2.4vw, 2.25rem);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+}
+
+.remembrance__focus span {
+  display: block;
+  margin-top: 0.65rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.remembrance__stage[data-resolved] .remembrance__focus,
+.remembrance__stage[data-resolved] .remembrance__progress {
+  opacity: 0;
+}
+
+.remembrance__roll {
+  position: relative;
+  z-index: 3;
+  width: min(24rem, 30vw);
+  margin: -100svh 4vw 0 auto;
+  padding: 42svh 0 52svh;
+  list-style: none;
+}
+
+.remembrance__step {
+  display: flex;
+  min-height: 76svh;
+  align-items: center;
+  opacity: 0.32;
+  transition: opacity 360ms ease;
+}
+
+.remembrance__step[data-active] {
+  opacity: 1;
+}
+
+.remembrance__marker {
+  display: grid;
+  width: 100%;
+  padding: 1.2rem 0;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 0.9rem;
+  border-top: 1px solid rgb(17 25 39 / 24%);
+  color: var(--ink);
+  text-shadow:
+    0 1px 20px var(--stone),
+    0 1px 35px var(--stone);
+  transform: translateX(1rem);
+  transition: transform 360ms ease;
+}
+
+.remembrance__step[data-active] .remembrance__marker {
+  transform: translateX(0);
+}
+
+.remembrance__marker-index {
+  color: var(--navy);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+}
+
+.remembrance__marker > span:last-child {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.remembrance__marker strong {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.15rem, 2vw, 1.6rem);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+
+.remembrance__marker small {
+  margin-top: 0.2rem;
+  color: rgb(17 25 39 / 62%);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.remembrance__resolution-step {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  width: min(32rem, 43vw);
+  min-height: 100svh;
+  margin: 0 4vw 0 auto;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.remembrance__resolution-step > p:last-child {
+  max-width: 14ch;
+  margin-top: 0.8rem;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  letter-spacing: -0.045em;
+  line-height: 1;
+  text-shadow:
+    0 1px 24px var(--stone),
+    0 1px 46px var(--stone);
+}
+
+.remembrance__controls {
+  position: sticky;
+  bottom: 1.5rem;
+  z-index: 5;
+  display: flex;
+  width: fit-content;
+  margin: -5rem 4vw 0 auto;
+  gap: 0.5rem;
+}
+
+.remembrance__controls button {
+  display: inline-flex;
+  padding: 0.7rem 0.9rem;
+  gap: 0.55rem;
+  align-items: center;
+  color: var(--stone);
+  border: 1px solid rgb(22 59 109 / 15%);
+  border-radius: 999px;
+  background: var(--navy);
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.remembrance__controls button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.remembrance__controls button:focus-visible,
+.remembrance__begin:focus-visible,
+.remembrance__closing a:focus-visible {
+  outline: 3px solid var(--saffron);
+  outline-offset: 4px;
+}
+
+.remembrance__closing {
+  align-items: center;
+  text-align: center;
+}
+
+.remembrance__closing h2 {
+  max-width: 12ch;
+  margin-top: 1rem;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 400;
+  letter-spacing: -0.065em;
+  line-height: 0.95;
+}
+
+.remembrance__closing > p:not(.remembrance__eyebrow) {
+  max-width: 37rem;
+  margin-top: 2rem;
+  color: rgb(17 25 39 / 68%);
+  font-size: 1rem;
+}
+
+@media (max-width: 719px) {
+  .remembrance__journey {
+    min-height: 2100vh;
+  }
+
+  .remembrance__stage-header span:nth-child(2) {
+    display: none;
+  }
+
+  .remembrance__roll {
+    width: auto;
+    margin-right: 1rem;
+    margin-left: 1rem;
+    padding-top: 58svh;
+  }
+
+  .remembrance__step {
+    min-height: 84svh;
+    align-items: flex-end;
+    padding-bottom: 7svh;
+  }
+
+  .remembrance__marker {
+    padding: 1rem;
+    border: 1px solid rgb(17 25 39 / 14%);
+    background: rgb(237 231 220 / 88%);
+    box-shadow: 0 1.25rem 4rem rgb(17 25 39 / 8%);
+    backdrop-filter: blur(10px);
+  }
+
+  .remembrance__focus {
+    width: min(19rem, 82vw);
+  }
+
+  .remembrance__focus strong {
+    font-size: clamp(1.35rem, 7vw, 2rem);
+  }
+
+  .remembrance__progress {
+    bottom: 1.25rem;
+  }
+
+  .remembrance__resolution-step {
+    width: auto;
+    margin-right: 1rem;
+    margin-left: 1rem;
+  }
+
+  .remembrance__resolution-step > p:last-child {
+    font-size: clamp(2.25rem, 11vw, 3.4rem);
+  }
+
+  .remembrance__controls {
+    bottom: 0.75rem;
+    margin-right: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .remembrance__step {
+    transition: none;
+  }
+
+  .remembrance__begin,
+  .remembrance__closing a {
+    scroll-behavior: auto;
+  }
+}
