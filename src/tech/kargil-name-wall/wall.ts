@@ -1,5 +1,6 @@
 import { martyrs } from '../kargil-remembrance/martyrs';
 import { battleArchive, getCommonsFileUrl, type ArchiveImage } from './archive';
+import { getRemembrancesForScene, type RemembranceStory } from './remembrances';
 import { battleScenes } from './scenes';
 
 const stage = document.querySelector<HTMLElement>('[data-name-wall-stage]');
@@ -49,6 +50,7 @@ let layoutFrame = 0;
 let layoutTimer = 0;
 let lightboxLinks: HTMLAnchorElement[] = [];
 let lightboxIndex = 0;
+let activeRemembrances = getRemembrancesForScene(0);
 
 const setActiveScene = (index: number) => {
   const nextIndex = Math.max(0, Math.min(index, battleScenes.length - 1));
@@ -75,12 +77,85 @@ const updateSceneContent = (scene: (typeof battleScenes)[number], index: number)
   if (previousButton) previousButton.disabled = index === 0;
   if (nextButton) nextButton.disabled = index === battleScenes.length - 1;
   setContextMode('battle');
-  if (familyToggle) familyToggle.hidden = index !== 0;
+  updateRemembrances(index);
   replaceSceneNames(scene.soldierIndices);
   updateChakraProgress(index);
   updateSectorLocator(scene, index);
   announceScene(scene, index);
   replaceSceneArchive(index);
+};
+
+const updateRemembrances = (sceneIndex: number) => {
+  activeRemembrances = getRemembrancesForScene(sceneIndex);
+  if (familyToggle) familyToggle.hidden = activeRemembrances.length === 0;
+  if (familyStory) {
+    familyStory.replaceChildren(...activeRemembrances.map(createRemembranceEntry));
+  }
+  updateRemembranceToggleLabel(false);
+};
+
+const createRemembranceEntry = (story: RemembranceStory) => {
+  const entry = document.createElement('section');
+  entry.className = 'name-wall-experiment__remembrance-entry';
+
+  const eyebrow = document.createElement('p');
+  eyebrow.className = 'name-wall-experiment__eyebrow';
+  eyebrow.textContent = `Supporting remembrance · ${story.place}`;
+
+  const title = document.createElement('h3');
+  title.textContent = story.title;
+
+  const introduction = document.createElement('p');
+  introduction.className = 'name-wall-experiment__family-introduction';
+  introduction.textContent = story.introduction;
+
+  entry.append(eyebrow, title, introduction);
+  if (story.images.length > 0) entry.append(createRemembranceGallery(story));
+  story.paragraphs.forEach((paragraphText) => {
+    const paragraph = document.createElement('p');
+    paragraph.textContent = paragraphText;
+    entry.append(paragraph);
+  });
+
+  const source = document.createElement('footer');
+  source.textContent = story.source;
+  entry.append(source);
+  return entry;
+};
+
+const createRemembranceGallery = (story: RemembranceStory) => {
+  const gallery = document.createElement('div');
+  gallery.className = 'name-wall-experiment__family-gallery';
+  gallery.dataset.imageGallery = '';
+  story.images.forEach((image) => {
+    const link = document.createElement('a');
+    link.href = image.src;
+    link.dataset.archiveImage = '';
+    link.dataset.imageSrc = image.src;
+    link.dataset.imageAlt = image.alt;
+    link.dataset.imageCaption = image.caption;
+    link.dataset.imageCredit = story.source;
+
+    const element = document.createElement('img');
+    element.src = image.src;
+    element.alt = image.alt;
+    element.loading = 'lazy';
+    link.append(element);
+    gallery.append(link);
+  });
+  return gallery;
+};
+
+const updateRemembranceToggleLabel = (showFamily: boolean) => {
+  if (!familyToggleLabel) return;
+  if (showFamily) {
+    familyToggleLabel.textContent = 'Return to the battle chapter';
+    return;
+  }
+  familyToggleLabel.textContent =
+    activeRemembrances.length === 1
+      ? (activeRemembrances[0]?.title ?? 'Supporting remembrance')
+      : `${activeRemembrances.length} supporting remembrances`;
 };
 
 const updateSectorLocator = (scene: (typeof battleScenes)[number], sceneIndex: number) => {
@@ -237,11 +312,7 @@ const setContextMode = (mode: 'battle' | 'family') => {
   if (sceneBattle) sceneBattle.hidden = showFamily;
   if (familyStory) familyStory.hidden = !showFamily;
   if (familyToggle) familyToggle.ariaExpanded = `${showFamily}`;
-  if (familyToggleLabel) {
-    familyToggleLabel.textContent = showFamily
-      ? 'Return to the battle chapter'
-      : 'Captain Saurabh Kalia · The first cheque';
-  }
+  updateRemembranceToggleLabel(showFamily);
   if (familyToggleArrow) familyToggleArrow.textContent = showFamily ? '←' : '→';
   chapterBody?.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
 };

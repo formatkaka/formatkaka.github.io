@@ -1,6 +1,7 @@
 ---
 import { martyrs } from '../kargil-remembrance/martyrs';
 import { battleArchive, getCommonsFileUrl } from './archive';
+import { getRemembrancesForScene } from './remembrances';
 import { battleScenes } from './scenes';
 import { storyChapters } from './story';
 import './styles.css';
@@ -14,6 +15,7 @@ const campaignSectors = [
   { id: 'batalik', label: 'Batalik' },
   { id: 'turtuk', label: 'Turtuk' },
 ];
+const initialRemembrances = getRemembrancesForScene(0);
 ---
 
 <main class="name-wall-experiment">
@@ -313,11 +315,11 @@ const campaignSectors = [
           class="name-wall-experiment__family-toggle"
           type="button"
           data-family-toggle
-          aria-controls="saurabh-family-story"
+          aria-controls="supporting-remembrances"
           aria-expanded="false"
         >
           <span>
-            <small>Family remembrance</small>
+            <small>Supporting remembrance</small>
             <strong data-family-toggle-label>Captain Saurabh Kalia · The first cheque</strong>
           </span>
           <span aria-hidden="true" data-family-toggle-arrow>→</span>
@@ -374,63 +376,40 @@ const campaignSectors = [
         </div>
 
         <article
-          id="saurabh-family-story"
+          id="supporting-remembrances"
           class="name-wall-experiment__family-story"
           data-family-story
           hidden
         >
-          <p class="name-wall-experiment__eyebrow">One family, beyond the battle · Palampur</p>
-          <h3>Captain Saurabh Kalia: the first cheque</h3>
-          <p class="name-wall-experiment__family-introduction">
-            This first edition begins its family remembrance with the Kalia family. It is one human
-            thread within the larger loss, not a ranking of sacrifice.
-          </p>
-          <div class="name-wall-experiment__family-gallery" data-image-gallery>
-            <a
-              href="#saurabh-family-story"
-              data-archive-image
-              data-family-image
-              data-image-src="/assets/kargil-name-wall/families/saurabh-kalia-commissioning.jpg"
-              data-image-alt="Saurabh Kalia standing between his parents after his commissioning"
-              data-image-caption="Narinder and Vijaya Kalia pin Saurabh's insignia after his commissioning"
-              data-image-credit="From the family archive · reproduced in Kargil: Untold Stories from the War"
-            >
-              <img
-                src="/assets/kargil-name-wall/families/saurabh-kalia-commissioning.jpg"
-                alt="Saurabh Kalia standing between his parents after his commissioning"
-                loading="lazy"
-              />
-            </a>
-            <a
-              href="#saurabh-family-story"
-              data-archive-image
-              data-family-image
-              data-image-src="/assets/kargil-name-wall/families/saurabh-kalia-first-cheque.jpg"
-              data-image-alt="Vijaya Kalia holding the first cheque Saurabh gave her"
-              data-image-caption="Vijaya Kalia holds the first cheque Saurabh left for her"
-              data-image-credit="From the family archive · reproduced in Kargil: Untold Stories from the War"
-            >
-              <img
-                src="/assets/kargil-name-wall/families/saurabh-kalia-first-cheque.jpg"
-                alt="Vijaya Kalia holding the first cheque Saurabh gave her"
-                loading="lazy"
-              />
-            </a>
-          </div>
-          <p>
-            Saurabh was twenty-two when he was commissioned. After signing the first cheque of his
-            life, he handed it to his mother, telling her that he had begun earning and she need not
-            worry about money anymore.
-          </p>
-          <p>
-            Vijaya Kalia kept it. The cheque was never cashed; Saurabh died before his first salary
-            reached his account. In the Kalia home, it remains less a financial document than the
-            beginning of a son's adult life, abruptly interrupted.
-          </p>
-          <footer>
-            Story and photographs from Rachna Bisht Rawat's
-            <cite>Kargil: Untold Stories from the War</cite>.
-          </footer>
+          {
+            initialRemembrances.map((story) => (
+              <section class="name-wall-experiment__remembrance-entry">
+                <p class="name-wall-experiment__eyebrow">Supporting remembrance · {story.place}</p>
+                <h3>{story.title}</h3>
+                <p class="name-wall-experiment__family-introduction">{story.introduction}</p>
+                {story.images.length > 0 && (
+                  <div class="name-wall-experiment__family-gallery" data-image-gallery>
+                    {story.images.map((image) => (
+                      <a
+                        href={image.src}
+                        data-archive-image
+                        data-image-src={image.src}
+                        data-image-alt={image.alt}
+                        data-image-caption={image.caption}
+                        data-image-credit={story.source}
+                      >
+                        <img src={image.src} alt={image.alt} loading="lazy" />
+                      </a>
+                    ))}
+                  </div>
+                )}
+                {story.paragraphs.map((paragraph) => (
+                  <p>{paragraph}</p>
+                ))}
+                <footer>{story.source}</footer>
+              </section>
+            ))
+          }
         </article>
       </div>
     </div>

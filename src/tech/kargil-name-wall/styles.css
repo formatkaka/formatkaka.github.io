@@ -1014,6 +1014,12 @@ html[data-name-wall-dialog-open] {
   margin-top: 1rem;
 }
 
+.name-wall-experiment__remembrance-entry + .name-wall-experiment__remembrance-entry {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  padding-top: clamp(2.5rem, 5vw, 4rem);
+  border-top: 1px solid rgb(17 25 39 / 14%);
+}
+
 .name-wall-experiment__family-story h3 {
   max-width: 13ch;
   margin-top: 0.55rem;
@@ -1063,12 +1069,17 @@ html[data-name-wall-dialog-open] {
   object-position: center 43%;
 }
 
+.name-wall-experiment__family-gallery a:only-child {
+  grid-column: 1 / -1;
+  max-width: 36rem;
+}
+
 .name-wall-experiment__family-gallery a:hover img {
   filter: saturate(0.94) contrast(1);
   transform: scale(1.012);
 }
 
-.name-wall-experiment__family-story > p:not(.name-wall-experiment__eyebrow) {
+.name-wall-experiment__remembrance-entry > p:not(.name-wall-experiment__eyebrow) {
   margin-top: 1rem;
   color: rgb(17 25 39 / 76%);
   font-family: Georgia, 'Times New Roman', serif;
