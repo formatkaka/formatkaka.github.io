@@ -12,6 +12,57 @@
   scrollbar-color: rgb(21 59 111 / 55%) transparent;
 }
 
+.name-wall-experiment__language {
+  position: fixed;
+  z-index: 20;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border: 1px solid rgb(21 59 111 / 16%);
+  border-radius: 999px;
+  background: rgb(244 240 233 / 92%);
+  box-shadow: 0 0.4rem 1.5rem rgb(17 25 39 / 10%);
+  backdrop-filter: blur(10px);
+  color: var(--navy);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.name-wall-experiment__language span {
+  padding: 0 0.45rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.name-wall-experiment__language button {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.4rem 0.65rem;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+}
+
+.name-wall-experiment__language button[aria-pressed='true'] {
+  background: var(--navy);
+  color: var(--stone);
+}
+
+@media (max-width: 600px) {
+  .name-wall-experiment__language {
+    top: 0.65rem;
+    right: 0.65rem;
+  }
+
+  .name-wall-experiment__language > span {
+    display: none;
+  }
+}
+
 .name-wall-experiment ::selection {
   color: var(--stone);
   background: var(--navy);

@@ -2,6 +2,7 @@ import { martyrs } from '../kargil-remembrance/martyrs';
 import { battleArchive, getCommonsFileUrl, type ArchiveImage } from './archive';
 import { getRemembrancesForScene, type RemembranceStory } from './remembrances';
 import { battleScenes } from './scenes';
+import { NAME_WALL_LANGUAGE_KEY, sceneCopy, storyCopy, type NameWallLocale, uiCopy } from './locales';
 
 const stage = document.querySelector<HTMLElement>('[data-name-wall-stage]');
 const wall = document.querySelector<HTMLElement>('[data-name-wall]');
@@ -46,6 +47,7 @@ const experiment = document.querySelector<HTMLElement>('.name-wall-experiment');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 let activeSceneIndex = 0;
+let activeLocale: NameWallLocale = window.localStorage.getItem(NAME_WALL_LANGUAGE_KEY) === 'hi' ? 'hi' : 'en';
 let layoutFrame = 0;
 let layoutTimer = 0;
 let lightboxLinks: HTMLAnchorElement[] = [];
@@ -63,17 +65,22 @@ const setActiveScene = (index: number) => {
 };
 
 const updateSceneContent = (scene: (typeof battleScenes)[number], index: number) => {
+  const localizedScene = sceneCopy[activeLocale][index] ?? scene;
   sceneElements.forEach((element, sceneIndex) =>
     element.toggleAttribute('data-active', sceneIndex === index)
   );
   const number = `${index + 1}`.padStart(2, '0');
   if (sceneNumber) sceneNumber.textContent = number;
   if (dialogSceneNumber) dialogSceneNumber.textContent = number;
-  if (sceneKicker) sceneKicker.textContent = scene.kicker;
-  if (dialogSceneKicker) dialogSceneKicker.textContent = scene.kicker;
-  if (sceneTitle) sceneTitle.textContent = scene.title;
-  if (dialogSceneTitle) dialogSceneTitle.textContent = scene.title;
-  if (sceneDetail) sceneDetail.textContent = scene.detail;
+  if (sceneKicker) sceneKicker.textContent = localizedScene.kicker;
+  if (dialogSceneKicker) dialogSceneKicker.textContent = localizedScene.kicker;
+  if (sceneTitle) sceneTitle.textContent = localizedScene.title;
+  if (dialogSceneTitle) dialogSceneTitle.textContent = localizedScene.title;
+  if (sceneDetail) sceneDetail.textContent = localizedScene.detail;
+  sceneElements.forEach((element, sceneIndex) => {
+    const title = element.querySelector('strong');
+    if (title) title.textContent = sceneCopy[activeLocale][sceneIndex]?.title ?? battleScenes[sceneIndex].title;
+  });
   if (previousButton) previousButton.disabled = index === 0;
   if (nextButton) nextButton.disabled = index === battleScenes.length - 1;
   setContextMode('battle');
@@ -81,8 +88,56 @@ const updateSceneContent = (scene: (typeof battleScenes)[number], index: number)
   replaceSceneNames(scene.soldierIndices);
   updateChakraProgress(index);
   updateSectorLocator(scene, index);
-  announceScene(scene, index);
+  announceScene({ ...scene, ...localizedScene }, index);
   replaceSceneArchive(index);
+};
+
+const setLocalizedText = (key: string, value: string) => {
+  document.querySelectorAll<HTMLElement>(`[data-i18n="${key}"]`).forEach((element) => {
+    if (element.hasAttribute('data-i18n-html')) element.innerHTML = value;
+    else element.textContent = value;
+  });
+};
+
+const applyLocale = (locale: NameWallLocale) => {
+  activeLocale = locale;
+  window.localStorage.setItem(NAME_WALL_LANGUAGE_KEY, locale);
+  document.documentElement.lang = locale;
+  const copy = uiCopy[locale];
+  Object.entries(copy).forEach(([key, value]) => setLocalizedText(key, value));
+  document.querySelectorAll<HTMLElement>('[data-i18n-aria]').forEach((element) => {
+    const key = element.dataset.i18nAria;
+    if (key && copy[key]) element.setAttribute('aria-label', copy[key]);
+  });
+  Object.entries(storyCopy[locale]).forEach(([chapter, chapterCopy]) => {
+    setLocalizedText(`${chapter}-eyebrow`, chapterCopy.eyebrow);
+    setLocalizedText(`${chapter}-title`, chapterCopy.title);
+    chapterCopy.paragraphs.forEach((paragraph, index) => setLocalizedText(`${chapter}-paragraph-${index}`, paragraph));
+    chapterCopy.facts.forEach((fact, index) => setLocalizedText(`${chapter}-fact-${index}`, fact));
+  });
+  const staticSelectors: Record<string, string> = locale === 'hi'
+    ? {
+        '.name-wall-experiment__map-line-label': 'नियंत्रण रेखा',
+        '.name-wall-experiment__map-road-label:first-of-type': 'श्रीनगर से',
+        '.name-wall-experiment__map-road-label:last-of-type': 'लेह की ओर',
+        '.name-wall-experiment__map-figure figcaption': 'कई मोर्चे। नीचे एक सड़क। ऊँचाइयाँ एक-एक स्थिति करके वापस ली गईं।',
+        '.name-wall-experiment__closing .name-wall-experiment__eyebrow': copy.endingEyebrow,
+      }
+    : {
+        '.name-wall-experiment__map-line-label': 'LINE OF CONTROL',
+        '.name-wall-experiment__map-road-label:first-of-type': 'FROM SRINAGAR',
+        '.name-wall-experiment__map-road-label:last-of-type': 'TOWARD LEH',
+        '.name-wall-experiment__map-figure figcaption': 'Several fronts. One road below. Heights recovered position by position.',
+      };
+  Object.entries(staticSelectors).forEach(([selector, value]) => {
+    const element = document.querySelector<HTMLElement>(selector);
+    if (element) element.textContent = value;
+  });
+  document.querySelectorAll<HTMLButtonElement>('[data-language]').forEach((button) => {
+    button.setAttribute('aria-pressed', `${button.dataset.language === locale}`);
+  });
+  const currentScene = battleScenes[activeSceneIndex];
+  if (currentScene) updateSceneContent(currentScene, activeSceneIndex);
 };
 
 const updateRemembrances = (sceneIndex: number) => {
@@ -149,13 +204,13 @@ const createRemembranceGallery = (story: RemembranceStory) => {
 const updateRemembranceToggleLabel = (showFamily: boolean) => {
   if (!familyToggleLabel) return;
   if (showFamily) {
-    familyToggleLabel.textContent = 'Return to the battle chapter';
+    familyToggleLabel.textContent = uiCopy[activeLocale].returnToBattle;
     return;
   }
   familyToggleLabel.textContent =
     activeRemembrances.length === 1
-      ? (activeRemembrances[0]?.title ?? 'Supporting remembrance')
-      : `${activeRemembrances.length} supporting remembrances`;
+      ? (activeRemembrances[0]?.title ?? uiCopy[activeLocale].supportingRemembrance)
+      : `${activeRemembrances.length} ${uiCopy[activeLocale].supportingRemembrances}`;
 };
 
 const updateSectorLocator = (scene: (typeof battleScenes)[number], sceneIndex: number) => {
@@ -606,6 +661,13 @@ lightbox?.addEventListener('click', closeLightboxOnBackdrop);
 lightbox?.addEventListener('keydown', handleLightboxKeydown);
 lightboxPrevious?.addEventListener('click', () => navigateLightbox(-1));
 lightboxNext?.addEventListener('click', () => navigateLightbox(1));
+document.querySelectorAll<HTMLButtonElement>('[data-language]').forEach((button) => {
+  button.addEventListener('click', () => {
+    const locale = button.dataset.language;
+    if (locale === 'en' || locale === 'hi') applyLocale(locale);
+  });
+});
+applyLocale(activeLocale);
 
 type Point = {
   x: number;

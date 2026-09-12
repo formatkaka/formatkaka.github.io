@@ -4,6 +4,7 @@ import { battleArchive, getCommonsFileUrl } from './archive';
 import { getRemembrancesForScene } from './remembrances';
 import { battleScenes } from './scenes';
 import { storyChapters } from './story';
+import { localeLabels, uiCopy } from './locales';
 import './styles.css';
 
 const wallEntries = Array.from({ length: 5 }, (_, repetition) =>
@@ -19,18 +20,18 @@ const initialRemembrances = getRemembrancesForScene(0);
 ---
 
 <main class="name-wall-experiment">
+  <div class="name-wall-experiment__language" role="group" aria-label={uiCopy.en.languageLabel} data-language-switcher>
+    <span data-i18n="languageLabel">{uiCopy.en.languageLabel}</span>
+    <button type="button" data-language="en" aria-pressed="true">{localeLabels.en}</button>
+    <button type="button" data-language="hi" aria-pressed="false">{localeLabels.hi}</button>
+  </div>
   <section class="name-wall-experiment__intro" aria-labelledby="name-wall-title">
-    <p class="name-wall-experiment__eyebrow">In remembrance of the fallen · Kargil, 1999</p>
-    <h1 id="name-wall-title">Names across<br />the heights.</h1>
-    <p class="name-wall-experiment__lede">
-      Follow 24 selected names through eight campaign chapters. They form one narrative path through
-      a much larger roll of honour; the Chakra opens the wall around each group.
-    </p>
-    <p class="name-wall-experiment__scope">
-      This first edition also carries one family remembrance, beginning with Captain Saurabh Kalia.
-    </p>
+    <p class="name-wall-experiment__eyebrow" data-i18n="remembranceEyebrow">{uiCopy.en.remembranceEyebrow}</p>
+    <h1 id="name-wall-title" data-i18n="introTitle" data-i18n-html>Names across<br />the heights.</h1>
+    <p class="name-wall-experiment__lede" data-i18n="introLede">{uiCopy.en.introLede}</p>
+    <p class="name-wall-experiment__scope" data-i18n="introScope">{uiCopy.en.introScope}</p>
     <button type="button" data-experience-begin>
-      Begin the remembrance <span aria-hidden="true">↓</span>
+      <span data-i18n="begin">{uiCopy.en.begin}</span> <span aria-hidden="true">↓</span>
     </button>
   </section>
 
@@ -48,11 +49,11 @@ const initialRemembrances = getRemembrancesForScene(0);
       </figcaption>
     </figure>
     <div class="name-wall-experiment__story-copy">
-      <p class="name-wall-experiment__eyebrow">{storyChapters.beginning.eyebrow}</p>
-      <h2 id="beginning-title">{storyChapters.beginning.title}</h2>
-      {storyChapters.beginning.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+      <p class="name-wall-experiment__eyebrow" data-story="beginning-eyebrow">{storyChapters.beginning.eyebrow}</p>
+      <h2 id="beginning-title" data-story="beginning-title">{storyChapters.beginning.title}</h2>
+      {storyChapters.beginning.paragraphs.map((paragraph, index) => <p data-story={`beginning-paragraph-${index}`}>{paragraph}</p>)}
       <ul aria-label="Beginning of the war in brief">
-        {storyChapters.beginning.facts.map((fact) => <li>{fact}</li>)}
+        {storyChapters.beginning.facts.map((fact, index) => <li data-story={`beginning-fact-${index}`}>{fact}</li>)}
       </ul>
       <div class="name-wall-experiment__story-links">
         <a href="#name-wall-journey">Enter the name wall <span aria-hidden="true">↓</span></a>
@@ -70,28 +71,28 @@ const initialRemembrances = getRemembrancesForScene(0);
     hidden
   >
     <div class="name-wall-experiment__map-copy">
-      <h2 id="campaign-map-title">The war unfolded across several fronts.</h2>
-      <p>
+      <h2 id="campaign-map-title" data-i18n="campaignTitle">{uiCopy.en.campaignTitle}</h2>
+      <p data-i18n="campaignBody">
         From Mushkoh and Dras through Kaksar and Batalik toward Turtuk, troops fought to recover
         commanding heights. The Srinagar–Leh road below made those positions strategically vital.
       </p>
-      <div class="name-wall-experiment__map-key" aria-label="Map key">
-        <span><i data-key="loc"></i> Line of Control</span>
-        <span><i data-key="road"></i> Srinagar–Leh road</span>
-        <span><i data-key="front"></i> Campaign fronts</span>
+      <div class="name-wall-experiment__map-key" aria-label="Map key" data-i18n-aria="mapKey">
+        <span><i data-key="loc"></i> <span data-i18n="lineOfControl">{uiCopy.en.lineOfControl}</span></span>
+        <span><i data-key="road"></i> <span data-i18n="road">{uiCopy.en.road}</span></span>
+        <span><i data-key="front"></i> <span data-i18n="fronts">{uiCopy.en.fronts}</span></span>
       </div>
-      <p class="name-wall-experiment__map-note">
+      <p class="name-wall-experiment__map-note" data-i18n="schematic">
         Schematic · not to scale. Geography based on the official Kargil Vijay Diwas campaign
         diagram.
       </p>
       <div class="name-wall-experiment__map-actions">
         <a href="#name-wall-journey">
-          Follow the campaign through the names <span aria-hidden="true">↓</span>
+          <span data-i18n="followCampaign">{uiCopy.en.followCampaign}</span> <span aria-hidden="true">↓</span>
         </a>
         <a
           href="https://static.pib.gov.in/WriteReadData/userfiles/Kargil%20Vijay%20Diwas%20PPT%20Col.%20Amit%20Dalvi%20July%2026%202020.pdf"
           target="_blank"
-          rel="noreferrer">Official PIB campaign diagram ↗</a
+          rel="noreferrer"><span data-i18n="officialDiagram">{uiCopy.en.officialDiagram}</span> ↗</a
         >
       </div>
     </div>
@@ -178,9 +179,9 @@ const initialRemembrances = getRemembrancesForScene(0);
             <span><i></i></span>
             <span></span>
           </span>
-          <span>Operation Vijay</span>
+          <span data-i18n="operationVijay">{uiCopy.en.operationVijay}</span>
         </span>
-        <span>24 selected names · 8 chapters</span>
+        <span data-i18n="selectedNames">{uiCopy.en.selectedNames}</span>
         <span>Kargil, 1999</span>
       </header>
 
@@ -224,7 +225,7 @@ const initialRemembrances = getRemembrancesForScene(0);
         {battleScenes[0].soldierIndices.map((index) => martyrs[index]?.fullName).join(', ')}.
       </p>
 
-      <aside class="name-wall-experiment__context" aria-label="Current chapter">
+      <aside class="name-wall-experiment__context" aria-label="Current chapter" data-i18n-aria="currentChapter">
         <div class="name-wall-experiment__context-count">
           <span data-scene-number>01</span>
           <span>/</span>
@@ -234,7 +235,7 @@ const initialRemembrances = getRemembrancesForScene(0);
         <h2 data-scene-title>{battleScenes[0].title}</h2>
         <div class="name-wall-experiment__sector-locator" aria-label="Campaign sector locator">
           <div>
-            <span>Sector locator</span>
+            <span data-i18n="sectorLocator">{uiCopy.en.sectorLocator}</span>
             <strong data-sector-caption>Kaksar</strong>
           </div>
           <ol>
@@ -252,7 +253,7 @@ const initialRemembrances = getRemembrancesForScene(0);
             }
           </ol>
         </div>
-        <p class="name-wall-experiment__names-label">Names brought forward</p>
+        <p class="name-wall-experiment__names-label" data-i18n="namesBroughtForward">{uiCopy.en.namesBroughtForward}</p>
         <ul data-scene-summary-names>
           {battleScenes[0].soldierIndices.map((index) => <li>{martyrs[index]?.fullName}</li>)}
         </ul>
@@ -262,7 +263,7 @@ const initialRemembrances = getRemembrancesForScene(0);
           data-chapter-open
           aria-haspopup="dialog"
         >
-          <span>Explore this chapter</span>
+          <span data-i18n="exploreChapter">{uiCopy.en.exploreChapter}</span>
           <span aria-hidden="true">→</span>
         </button>
         <div class="name-wall-experiment__controls">
@@ -319,7 +320,7 @@ const initialRemembrances = getRemembrancesForScene(0);
           aria-expanded="false"
         >
           <span>
-            <small>Supporting remembrance</small>
+            <small data-i18n="supportingRemembrance">{uiCopy.en.supportingRemembrance}</small>
             <strong data-family-toggle-label>Captain Saurabh Kalia · The first cheque</strong>
           </span>
           <span aria-hidden="true" data-family-toggle-arrow>→</span>
@@ -329,14 +330,14 @@ const initialRemembrances = getRemembrancesForScene(0);
           <p class="name-wall-experiment__chapter-detail" data-scene-detail>
             {battleScenes[0].detail}
           </p>
-          <p class="name-wall-experiment__names-label">Names brought forward</p>
+          <p class="name-wall-experiment__names-label" data-i18n="namesBroughtForward">{uiCopy.en.namesBroughtForward}</p>
           <ul class="name-wall-experiment__chapter-names" data-scene-names>
             {battleScenes[0].soldierIndices.map((index) => <li>{martyrs[index]?.fullName}</li>)}
           </ul>
           <div class="name-wall-experiment__archive" data-image-gallery>
             <div class="name-wall-experiment__archive-heading">
-              <strong>Chapter archive</strong>
-              <span>3 photographs · select to enlarge</span>
+              <strong data-i18n="chapterArchive">{uiCopy.en.chapterArchive}</strong>
+              <span data-i18n="selectToEnlarge">{uiCopy.en.selectToEnlarge}</span>
             </div>
             <div class="name-wall-experiment__archive-grid" data-scene-images>
               {
@@ -428,11 +429,11 @@ const initialRemembrances = getRemembrancesForScene(0);
       </figcaption>
     </figure>
     <div class="name-wall-experiment__story-copy">
-      <p class="name-wall-experiment__eyebrow">{storyChapters.ending.eyebrow}</p>
-      <h2 id="ending-title">{storyChapters.ending.title}</h2>
-      {storyChapters.ending.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+      <p class="name-wall-experiment__eyebrow" data-story="ending-eyebrow">{storyChapters.ending.eyebrow}</p>
+      <h2 id="ending-title" data-story="ending-title">{storyChapters.ending.title}</h2>
+      {storyChapters.ending.paragraphs.map((paragraph, index) => <p data-story={`ending-paragraph-${index}`}>{paragraph}</p>)}
       <ul aria-label="End of the war in brief">
-        {storyChapters.ending.facts.map((fact) => <li>{fact}</li>)}
+        {storyChapters.ending.facts.map((fact, index) => <li data-story={`ending-fact-${index}`}>{fact}</li>)}
       </ul>
       <div class="name-wall-experiment__story-links">
         <a href={storyChapters.ending.sourceUrl} target="_blank" rel="noreferrer">
@@ -480,7 +481,7 @@ const initialRemembrances = getRemembrancesForScene(0);
         <span data-lightbox-credit></span>
         <span class="name-wall-experiment__lightbox-counter" data-lightbox-counter>1 / 3</span>
         <a data-lightbox-source href="" target="_blank" rel="noreferrer">
-          View original and licence ↗
+          <span data-i18n="viewOriginal">{uiCopy.en.viewOriginal}</span> ↗
         </a>
       </div>
     </div>

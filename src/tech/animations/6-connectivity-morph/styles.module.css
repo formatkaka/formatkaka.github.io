@@ -1,0 +1,96 @@
+.wrapper {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  width: min(100%, 620px);
+  color: #111111;
+}
+
+.artwork {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.signal {
+  fill: currentColor;
+}
+
+.wifi {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.wifi path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 18;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.wifi .wifiTip {
+  fill: currentColor;
+  stroke: none;
+}
+
+.battery,
+.batteryTerminal {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.batteryTerminal {
+  stroke-width: 12;
+}
+
+.toggle {
+  border: 1px solid rgb(17 17 17 / 14%);
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 82%);
+  padding: 0.55rem 0.9rem;
+  color: #111111;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 160ms cubic-bezier(0.23, 1, 0.32, 1),
+    background-color 160ms ease;
+}
+
+.toggle:active {
+  transform: scale(0.97);
+}
+
+.toggle:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .toggle:hover {
+    background: #ffffff;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .wrapper {
+    color: #f5f5f5;
+  }
+
+  .toggle {
+    border-color: rgb(255 255 255 / 18%);
+    background: rgb(17 17 17 / 72%);
+    color: #f5f5f5;
+  }
+}
+
+@media (prefers-color-scheme: dark) and (hover: hover) and (pointer: fine) {
+  .toggle:hover {
+    background: #111111;
+  }
+}
