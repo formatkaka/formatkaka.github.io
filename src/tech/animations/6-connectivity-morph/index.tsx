@@ -12,24 +12,43 @@ const signalBars = [
 
 const batteryCapsulePath = 'M430 144 C448 144 466 144 484 144 C502 144 520 144 538 144';
 const collapsedBatteryPath = 'M412 144 C412 144 412 144 412 144 C412 144 412 144 412 144';
-const verticalBatteryPath = 'M412 169 C412 161 412 153 412 145 C412 137 412 129 412 121';
+const verticalBatteryPath = 'M412 175 C412 165 412 155 412 145 C412 135 412 125 412 115';
 const batteryCapsulePoints = parsePathPoints(batteryCapsulePath);
 const collapsedBatteryPoints = parsePathPoints(collapsedBatteryPath);
 const verticalBatteryPoints = parsePathPoints(verticalBatteryPath);
+const hookedBatteryPoints = parsePathPoints(
+  'M434 239 C425 241 415 235 412 222 C410 211 412 198 412 187'
+);
+const orbitCenter = { x: 300, y: 145 };
+const orbitRadius = 112;
+const travellingArcSweep = 90;
+const curlPivot = { x: 414, y: 231 };
+const curlRadius = 60;
+const curlStartAngle = 55;
+const curlSweep = 70;
+const curlShapeCenter = { x: curlPivot.x, y: curlPivot.y - curlRadius };
+const curledBatteryPoints = createArcPoints(curlStartAngle, curlSweep, curlShapeCenter, curlRadius);
+const orbitEntryAngle = 37;
+const orbitEntryRadius = 143;
 
 const batteryTiming = {
-  collapseEnd: 0.2,
-  verticalStart: 0.15,
+  collapseEnd: 0.23,
+  verticalStart: 0.14,
   verticalEnd: 0.23,
-  bendStart: 0.34,
-  bendEnd: 0.46,
-  arcEntryEnd: 0.39,
-  orbitStart: 0.38,
-  orbitEnd: 0.69,
-  growthStart: 0.65,
+  stripEntryStart: 0.18,
+  descentStart: 0.21,
+  descentEnd: 0.405,
+  hookStart: 0.35,
+  hookDuration: 0.055,
+  hookPointDelay: 0.006,
+  curlStart: 0.405,
+  curlEnd: 0.46,
+  travelStart: 0.46,
+  travelEnd: 0.78,
+  growthStart: 0.78,
   growthEnd: 0.96,
 };
-const fullDuration = 2.3;
+const fullDuration = 2;
 
 export const ConnectivityMorph = () => {
   const shouldReduceMotion = useReducedMotion();
@@ -116,8 +135,6 @@ const SignalBar = (props: SignalBarProps) => {
   const { bar, index, progress } = props;
   const collapseStart = index * 0.008;
   const collapseEnd = 0.28 + collapseStart;
-  const fallStart = 0.39 + (signalBars.length - 1 - index) * 0.02;
-  const fallEnd = 0.96;
   const x = useTransform(() => getSignalPosition(bar, index, progress.get()).x);
   const y = useTransform(() => getSignalPosition(bar, index, progress.get()).y);
   const width = useTransform(() => {
@@ -139,17 +156,17 @@ const SignalBar = (props: SignalBarProps) => {
 const getSignalPosition = (bar: SignalBar, index: number, progress: number) => {
   const collapseStart = index * 0.008;
   const collapseEnd = 0.28 + collapseStart;
-  const fallStart = 0.39 + (signalBars.length - 1 - index) * 0.02;
+  const fallStart = 0.65 + (signalBars.length - 1 - index) * 0.02;
   const fallEnd = 0.96;
   const collapse = smootherStep(range(progress, collapseStart, collapseEnd));
-  const pathProgress = rampedLinear(range(progress, fallStart, fallEnd), 0.16);
+  const pathProgress = rampedLinear(range(progress, fallStart, fallEnd), 0.22);
   const start = {
     x: bar.x,
     y: interpolate(bar.y, 151, collapse),
   };
   const controlOne = {
     x: bar.x,
-    y: 200 + index * 50,
+    y: 200 + index * 65,
   };
   const controlTwo = {
     x: bar.finalX - 54 + index * 3,
@@ -165,52 +182,134 @@ const getBatteryPath = (progress: number) => {
   const vertical = smootherStep(
     range(progress, batteryTiming.verticalStart, batteryTiming.verticalEnd)
   );
-  const bend = smootherStep(range(progress, batteryTiming.bendStart, batteryTiming.bendEnd));
-  const arcEntry = smootherStep(
-    range(progress, batteryTiming.bendStart, batteryTiming.arcEntryEnd)
+  const stripEntry = smootherStep(
+    range(progress, batteryTiming.stripEntryStart, batteryTiming.verticalEnd)
   );
-  const orbit = rampedLinear(
-    range(progress, batteryTiming.orbitStart, batteryTiming.orbitEnd),
-    0.14
+  const descent = smootherStep(
+    range(progress, batteryTiming.descentStart, batteryTiming.descentEnd)
   );
-  const growth = rampedLinear(
+  const travel = rampedStartLinear(
+    range(progress, batteryTiming.travelStart, batteryTiming.travelEnd),
+    0.04
+  );
+  const curl = rampedStartLinear(
+    range(progress, batteryTiming.curlStart, batteryTiming.curlEnd),
+    0.28
+  );
+  const growth = rampedEndLinear(
     range(progress, batteryTiming.growthStart, batteryTiming.growthEnd),
-    0.18
+    0.2
   );
 
   const collapsedPoints = interpolatePoints(batteryCapsulePoints, collapsedBatteryPoints, collapse);
   const verticalPoints = interpolatePoints(collapsedPoints, verticalBatteryPoints, vertical);
-  const orbitingSweep = interpolate(-26, -120, bend);
-  const orbitingStart = interpolate(13, 45, bend) - orbit * 360;
-  const arcPoints = createArcPoints(orbitingStart, orbitingSweep - growth * 150);
-  return pointsToPath(interpolatePoints(verticalPoints, arcPoints, arcEntry));
+  const descendedPoints = verticalBatteryPoints.map((point) => ({
+    x: point.x,
+    y: point.y + 72 * descent,
+  }));
+  const travellingLinePoints = interpolatePoints(verticalPoints, descendedPoints, stripEntry);
+  const hookedPoints = travellingLinePoints.map((point, index) =>
+    interpolatePoint(
+      point,
+      hookedBatteryPoints[index],
+      smootherStep(
+        range(
+          progress,
+          batteryTiming.hookStart + index * batteryTiming.hookPointDelay,
+          batteryTiming.hookStart +
+            index * batteryTiming.hookPointDelay +
+            batteryTiming.hookDuration
+        )
+      )
+    )
+  );
+  const curledPoints = interpolatePoints(hookedPoints, curledBatteryPoints, curl);
+  if (progress < batteryTiming.travelStart) {
+    return pointsToPath(curledPoints);
+  }
+
+  const travelAngle = orbitEntryAngle - (360 + orbitEntryAngle) * travel;
+  const radiusSettle = smootherStep(range(travel, 0, 0.18));
+  const travelRadius = interpolate(orbitEntryRadius, orbitRadius, radiusSettle);
+  const travelPivot = pointOnCircle(travelAngle, orbitCenter, travelRadius);
+  const orientationSettle = smootherStep(range(travel, 0, 0.075));
+  const travelRotation = (travelAngle - 90) * orientationSettle;
+  const transformedCurlCenter = transformPoint(
+    curlShapeCenter,
+    curlPivot,
+    travelPivot,
+    travelRotation
+  );
+  const orbitShapeSettle = smootherStep(range(travel, 0.04, 0.16));
+  const travellingPoints = createArcPoints(
+    interpolate(
+      curlStartAngle + travelRotation,
+      travelAngle - travellingArcSweep / 2,
+      orbitShapeSettle
+    ),
+    interpolate(curlSweep, travellingArcSweep, orbitShapeSettle),
+    interpolatePoint(transformedCurlCenter, orbitCenter, orbitShapeSettle),
+    interpolate(curlRadius, travelRadius, orbitShapeSettle)
+  );
+  if (progress < batteryTiming.growthStart) {
+    return pointsToPath(travellingPoints);
+  }
+
+  return pointsToPath(createArcPoints(45, -travellingArcSweep - growth * 180));
 };
 
-function createArcPoints(startAngle: number, sweepAngle: number) {
+function interpolatePoint(from: Point, to: Point, progress: number) {
+  return {
+    x: interpolate(from.x, to.x, progress),
+    y: interpolate(from.y, to.y, progress),
+  };
+}
+
+function transformPoint(point: Point, pivot: Point, target: Point, rotation: number) {
+  const radians = toRadians(rotation);
+  const cosine = Math.cos(radians);
+  const sine = Math.sin(radians);
+  const localX = point.x - pivot.x;
+  const localY = point.y - pivot.y;
+  return {
+    x: target.x + localX * cosine - localY * sine,
+    y: target.y + localX * sine + localY * cosine,
+  };
+}
+
+function createArcPoints(
+  startAngle: number,
+  sweepAngle: number,
+  center = orbitCenter,
+  radius = orbitRadius
+) {
   const middleAngle = startAngle + sweepAngle / 2;
   const endAngle = startAngle + sweepAngle;
-  const first = createArcSegment(startAngle, middleAngle);
-  const second = createArcSegment(middleAngle, endAngle);
+  const first = createArcSegment(startAngle, middleAngle, center, radius);
+  const second = createArcSegment(middleAngle, endAngle, center, radius);
   return [first.start, ...first.controls, ...second.controls];
 }
 
-function createArcSegment(startAngle: number, endAngle: number) {
-  const start = pointOnCircle(startAngle);
-  const end = pointOnCircle(endAngle);
+function createArcSegment(startAngle: number, endAngle: number, center: Point, radius: number) {
+  const start = pointOnCircle(startAngle, center, radius);
+  const end = pointOnCircle(endAngle, center, radius);
   const alpha = (4 / 3) * Math.tan(toRadians(endAngle - startAngle) / 4);
-  const controlOne = addScaled(start, tangentOnCircle(startAngle), alpha);
-  const controlTwo = addScaled(end, tangentOnCircle(endAngle), -alpha);
+  const controlOne = addScaled(start, tangentOnCircle(startAngle, radius), alpha);
+  const controlTwo = addScaled(end, tangentOnCircle(endAngle, radius), -alpha);
   return { start, controls: [controlOne, controlTwo, end] };
 }
 
-function pointOnCircle(angle: number) {
+function pointOnCircle(angle: number, center = orbitCenter, radius = orbitRadius) {
   const radians = toRadians(angle);
-  return { x: 300 + 112 * Math.cos(radians), y: 145 + 112 * Math.sin(radians) };
+  return {
+    x: center.x + radius * Math.cos(radians),
+    y: center.y + radius * Math.sin(radians),
+  };
 }
 
-function tangentOnCircle(angle: number) {
+function tangentOnCircle(angle: number, radius = orbitRadius) {
   const radians = toRadians(angle);
-  return { x: -112 * Math.sin(radians), y: 112 * Math.cos(radians) };
+  return { x: -radius * Math.sin(radians), y: radius * Math.cos(radians) };
 }
 
 function addScaled(point: Point, vector: Point, amount: number) {
@@ -285,6 +384,17 @@ function rampedLinear(value: number, ramp: number) {
   if (value < ramp) return value ** 2 / (2 * ramp) / denominator;
   if (value <= 1 - ramp) return (value - ramp / 2) / denominator;
   return (1 - ramp - (1 - value) ** 2 / (2 * ramp)) / denominator;
+}
+
+function rampedStartLinear(value: number, ramp: number) {
+  if (value < ramp) return value ** 2 / (ramp * (2 - ramp));
+  return (2 * value - ramp) / (2 - ramp);
+}
+
+function rampedEndLinear(value: number, ramp: number) {
+  const velocity = 1 / (1 - ramp / 2);
+  if (value <= 1 - ramp) return velocity * value;
+  return 1 - (velocity * (1 - value) ** 2) / (2 * ramp);
 }
 
 function interpolate(from: number, to: number, progress: number) {
